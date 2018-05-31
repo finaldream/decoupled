@@ -1,0 +1,15 @@
+{
+  "name": "decoupled",
+  "version": "1.0.0",
+  "description": "node.js framework for building decoupled web-clients",
+  "main": "index.js",
+  "repository": "git@github.com:finaldream/decoupled.git",
+  "author": "olivererdmann <o.erdmann@finaldream.de>",
+  "license": "MIT",
+  "devDependencies": {
+    "lerna": "^2.11.0"
+  },
+  "workspaces": [
+    "packages/*"
+  ]
+}

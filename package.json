@@ -6,6 +6,10 @@
   "repository": "git@github.com:finaldream/decoupled.git",
   "author": "olivererdmann <o.erdmann@finaldream.de>",
   "license": "MIT",
+  "private": true,
+  "scripts": {
+    "build": "lerna run build"
+  },
   "devDependencies": {
     "lerna": "^2.11.0"
   },

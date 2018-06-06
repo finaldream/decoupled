@@ -8,7 +8,7 @@ const ReactDOMServer = require('react-dom/server');
 const { logger, config } = require('decoupled');
 const packageJson = require('../package.json');
 
-module.exports.react = async (store = {}) => {
+module.exports = async (store = {}) => {
 
     const { views, entryFile } = config.get('render');
 

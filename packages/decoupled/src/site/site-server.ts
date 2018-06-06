@@ -23,7 +23,7 @@ export default class SiteServer {
     constructor(siteId) {
         this.site = new Site();
         this.router = new Router();
-        this.renderer = new Renderer('react');
+        this.renderer = new Renderer(config.get('render.engine', null));
 
         this.site.loadFromConfig(siteId);
         this.router.addRoutesWithDefaults(this.site.routes);
@@ -48,7 +48,7 @@ export default class SiteServer {
      *
      * @returns {Promise.<void>}
      */
-    public async handleError(res = null, error, responseData: AnyObject = {}) {
+    public async handleError(res = null, error, responseData: ResponseData) {
 
         logger.error(error);
 
@@ -187,7 +187,7 @@ export default class SiteServer {
             return void (0);
 
         } catch (err) {
-            await this.handleError(response, err);
+            await this.handleError(response, err, new ResponseData());
         }
     }
 }

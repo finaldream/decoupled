@@ -6,7 +6,7 @@
 
 import { config } from 'multisite-config';
 import { Generator } from '../generator';
-import { choices, getDefaultEnv, prepareAction, sites } from './utils';
+import { choices, getDefaultEnv, prepareAction } from './utils';
 
 /**
  * Runs the generator
@@ -25,7 +25,7 @@ export function generateAction(args, options) {
 export function generateCommand(app) {
     app
         .command('generate', 'Generate static site')
-        .argument('<site>', `Site to generate.\nOptions: ${sites.join(', ')}`, choices(sites))
+        .argument('<site>', `Site to generate.`)
         .argument('[env]', `Current environment`, null, getDefaultEnv())
         .action(generateAction);
 }

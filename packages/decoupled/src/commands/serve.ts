@@ -6,7 +6,7 @@
 
 import { config } from 'multisite-config';
 import { Server } from '../server';
-import { choices, getDefaultEnv, prepareAction, sites } from './utils';
+import { choices, getDefaultEnv, prepareAction } from './utils';
 
 /**
  * Implementation of the serve-command's action.
@@ -32,7 +32,7 @@ export async function serveAction(args, options) {
 export function serveCommand(app) {
     app
         .command('serve', 'Serve a dynamic site')
-        .argument('<site>', `Site to serve.\nOptions: ${sites.join(', ')}`, choices(sites))
+        .argument('<site>', `Site to serve.`)
         .argument('[env]', `Current environment`, null, getDefaultEnv())
         .option('--host <host>', 'host to server from. Defaults to a config-setting or 127.0.0.1')
         .option('--port <port>', 'Port to server from. Defaults to a config-setting or 3000')

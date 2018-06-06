@@ -39,9 +39,7 @@ function logger(): any {
         return true;
     });
 
-    const loggerInstance = new Logger();
-    loggerInstance.configure({ transports });
-    return loggerInstance;
+    return new ((winston as any).Logger)({ transports });
 }
 
 export default logger();

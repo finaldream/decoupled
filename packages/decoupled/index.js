@@ -1,13 +1,14 @@
 /**
  * Public exports
+ * todo: also move to typescript
  */
 
 const { config } = require('multisite-config');
-const logger = require('./dist/src/logger');
-const { cachedFetch } = require('./dist/src/fetch/cached-fetch');
-const apiFetch = require('./dist/src/fetch/api-fetch');
-const cache = require('./dist/src/fetch/cache');
-const globalStore = require('./dist/src/services/global-store');
+const { default: logger } = require('./dist/logger');
+const { cachedFetch } = require('./dist/fetch/cached-fetch');
+const { default: apiFetch } = require('./dist/fetch/api-fetch');
+const { default: cache } = require('./dist/fetch/cache');
+const { default: globalStore } = require('./dist/services/global-store');
 
 module.exports = {
     config,

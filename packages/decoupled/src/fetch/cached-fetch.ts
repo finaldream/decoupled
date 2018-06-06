@@ -11,7 +11,7 @@ const store = new FetchStore({});
 
 export const cachedFetch = async ({ type, params }): Promise<AnyObject> => {
     const key = genAPICacheKey(type, params);
-    const cached = await cache.get(key) || {};
+    const cached: AnyObject | void = await cache.get(key);
 
     if (cached) {
         return cached;

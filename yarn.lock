@@ -3434,9 +3434,9 @@ ms@2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.0.0.tgz#5608aeadfc00be6c2901df5f9861788de0d597c8"
 
-multisite-config@^0.1.2:
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/multisite-config/-/multisite-config-0.1.2.tgz#ff14729c505a993ce051cf99c8ae9870ea44c9bf"
+multisite-config@^0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/multisite-config/-/multisite-config-0.2.0.tgz#084965e6abec23ed2fa8e8dd0ed344f07329e278"
 
 mute-stream@0.0.6:
   version "0.0.6"

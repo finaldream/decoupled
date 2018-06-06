@@ -11,6 +11,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
+    "install": "tsc",
     "watch": "tsc --watch",
     "lint": "tslint -t verbose src/**/*.ts{,x}"
   },
@@ -41,7 +42,7 @@
     "ioredis": "^3.2.1",
     "metalsmith": "^2.3.0",
     "minimatch": "^3.0.4",
-    "multisite-config": "^0.1.2",
+    "multisite-config": "^0.2.0",
     "node-cache": "^4.1.1",
     "node-fetch": "^1.7.2",
     "promise.map": "^0.0.2",

@@ -31,7 +31,7 @@ export default class Cache {
         this.persist = config.get('cache.persist', false);
 
         if (this.persist) {
-            this.cachePath = path.join(process.env.PWD, '.dcoupled-cache');
+            this.cachePath = path.join(process.env.PWD, '.decoupled-cache');
             jetpack.dir(this.cachePath);
             this.loadPersisted();
         }
@@ -44,7 +44,7 @@ export default class Cache {
      */
     public get(key) {
         try {
-            return this.cache.get(key, true);
+            return this.cache.get(key);
         } catch (err) {
             return false;
         }

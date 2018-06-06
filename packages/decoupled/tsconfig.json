@@ -1,20 +1,7 @@
 {
-  "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "lib": [
-      "es2017",
-      "es2015",
-      "dom",
-      "es6",
-    ],
-    "rootDir": "src",
-    "outDir": "dist",
-    "strict": false,
-    "esModuleInterop": true,
-    "noImplicitAny": false,
-  },
+  "extends": "./tsconfig.base.json",
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "**/*.test.ts"
   ]
 }

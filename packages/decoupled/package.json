@@ -10,16 +10,16 @@
   ],
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
-    "install": "tsc",
-    "watch": "tsc --watch",
+    "build": "scripts/build.sh",
+    "install": "scripts/build.sh",
+    "watch": "tsc -p tsconfig.dev.json --watch",
     "lint": "tslint -t verbose src/**/*.ts{,x}"
   },
   "engines": {
     "node": "node >= 8.0.0"
   },
   "bin": {
-    "dcoupled": "./bin/dcoupled"
+    "decoupled": "./bin/decoupled"
   },
   "dependencies": {
     "@types/dotenv": "^4.0.3",

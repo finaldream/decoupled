@@ -6,4 +6,4 @@ then
     exit 1
 fi
 
-lerna exec --scope "${1}" -- yarn version --no-git-tag-version
+lerna exec --scope "${1}" -- yarn version

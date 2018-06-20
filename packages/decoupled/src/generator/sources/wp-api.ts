@@ -4,20 +4,22 @@
 
 import Chalk from 'chalk';
 import promiseMap from 'promise.map';
-import { config } from 'multisite-config';
 
 import { cachedFetch } from '../../fetch';
 import { Router, DefaultRoutes } from '../../router';
 import { removeTrailingSlash, ServerRequest } from '../../lib';
 import { ServerResponse } from 'http';
+import { Site } from '../../site/site';
+import { SiteDependent } from '../../lib/common/site-dependent';
 
 const DEFAULT_CONCURRENCY = 8;
 
-class WpApi {
+class WpApi extends SiteDependent {
 
     private logger: any;
 
-    constructor(logger) {
+    constructor(site: Site, logger) {
+        super(site);
         this.logger = logger;
     }
 
@@ -36,12 +38,12 @@ class WpApi {
             return;
         }
 
-        const router = new Router();
+        const router = new Router(this.site);
         router.addRoutes(DefaultRoutes);
 
         // iterate each post & language
         const states = {};
-        const concurreny = config.get('generator.concurrency', DEFAULT_CONCURRENCY);
+        const concurreny = this.site.config.get('generator.concurrency', DEFAULT_CONCURRENCY);
 
         await promiseMap(
             posts,
@@ -67,15 +69,15 @@ class WpApi {
     }
 
     public async fetchList() {
-        const list = await cachedFetch({ type: 'list', params: {} });
+        const list = await cachedFetch(this.site, { type: 'list', params: {} });
 
         return list.posts || [];
     }
 }
 
-module.exports = function wpApi(logger) {
+module.exports = function wpApi(site: Site, logger) {
     return function wpApiPlugin(files, metalsmith, done) {
-        const plugin = new WpApi(logger);
+        const plugin = new WpApi(site, logger);
 
         try {
             plugin.run(files, metalsmith, done);

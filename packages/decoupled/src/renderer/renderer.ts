@@ -3,18 +3,22 @@
  */
 
 import { get } from 'lodash';
-import { config } from 'multisite-config';
 import path from 'path';
 import { ResponseData } from '../router/response-data';
+import { Site } from '../site/site';
+import { SiteDependent } from '../lib/common/site-dependent';
 
 type RenderEngine = (store: any) => string;
 
-export class Renderer {
+export class Renderer extends SiteDependent {
 
     private engine: RenderEngine;
 
-    constructor(engine?: RenderEngine) {
-        const defaultEngine = config.get('render.engine');
+    constructor(site: Site, engine?: RenderEngine) {
+
+        super(site);
+
+        const defaultEngine = this.site.config.get('render.engine');
         this.setEngine(engine || defaultEngine);
     }
 

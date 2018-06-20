@@ -2,7 +2,7 @@
  * Error handle middleware
  */
 
-import logger from '../../logger';
+import { logger } from '../../logger';
 
 export default (err, req, res, next) => {
     if (err) {

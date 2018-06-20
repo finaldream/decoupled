@@ -3,33 +3,34 @@
  */
 
 import sinon from 'sinon';
-import taskRunner from './task-runner';
+import { TaskRunner } from './task-runner';
+import { Site } from '../site/site';
 
 let taskOneValue = 0;
 let taskTwoValue = 10;
 let taskThreeValue = 0;
 
-taskRunner.tasks = [
+const tasks = [
     {
-        handler: () => taskOneValue++,
+        handler: (site: Site) => taskOneValue++,
         interval: '*/5 * * * * *',
         startup: true,
     },
     {
-        handler: () => taskTwoValue++,
+        handler: (site: Site) => taskTwoValue++,
         interval: '*/10 * * * * *',
     },
 ];
 
-const getRunningTasks = () => {
-    return taskRunner.registedTasks.filter((task) => task.running);
-};
-
 describe.skip('TaskRunner', () => {
+
+
+    const site = new Site('default');
 
     test('it should register tasks correctly', () => {
         const clock = sinon.useFakeTimers();
 
+        const taskRunner = new TaskRunner(site, tasks);
         taskRunner.init();
 
         expect(taskOneValue).toBe(1);
@@ -46,22 +47,32 @@ describe.skip('TaskRunner', () => {
 
         expect(taskOneValue).toBe(3);
         expect(taskTwoValue).toBe(11);
+
+        taskRunner.stopAll();
     });
 
     test('it should stop all tasks correctly', () => {
-        expect(getRunningTasks().length).toBe(2);
+
+        const taskRunner = new TaskRunner(site, tasks);
+        taskRunner.init();
+
+        expect(taskRunner.getRunningTasks().length).toBe(2);
 
         taskRunner.stopAll();
 
-        expect(getRunningTasks().length).toBe(0);
+        expect(taskRunner.getRunningTasks().length).toBe(0);
     });
 
     test('it should start all tasks correctly', () => {
-        expect(getRunningTasks().length).toBe(0);
+
+        const taskRunner = new TaskRunner(site, tasks);
+        taskRunner.init();
+
+        expect(taskRunner.getRunningTasks().length).toBe(0);
 
         taskRunner.startAll();
 
-        expect(getRunningTasks().length).toBe(2);
+        expect(taskRunner.getRunningTasks().length).toBe(2);
     });
 
     test('it should only run once for a future Date', () => {
@@ -69,17 +80,20 @@ describe.skip('TaskRunner', () => {
         const clock = sinon.useFakeTimers(date.getTime());
         const seconds = date.getSeconds() + 10;
 
+        const taskRunner = new TaskRunner(site, tasks);
+        taskRunner.init();
+
         date.setSeconds(seconds);
 
         taskRunner.register(date, () => taskThreeValue++);
 
         expect(taskThreeValue).toBe(0);
 
-        expect(getRunningTasks().length).toBe(3);
+        expect(taskRunner.getRunningTasks().length).toBe(3);
 
         clock.tick(10000);
 
         expect(taskThreeValue).toBe(1);
-        expect(getRunningTasks().length).toBe(2);
+        expect(taskRunner.getRunningTasks().length).toBe(2);
     });
 });

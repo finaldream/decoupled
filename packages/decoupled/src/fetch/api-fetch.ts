@@ -5,14 +5,14 @@
 import chalk from 'chalk';
 import httpError from 'http-errors';
 import { get } from 'lodash';
-import { config } from 'multisite-config';
 import fetch from 'node-fetch';
 import qs from 'qs';
-import logger from '../logger';
+import { logger } from '../logger';
+import { Site } from '../site/site';
 
 
-export default async ({ type, params }) => {
-    const { endpoint, authentication } = config.get('services.wpapi');
+export default async (site: Site, { type, params }) => {
+    const { endpoint, authentication } = site.config.get('services.wpapi');
 
     const headers = {};
 

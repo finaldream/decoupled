@@ -5,12 +5,15 @@
 import Chalk from 'chalk';
 
 import { Renderer } from '../../renderer';
+import { Site } from '../../site/site';
+import { SiteDependent } from '../../lib/common/site-dependent';
 
-class RenderPlugin {
+class RenderPlugin extends SiteDependent {
 
     private logger: any;
 
-    constructor(logger) {
+    constructor(site: Site, logger) {
+        super(site);
         this.logger = logger;
     }
 
@@ -50,7 +53,7 @@ class RenderPlugin {
 
     public async render(state) {
         try {
-            const renderer = new Renderer();
+            const renderer = new Renderer(this.site /*, TODO: renderer-module */);
             return await renderer.render(state);
         } catch (err) {
             this.logger.error(err.message);
@@ -60,8 +63,8 @@ class RenderPlugin {
     }
 }
 
-export default (logger) => async (files, metalsmith, done) => {
-    const plugin = new RenderPlugin(logger);
+export default (site: Site, logger) => async (files, metalsmith, done) => {
+    const plugin = new RenderPlugin(site, logger);
 
     try {
         await plugin.run(files, metalsmith, done);

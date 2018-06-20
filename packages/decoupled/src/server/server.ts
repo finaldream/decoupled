@@ -5,14 +5,13 @@
 
 import bodyParser from 'body-parser';
 import express from 'express';
-import { config } from 'multisite-config';
 import path from 'path';
 import serveStatic from 'serve-static';
 
 import SiteServer from '../site/site-server';
 import { ServerRequest } from './server-request';
 
-import logger from '../logger';
+import { logger } from '../logger';
 
 // Connect Middleware
 import basicAuth from './middleware/basic-auth';
@@ -44,23 +43,23 @@ export class Server {
      * @param {String} host
      */
     public listen(port, host) {
+
+        const staticExpires = this.siteServer.site.config.get('router.staticExpires', []);
+        const staticRedirects = this.siteServer.site.config.get('router.redirects', []);
+
         this.server.use(requestLogger);
         this.server.use(statusCodeHelper);
         this.server.use(basicAuth());
-        this.server.use(redirects);
-        this.server.use(expiresHeader);
+        this.server.use(redirects(staticRedirects));
+        this.server.use(expiresHeader(staticExpires));
         this.server.use(bodyParser.json());
 
-        const staticFiles = config.get('site.staticFiles', []);
-
+        const staticFiles = this.siteServer.getStaticFiles();
         // Set up static file locations
-        if (Array.isArray(staticFiles)) {
-            staticFiles.forEach((location) => {
-                const dir = path.resolve(process.env.PWD, location.path);
-                logger.info('Serving static files from:', dir);
-                this.server.use(serveStatic(dir));
-            });
-        }
+        staticFiles.forEach((dir) => {
+            logger.info('Serving static files from:', dir);
+            this.server.use(serveStatic(dir));
+        });
 
         this.server.use((req, res) => this.siteServer.handleRequest(new ServerRequest(req), res));
         this.server.use(errorHandle);

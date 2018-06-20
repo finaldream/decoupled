@@ -3,9 +3,9 @@
  */
 
 import { get } from 'lodash';
-import { config } from 'multisite-config';
+import path from 'path';
 import { fixTrailingSlash, isAbsoluteUrl, shouldFixTrailingSlash } from '../lib';
-import logger from '../logger';
+import { logger } from '../logger';
 import { Renderer } from '../renderer';
 import { Router } from '../router';
 import { ResponseData } from '../router/response-data';
@@ -16,17 +16,9 @@ import { Site } from './site';
 export default class SiteServer {
 
     public site: Site;
-    public router: Router;
-    public renderer: Renderer;
-
 
     constructor(siteId) {
-        this.site = new Site();
-        this.router = new Router();
-        this.renderer = new Renderer(config.get('render.engine', null));
-
-        this.site.loadFromConfig(siteId);
-        this.router.addRoutesWithDefaults(this.site.routes);
+        this.site = new Site(siteId);
 
         this.handleRequest = this.handleRequest.bind(this);
 
@@ -34,19 +26,22 @@ export default class SiteServer {
             logger.warn(`${this.site.id} is disabled.`);
             return;
         }
+    }
 
-        if (!this.site.directory) {
-            logger.error(`Required value 'site.directory' not set for ${siteId}.`);
+    public getStaticFiles(): string[] {
+
+        let staticFiles = this.site.config.get('site.staticFiles', []);
+
+        if (!Array.isArray(staticFiles)) {
+            staticFiles = [staticFiles];
         }
+
+        return staticFiles.map((location) => path.resolve(process.env.PWD, location.path));
+
     }
 
     /**
      * Handle error response
-     * @param {{}} res
-     * @param {{}} error
-     * @param {{}} responseData
-     *
-     * @returns {Promise.<void>}
      */
     public async handleError(res = null, error, responseData: ResponseData) {
 
@@ -54,8 +49,8 @@ export default class SiteServer {
 
         const errorCode = error.statusCode || 500;
 
-        const renderError = config.get('render.renderError', true);
-        const traceError = config.get('render.traceError', false);
+        const renderError = this.site.config.get('render.renderError', true);
+        const traceError = this.site.config.get('render.traceError', false);
 
         const errorState = {
             code: errorCode,
@@ -71,7 +66,7 @@ export default class SiteServer {
 
         if (renderError) {
             try {
-                body = await this.renderer.render(responseData);
+                body = await this.site.renderer.render(responseData);
             } catch (e) {
                 logger.error(e);
             }
@@ -104,7 +99,7 @@ export default class SiteServer {
 
         // TODO: Support better response for POST request
         // TODO: Shouldn't there also be a rendered response?
-        const answer = (req.method === 'POST') ? '' : await this.renderer.render(responseData);
+        const answer = (req.method === 'POST') ? '' : await this.site.renderer.render(responseData);
         const content = `${docType}${answer}`;
 
         if (route.expires) {
@@ -127,10 +122,6 @@ export default class SiteServer {
 
     /**
      * Handle regular request
-     *
-     * @param request
-     * @param response
-     * @returns {Promise.<*>}
      */
     public async handleRequest(request: ServerRequest, response: ServerResponse) {
         logger.debug('SiteServer.handleRequest', this.site.id, request.method, request.originalUrl);
@@ -140,9 +131,9 @@ export default class SiteServer {
             // Initialize response code & headers
             if (typeof response.header === 'function') {
                 // TODO: set directly when creating the response, so it will always report correct values.
-                const statusCode = config.get('router.statusCode', 200);
-                const headers = config.get('router.headers', {});
-                const expires = config.get('router.expires', 2592000);
+                const statusCode = this.site.config.get('router.statusCode', 200);
+                const headers = this.site.config.get('router.headers', {});
+                const expires = this.site.config.get('router.expires', 2592000);
 
                 response.expires(expires);
                 response.statusCode = statusCode;
@@ -156,7 +147,7 @@ export default class SiteServer {
             if (shouldFixTrailingSlash(request.path)) {
                 redirect = request.path;
             } else {
-                result = await this.router.resolveUrl(request, response);
+                result = await this.site.router.resolveUrl(request, response);
                 redirect = result && result.state && result.state.redirect;
             }
 

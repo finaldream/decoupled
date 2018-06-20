@@ -1,13 +1,14 @@
 /**
  * Config
  */
-const { get, set } = require('lodash');
+import { get, set } from 'lodash';
 
-class Config {
+export class Config {
+
+    private config: object = {};
 
     /**
      * Config constructor
-     * @param {{}} config
      */
     constructor(config) {
         this.config = config || {};
@@ -15,31 +16,26 @@ class Config {
 
     /**
      * Get configuration value by key
-     * @param {string} key
-     * @param defaultValue
      */
-    get(key, defaultValue = null) {
+    public get(key: string, defaultValue: any = null): any {
         const value = get(this.config, key);
 
-        return (value === undefined) ? defaultValue : value;
+        return (typeof value === 'undefined') ? defaultValue : value;
     }
 
     /**
      * Set configuration value for key.
      * Olny changes the in-memory state, does not change config-files
-     * @param {string} key
-     * @param value
      */
-    set(key, value = null) {
+    public set(key: string, value: any = null): any {
         set(this.config, key, value);
         return value;
     }
 
     /**
      * Load config from 'dehydrated'-state
-     * @param {string|{}} input
      */
-    load(input) {
+    public load(input: string) {
         let configs = {};
 
         if (typeof input === 'string') {
@@ -56,6 +52,3 @@ class Config {
     }
 
 }
-
-module.exports = new Config();
-module.exports.Config = Config;

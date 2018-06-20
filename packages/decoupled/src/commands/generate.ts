@@ -4,7 +4,6 @@
  * generates a static site.
  */
 
-import { config } from 'multisite-config';
 import { Generator } from '../generator';
 import { choices, getDefaultEnv, prepareAction } from './utils';
 
@@ -14,11 +13,12 @@ import { choices, getDefaultEnv, prepareAction } from './utils';
  * @returns Promise
  */
 export function generateAction(args, options) {
-    let opts = prepareAction(args, options);
+    // TODO: REACTIVATE
+    const opts: any = {}; // prepareAction(args, options);
 
-    opts = Object.assign({}, opts, config.get('generator'));
+    // opts = Object.assign({}, opts, config.get('generator'));
 
-    const generator = new Generator(opts);
+    const generator = new Generator(opts.site, opts);
     return generator.run();
 }
 

@@ -3,21 +3,19 @@
  */
 
 import { get } from 'lodash';
-import { config } from 'multisite-config';
 import path from 'path';
 
-import { cachedFetch } from '../fetch';
 import apiFetch from '../fetch/api-fetch';
-import cache from '../fetch/cache';
 import { DelayedQueue } from '../lib/delayed-queue';
 import { genAPICacheKey } from '../lib/gen-api-cache-key';
 import { ServerRequest } from '../server/server-request';
 import { Route } from './route';
+import { Site } from '../site/site';
 
 let invalidationQueue;
 
-const handleMenus = async () => {
-    const result = await cachedFetch({
+const handleMenus = async (site: Site) => {
+    const result = await site.cachedFetch({
         params: {
             lang: 'all',
         },
@@ -27,7 +25,7 @@ const handleMenus = async () => {
     return Object.assign({}, result);
 };
 
-const handleRouteWithSlug = async (req: ServerRequest) => {
+const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
     let slug = req.params._ || req.url;
 
     // only send the URL, get rid of the query-part
@@ -41,15 +39,15 @@ const handleRouteWithSlug = async (req: ServerRequest) => {
     if (queries.preview) {
         Object.assign(params, queries);
 
-        return apiFetch({ type, params });
+        return apiFetch(site, { type, params });
     }
 
-    return cachedFetch({ type, params });
+    return site.cachedFetch({ type, params });
 };
 
-const handleDelayedCacheInvalidate = async (items) => {
+const handleDelayedCacheInvalidate = async (site: Site, items) => {
 
-    const invalidator = config.get('cache.invalidator', false);
+    const invalidator = site.config.get('cache.invalidator', false);
     // TODO: generalize / bullet-proof this callable-from-config pattern,
     // it's used in multiple locations (also see require-muliple)
     const callback =
@@ -69,7 +67,7 @@ const handleDelayedCacheInvalidate = async (items) => {
 
 };
 
-const handleCacheInvalidate = async (req: ServerRequest) => {
+const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
     const data = (req.body && req.body.cache) ? req.body.cache : false;
 
     if (!data) {
@@ -86,17 +84,17 @@ const handleCacheInvalidate = async (req: ServerRequest) => {
 
             const cacheKey = genAPICacheKey(type, params);
 
-            cache.destroy(cacheKey);
+            site.cache.delete(cacheKey);
             break;
 
         case 'flush':
-            cache.flushAll();
+            site.cache.clear();
             break;
     }
 
     if (!invalidationQueue) {
         invalidationQueue =
-            new DelayedQueue(config.get('cache.invalidationTimeout', 15000), handleDelayedCacheInvalidate);
+            new DelayedQueue(site.config.get('cache.invalidationTimeout', 15000), handleDelayedCacheInvalidate);
     }
 
     invalidationQueue.push(data);
@@ -104,12 +102,12 @@ const handleCacheInvalidate = async (req: ServerRequest) => {
     return true;
 };
 
-const handlePreviewRequest = async (req: ServerRequest) => {
+const handlePreviewRequest = async (site: Site, req: ServerRequest) => {
 
     const type = 'preview';
     const params = req.query || {};
 
-    return apiFetch({ type, params });
+    return apiFetch(site, { type, params });
 };
 
 export const DefaultRoutes = [

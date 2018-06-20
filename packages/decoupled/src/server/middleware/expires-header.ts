@@ -2,9 +2,12 @@
  * Expires header middleware
  */
 
-const { config } = require('multisite-config');
+export interface StaticExpiryItem {
+    match: RegExp;
+    expires: number;
+}
 
-const ExpiresHeader = (req, res, next) => {
+export default (staticExpires: StaticExpiryItem[]) => (req, res, next) => {
 
     /**
      * Set expires headers
@@ -20,18 +23,13 @@ const ExpiresHeader = (req, res, next) => {
     /**
      * Set expire header for static files
      */
-    const staticExpires = config.get('router.staticExpires', []);
+    for (const item of staticExpires) {
 
-    for (let i = 0; i < staticExpires.length; i++) {
-        const uri = staticExpires[i];
-
-        if (uri.match.test(req.url)) {
-            res.expires(uri.expires);
+        if (item.match.test(req.url)) {
+            res.expires(item.expires);
             break;
         }
     }
 
     next();
 };
-
-export default ExpiresHeader;

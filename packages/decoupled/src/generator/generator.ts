@@ -4,11 +4,11 @@
 
 import Chalk from 'chalk';
 import MetalSmith from 'metalsmith';
-import { config } from 'multisite-config';
-import logger from '../logger';
+import { logger } from '../logger';
 
 import renderPlugin from './plugins/render-plugin';
 import sourcePlugin from './plugins/source-plugin';
+import { Site } from '../site/site';
 
 export class Generator {
 
@@ -16,6 +16,7 @@ export class Generator {
     private source: string;
     private totalPlugins: number;
     private currentPlugin: number;
+    private site: Site;
 
     /**
      * Generator constructor
@@ -25,7 +26,9 @@ export class Generator {
      * @param {string} source
      * @param {object} logger
      */
-    constructor(options) {
+    constructor(siteId: string, options: AnyObject) {
+
+        this.site = new Site(siteId);
         this.options = options;
         this.source = options.source;
         this.totalPlugins = 0;
@@ -48,10 +51,10 @@ export class Generator {
 
             try {
                 const smith = MetalSmith(process.env.PWD)
-                    .source(config.get('generator.sourcePath'))
+                    .source(this.site.config.get('generator.sourcePath'))
                     .use(this.trackProgress(dataSourcePlugin, `Populate input files from ${this.source.toUpperCase()}`))
-                    .use(this.trackProgress(renderPlugin(logger), 'Render views from input files'))
-                    .destination(config.get('generator.outputPath'));
+                    .use(this.trackProgress(renderPlugin(this.site, logger), 'Render views from input files'))
+                    .destination(this.site.config.get('generator.outputPath'));
 
                 const files = smith.build((err) => {
                     if (err) {

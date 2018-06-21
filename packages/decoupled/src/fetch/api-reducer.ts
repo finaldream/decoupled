@@ -3,13 +3,13 @@
  */
 
 import { get, set } from 'lodash';
-import { config } from 'multisite-config';
 import { removeDomain } from '../lib';
+import { Site } from '../site/site';
 
-export default (state) =>
+export default (site: Site, state: AnyObject) =>
     new Promise((resolve) => {
         const newState = state;
-        const domain = config.get('site.key');
+        const domain = site.id;
         const content = get(state, 'data.posts[0].content.rendered');
 
         if (domain && typeof content === 'string') {

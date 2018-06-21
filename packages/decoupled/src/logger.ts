@@ -1,9 +1,11 @@
 /**
- * Winston Logger
+ * Sets up and provides the Winston Logger
+ *
+ * Uses the configuration from the "default"-site only!
  */
 
-import { config } from 'multisite-config';
-import winston, { Logger } from 'winston';
+import winston from 'winston';
+import { provideConfig } from './config';
 
 function formatTimestamp() {
     const date = new Date().toLocaleDateString('en-GB');
@@ -11,7 +13,9 @@ function formatTimestamp() {
     return `[${date} ${time}]`;
 }
 
-function logger(): any {
+export let logger: any;
+
+export function initLogger(env?: string) {
 
     const defaultOptions = {
         Console: {
@@ -19,6 +23,8 @@ function logger(): any {
         },
     };
 
+    // TODO: DRY behaviour
+    const config = provideConfig('default', env);
     const logging = config.get('logging', defaultOptions);
     const transports = [];
 
@@ -39,7 +45,5 @@ function logger(): any {
         return true;
     });
 
-    return new ((winston as any).Logger)({ transports });
+    logger = new ((winston as any).Logger)({ transports });
 }
-
-export default logger();

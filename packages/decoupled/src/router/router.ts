@@ -7,7 +7,7 @@
 import Chalk from 'chalk';
 import { merge } from 'lodash';
 import { validateHttpMethod } from '../lib';
-import logger from '../logger';
+import { logger } from '../logger';
 import { ServerRequest } from '../server/server-request';
 import { ServerResponse } from '../server/server-response';
 import { collectRoutes } from './collect-routes';
@@ -16,8 +16,9 @@ import HttpError from './http-error';
 import { Redirect } from './redirect';
 import { Route } from './route';
 import { ResponseData } from './response-data';
+import { SiteDependent } from '../lib/common/site-dependent';
 
-export class Router {
+export class Router extends SiteDependent {
 
     public routes: object = {};
     public redirects: Redirect[] = [];
@@ -126,7 +127,7 @@ export class Router {
         let state = {};
 
         try {
-            state = await route.handle(request);
+            state = await route.handle(this.site, request);
         } catch (e) {
             logger.error('Router.resolveUrl', e);
         }
@@ -135,6 +136,7 @@ export class Router {
             request,
             response,
             route,
+            site: this.site,
             state,
         };
     }

@@ -4,13 +4,11 @@
  * Used for CLI output.
  */
 import { join } from 'path';
-import { provider, config } from 'multisite-config';
-import cache from '../fetch/cache';
-import logger from '../logger';
-import taskRunner from '../services/task-runner';
+import { getSiteIDs } from '../config';
+import { initLogger, logger } from '../logger';
 
 let sitesCache = null;
-export const sites = () => sitesCache ? sitesCache : sitesCache = provider.getSiteIDs() && sitesCache;
+export const sites = () => sitesCache ? sitesCache : sitesCache = getSiteIDs() && sitesCache;
 // TODO: make dynamic, i.e. provider.getEnvironments()
 // first env is used as default env
 
@@ -39,30 +37,10 @@ export async function prepareAction(args, options) {
     //     throw new Error(`Unknown site "${opts.site}"`);
     // }
 
-    logger.info(`Using environment "${opts.env}" for site "${opts.site}"`);
-
-    const dcJson = getDecoupledJson();
-
-    provider.load(opts.site, opts.env);
-    config.set('decoupled', dcJson);
-
-    cache.init();
-
-    taskRunner.init();
+    initLogger(opts.env);
+    logger.info(`Using environment "${opts.env}"`);
 
     return opts;
-}
-
-export function getDecoupledJson() {
-
-    try {
-        return require(join(process.env.PWD, 'decoupled.json'));
-    } catch (e) {
-        // noop
-    }
-
-    return null;
-
 }
 
 export function getDefaultEnv() {

@@ -3,10 +3,11 @@
  */
 
 import cron from 'cron';
-import { config } from 'multisite-config';
-import logger from '../logger';
+import { logger } from '../logger';
+import { SiteDependent } from '../lib/common/site-dependent';
+import { Site } from '../site/site';
 
-export class TaskRunner {
+export class TaskRunner extends SiteDependent {
 
     public tasks: any[];
     public registedTasks: any[];
@@ -14,16 +15,23 @@ export class TaskRunner {
     /**
      * TaskRunner constructor
      */
-    constructor() {
-        this.tasks = [];
+    constructor(site: Site, tasks?: object[]) {
+
+        super(site);
+
+        this.tasks = tasks || [];
         this.registedTasks = [];
+
+        this.init();
+
     }
 
     /**
      * Register all tasks defined in current site
      */
-    public init() {
-        this.tasks = config.get('tasks', []);
+    public init(tasks?: object[]) {
+
+        this.tasks = tasks || this.tasks;
 
         if (Array.isArray(this.tasks) && this.tasks.length > 0) {
             this.tasks
@@ -32,7 +40,7 @@ export class TaskRunner {
                         task.handler && typeof task.handler === 'function' &&
                         task.interval && typeof task.interval === 'string',
             )
-                .forEach((task) => this.register(task.interval, task.handler, task.startup));
+                .forEach((task) => this.register(task.interval, () => task.handler(this.site), task.startup));
 
             logger.info(`TaskRunner.init Registered ${this.registedTasks.length} tasks`);
         } else {
@@ -75,6 +83,10 @@ export class TaskRunner {
         }
     }
 
+    public getRunningTasks() {
+        return this.registedTasks.filter((task) => task.running);
+    }
+
     /**
      * Start all tasks by its object
      */
@@ -93,5 +105,3 @@ export class TaskRunner {
             .forEach((task) => task.stop());
     }
 }
-
-export default new TaskRunner();

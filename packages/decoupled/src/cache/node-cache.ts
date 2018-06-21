@@ -2,13 +2,15 @@
  * Node caching service
  */
 
-import { config } from 'multisite-config';
 import jetpack from 'fs-jetpack';
 import NodeCache from 'node-cache';
 import path from 'path';
+import { CacheInterface } from './cache-interface';
+import { Site } from '../site/site';
+import { SiteDependent } from '../lib/common/site-dependent';
 
 
-export default class Cache {
+export default class Cache extends SiteDependent implements CacheInterface {
 
     public persist: boolean;
     public cachePath: string;
@@ -17,18 +19,13 @@ export default class Cache {
     /**
      * Cache constructor
      */
-    constructor() {
+    constructor(site: Site) {
+
+        super(site);
+
         this.cache = new NodeCache({ stdTTL: 60000, checkperiod: 120 });
-
-        this.init = this.init.bind(this);
         this.loadPersisted = this.loadPersisted.bind(this);
-    }
-
-    /**
-     * Initializes features, which require access to the config.
-     */
-    public init() {
-        this.persist = config.get('cache.persist', false);
+        this.persist = this.site.config.get('cache.persist', false);
 
         if (this.persist) {
             this.cachePath = path.join(process.env.PWD, '.decoupled-cache');
@@ -37,12 +34,7 @@ export default class Cache {
         }
     }
 
-    /**
-     * Get cache
-     * @param {String} key
-     * @returns {*}
-     */
-    public get(key) {
+    public async get(key: string): Promise<any> {
         try {
             return this.cache.get(key);
         } catch (err) {
@@ -50,34 +42,27 @@ export default class Cache {
         }
     }
 
-    /**
-     * Set cache
-     * @param {String} key
-     * @param {*} data
-     * @param {int} ttl
-     * @return {Boolean}
-     */
-    public set(key, data, ttl = 60000) {
+    public set(key: string, value: string, ttl: number = 60000): boolean {
         if (this.persist) {
-            this.persistValue(key, data);
+            this.persistValue(key, value);
         }
 
-        return this.cache.set(key, data, ttl);
+        return this.cache.set(key, value, ttl);
     }
 
-    public destroy(key) {
+    public delete(key: string) {
         return this.cache.del(key);
     }
 
-    public flushAll() {
+    public clear() {
         return this.cache.flushAll();
     }
 
-    public persistValue(key, value) {
+    private persistValue(key, value) {
         jetpack.write(path.join(this.cachePath, `${key}.json`), value);
     }
 
-    public loadPersisted() {
+    private loadPersisted() {
         const list = jetpack.list(this.cachePath);
 
         if (!list || !list.length) {

@@ -5,14 +5,14 @@
 import { isFunction, isRegExp } from 'lodash';
 import minimatch from 'minimatch';
 
-export interface IRedirectProps {
+export interface RedirectProps {
     source: RegExp | string;
     target: string;
     statusCode: number;
     type: string;
 }
 
-export type TRedirectFunction = (url: string) => string;
+export type RedirectFunction = (url: string) => string;
 
 /**
  * Caches the value's type for faster execution.
@@ -42,12 +42,12 @@ export class Redirect {
 
     public target: string;
     public targetType: string;
-    public source: string | RegExp | TRedirectFunction;
+    public source: string | RegExp | RedirectFunction;
     public sourceType: string;
     public statusCode: number;
     public type: string;
 
-    constructor(props: IRedirectProps) {
+    constructor(props: RedirectProps) {
 
         this.target = props.target;
         this.targetType = getType(props.target);
@@ -73,7 +73,7 @@ export class Redirect {
         }
 
         if (this.sourceType === 'function') {
-            return (this.source as TRedirectFunction)(url);
+            return (this.source as RedirectFunction)(url);
         }
 
         return false;

@@ -14,3 +14,4 @@ export * from './trailing-slash';
 export * from './join-promises';
 export * from './validate-http-method';
 export * from './is-absolute-url';
+export * from './app-path';

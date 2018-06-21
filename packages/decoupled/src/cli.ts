@@ -9,8 +9,7 @@ import caporal from 'caporal';
 import { join } from 'path';
 import { serveCommand, serveStaticCommand, generateCommand } from './commands';
 import packageJson from '../package.json';
-import { getDecoupledJson } from './commands/utils';
-import { provider } from 'multisite-config';
+import { hasDecoupledJson } from './config';
 
 dotenv.config();
 
@@ -20,13 +19,9 @@ process.on('uncaughtException', (err) => {
 
 const app = caporal.version(packageJson.version);
 
-const dcJson = getDecoupledJson();
-
-if (!dcJson) {
+if (!hasDecoupledJson()) {
     throw new Error('No "decoupled.json" found in current directory.');
 }
-
-provider.setConfigPath(join(dcJson.appPath || '', './config'));
 
 // Register commands
 generateCommand(app);

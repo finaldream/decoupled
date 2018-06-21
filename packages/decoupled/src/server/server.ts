@@ -3,70 +3,62 @@
  */
 
 
-import bodyParser from 'body-parser';
+
 import express from 'express';
-import { config } from 'multisite-config';
-import path from 'path';
-import serveStatic from 'serve-static';
+import vhost from 'vhost';
 
-import SiteServer from '../site/site-server';
-import { ServerRequest } from './server-request';
+import { appPath } from '../lib';
+import { logger } from '../logger';
 
-import logger from '../logger';
-
-// Connect Middleware
-import basicAuth from './middleware/basic-auth';
-import errorHandle from './middleware/error-handle';
-import expiresHeader from './middleware/expires-header';
-import redirects from './middleware/redirects';
-import requestLogger from './middleware/request-logger';
-import statusCodeHelper from './middleware/status-code-helper';
+import { Site } from '../site/site';
+import { getSiteIDs, getFromDecoupledJson } from '../config';
 
 export class Server {
 
-    public siteId: string;
     public environment: string;
-    public server: any;
-    public siteServer: SiteServer;
+    public app: any;
+    public sites: Site[] = [];
 
-    constructor(siteId, environment) {
-        this.siteId = siteId;
+    constructor(environment) {
         this.environment = environment;
-
-        this.server = express();
-        this.siteServer = new SiteServer(this.siteId);
+        this.app = express();
     }
 
-    /**
-     * Start the server
-     *
-     * @param {int} port
-     * @param {String} host
-     */
-    public listen(port, host) {
-        this.server.use(requestLogger);
-        this.server.use(statusCodeHelper);
-        this.server.use(basicAuth());
-        this.server.use(redirects);
-        this.server.use(expiresHeader);
-        this.server.use(bodyParser.json());
+    public init() {
 
-        const staticFiles = config.get('site.staticFiles', []);
+        const siteIds = getSiteIDs(appPath('sites'));
 
-        // Set up static file locations
-        if (Array.isArray(staticFiles)) {
-            staticFiles.forEach((location) => {
-                const dir = path.resolve(process.env.PWD, location.path);
-                logger.info('Serving static files from:', dir);
-                this.server.use(serveStatic(dir));
-            });
+        for (const siteId of siteIds) {
+            const site = new Site(siteId);
+
+            if (!site.enabled) {
+                logger.warn(`${site.id} is disabled.`);
+                continue;
+            }
+
+            const host = site.config.get('site.domain'); // TODO: domain should be called host
+
+            this.sites.push(site);
+            this.app.use(vhost(host, site.connect()));
         }
 
-        this.server.use((req, res) => this.siteServer.handleRequest(new ServerRequest(req), res));
-        this.server.use(errorHandle);
+    }
+    /**
+     * Start the server
+     */
+    public listen(port: number, host: string) {
 
-        this.server.listen(port, host, () => {
+        this.app.listen(port, host, () => {
             logger.log('info', `Server listening on http://${host}:${port}`);
+
+            const maybePort = port !== 80 ? `:${port}` : '';
+
+            for (const site of this.sites) {
+                logger.log('info', `${site.id} on http://${site.host}${maybePort}`);
+            }
+
         });
     }
+
+
 }

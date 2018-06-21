@@ -3,17 +3,25 @@
  */
 
 import Redis from 'ioredis';
-import { config } from 'multisite-config';
+import { CacheInterface } from './cache-interface';
+import { Site } from '../site/site';
+import { SiteDependent } from '../lib/common/site-dependent';
 
-export default class RedisCache {
+export default class RedisCache extends SiteDependent implements CacheInterface {
 
     private cache: Redis;
+
+    constructor(site: Site) {
+
+        super(site);
+
+    }
 
     /**
      * Initializes features, which require access to the config.
      */
     public init() {
-        const host = config.get('cache.redis', false);
+        const host = this.site.config.get('cache.redis', false);
 
         if (!host) {
             throw new Error('No Redis host found');
@@ -28,10 +36,9 @@ export default class RedisCache {
 
     /**
      * Get cache
-     * @param {String} key
-     * @returns {*}
+     * @param key
      */
-    public async get(key) {
+    public async get(key: string) {
         try {
             const data = await this.cache.get(key);
             return JSON.parse(data);
@@ -45,24 +52,23 @@ export default class RedisCache {
      * @param {String} key
      * @param {*} data
      * @param {int} ttl
-     * @return {Boolean}
      */
-    public set(key, data, ttl = 60000) {
-        this.cache.set(key, JSON.stringify(data), 'EX', ttl);
+    public set(key: string, value: any, ttl: number = 60000): boolean {
+        return this.cache.set(key, JSON.stringify(value), 'EX', ttl);
     }
 
     /**
      * Delete single cache
      * @param key
      */
-    public destroy(key) {
+    public delete(key: string) {
         this.cache.del(key);
     }
 
     /**
-     * Flush all cache
+     * Clear all cache
      */
-    public flushAll() {
+    public clear() {
         this.cache.flushdb();
     }
 

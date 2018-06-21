@@ -3,19 +3,15 @@
  */
 
 import { unionBy } from 'lodash';
-import { config } from 'multisite-config';
-import { Redirect, IRedirectProps } from '../../router/redirect';
-import { getHostUrl, isAbsoluteUrl } from '../../lib/';
-import logger from '../../logger';
+import { Redirect, RedirectProps } from '../../router/redirect';
+import { getHostUrl, isAbsoluteUrl } from '../../lib';
+import { logger } from '../../logger';
 import globalStore from '../../services/global-store';
 
-const RedirectsMiddleware = (req, res, next) => {
+export default (staticRedirects: AnyObject[]) => (req, res, next) => {
 
     const globalState = globalStore.getState();
-
-    const staticRedirects = config.get('router.redirects', []);
     const dynamicRedirects = globalState.redirects || [];
-
     const redirects: any[] = unionBy(staticRedirects, dynamicRedirects, 'source');
 
     if (!redirects.length) {
@@ -51,5 +47,3 @@ const RedirectsMiddleware = (req, res, next) => {
         next();
     }
 };
-
-export default RedirectsMiddleware;

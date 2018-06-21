@@ -51,16 +51,12 @@
     "typescript": "^2.8.3",
     "url-pattern": "^1.0.3",
     "vhost": "^3.0.2",
+    "lodash": "4.x",
     "winston": "^2.3.1"
   },
   "devDependencies": {
     "jest": "^22.4.3",
     "regenerator-runtime": "^0.11.1",
     "sinon": "^4.4.9"
-  },
-  "peerDependencies": {
-    "lodash": "4.x",
-    "react": "*",
-    "react-dom": "*"
   }
 }

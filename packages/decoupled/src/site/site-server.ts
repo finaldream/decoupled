@@ -4,6 +4,9 @@
 
 import { get } from 'lodash';
 import path from 'path';
+import express from 'express';
+import bodyParser from 'body-parser';
+import serveStatic from 'serve-static';
 import { fixTrailingSlash, isAbsoluteUrl, shouldFixTrailingSlash } from '../lib';
 import { logger } from '../logger';
 import { Renderer } from '../renderer';
@@ -12,20 +15,49 @@ import { ResponseData } from '../router/response-data';
 import { ServerRequest, ServerResponse } from '../server';
 import { Site } from './site';
 
+// Connect Middleware
+import basicAuth from '../server/middleware/basic-auth';
+import errorHandle from '../server/middleware/error-handle';
+import expiresHeader from '../server/middleware/expires-header';
+import redirects from '../server/middleware/redirects';
+import requestLogger from '../server/middleware/request-logger';
+import statusCodeHelper from '../server/middleware/status-code-helper';
+import { SiteDependent } from '../lib/common/site-dependent';
+
 // TODO: Merge Server & Site-Server
-export default class SiteServer {
+export default class SiteServer extends SiteDependent {
 
-    public site: Site;
+    public app: any;
 
-    constructor(siteId) {
-        this.site = new Site(siteId);
+    constructor(site) {
+        super(site);
 
+        this.app = express();
         this.handleRequest = this.handleRequest.bind(this);
+    }
 
-        if (!this.site.enabled) {
-            logger.warn(`${this.site.id} is disabled.`);
-            return;
-        }
+    public connect(): any {
+        const staticExpires = this.site.config.get('router.staticExpires', []);
+        const staticRedirects = this.site.config.get('router.redirects', []);
+
+        this.app.use(requestLogger);
+        this.app.use(statusCodeHelper);
+        this.app.use(basicAuth());
+        this.app.use(redirects(staticRedirects));
+        this.app.use(expiresHeader(staticExpires));
+        this.app.use(bodyParser.json());
+
+        const staticFiles = this.getStaticFiles();
+        // Set up static file locations
+        staticFiles.forEach((dir) => {
+            logger.info('Serving static files from:', dir);
+            this.app.use(serveStatic(dir));
+        });
+
+        this.app.use((req, res) => this.handleRequest(new ServerRequest(req), res));
+        this.app.use(errorHandle);
+
+        return this.app;
     }
 
     public getStaticFiles(): string[] {

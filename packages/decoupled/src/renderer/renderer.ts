@@ -8,13 +8,13 @@ import { ResponseData } from '../router/response-data';
 import { Site } from '../site/site';
 import { SiteDependent } from '../lib/common/site-dependent';
 
-type RenderEngine = (store: any) => string;
+export type RenderEngineInterface = (site: Site, store: any) => string;
 
 export class Renderer extends SiteDependent {
 
-    private engine: RenderEngine;
+    private engine: RenderEngineInterface;
 
-    constructor(site: Site, engine?: RenderEngine) {
+    constructor(site: Site, engine?: RenderEngineInterface) {
 
         super(site);
 
@@ -22,7 +22,7 @@ export class Renderer extends SiteDependent {
         this.setEngine(engine || defaultEngine);
     }
 
-    public setEngine(engine: RenderEngine) {
+    public setEngine(engine: RenderEngineInterface) {
         if (typeof engine !== 'function') {
             throw new Error(`Render engine must be a function!`);
         }
@@ -35,7 +35,7 @@ export class Renderer extends SiteDependent {
             throw new Error('Please set a renderer engine in your site configuration');
         }
 
-        return this.engine(store);
+        return this.engine(this.site, store);
 
     }
 }

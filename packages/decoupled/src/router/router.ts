@@ -136,6 +136,7 @@ export class Router extends SiteDependent {
             request,
             response,
             route,
+            site: this.site,
             state,
         };
     }

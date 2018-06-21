@@ -14,12 +14,13 @@ import { choices, getDefaultEnv, prepareAction } from './utils';
  */
 export async function serveAction(args, options) {
     const opts = await prepareAction(args, options);
-    const { site, env, host, port } = opts;
-    const server = new Server(site, env);
+    const { env, host, port } = opts;
+    const server = new Server(env);
 
     const siteHost = host || process.env.HOST || '127.0.0.1';
     const sitePort = port || process.env.PORT || 3000;
 
+    server.init();
     server.listen(sitePort, siteHost);
 }
 
@@ -31,7 +32,6 @@ export async function serveAction(args, options) {
 export function serveCommand(app) {
     app
         .command('serve', 'Serve a dynamic site')
-        .argument('<site>', `Site to serve.`)
         .argument('[env]', `Current environment`, null, getDefaultEnv())
         .option('--host <host>', 'host to server from. Defaults to env HOST or 127.0.0.1')
         .option('--port <port>', 'Port to server from. Defaults to env PORT or 3000')

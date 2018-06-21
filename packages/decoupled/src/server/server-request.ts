@@ -3,7 +3,7 @@ import { getHostUrl } from '../lib/get-host-url';
 import { Route } from '../router/route';
 
 
-interface IServerRequestInternalType {
+interface ServerRequestInternalInterface {
     req: AnyObject;
     path: string;
     query: AnyObject;
@@ -16,7 +16,7 @@ interface IServerRequestInternalType {
  */
 export class ServerRequest {
 
-    public internal: IServerRequestInternalType;
+    public internal: ServerRequestInternalInterface;
 
     get method(): string {
         return this.internal.req.method || 'GET';

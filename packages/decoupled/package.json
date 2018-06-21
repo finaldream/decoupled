@@ -1,6 +1,6 @@
 {
   "name": "decoupled",
-  "version": "0.12.1",
+  "version": "0.13.0",
   "description": "Decoupled client",
   "main": "index.js",
   "repository": "https://github.com/finaldream/dcoupled",
@@ -40,6 +40,7 @@
     "http-proxy": "^1.16.2",
     "http-status-codes": "^1.2.0",
     "ioredis": "^3.2.1",
+    "lodash": "4.x",
     "metalsmith": "^2.3.0",
     "minimatch": "^3.0.4",
     "node-cache": "^4.1.1",
@@ -51,7 +52,6 @@
     "typescript": "^2.8.3",
     "url-pattern": "^1.0.3",
     "vhost": "^3.0.2",
-    "lodash": "4.x",
     "winston": "^2.3.1"
   },
   "devDependencies": {

@@ -4,7 +4,7 @@
  * Uses the configuration from the "default"-site only!
  */
 
-import winston, { Logger } from 'winston';
+import winston from 'winston';
 import { provideConfig } from './config';
 
 function formatTimestamp() {
@@ -15,7 +15,7 @@ function formatTimestamp() {
 
 export let logger: any;
 
-export function initLogger(env: string) {
+export function initLogger(env?: string) {
 
     const defaultOptions = {
         Console: {
@@ -23,6 +23,7 @@ export function initLogger(env: string) {
         },
     };
 
+    // TODO: DRY behaviour
     const config = provideConfig('default', env);
     const logging = config.get('logging', defaultOptions);
     const transports = [];

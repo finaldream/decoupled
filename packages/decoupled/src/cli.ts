@@ -9,7 +9,7 @@ import caporal from 'caporal';
 import { join } from 'path';
 import { serveCommand, serveStaticCommand, generateCommand } from './commands';
 import packageJson from '../package.json';
-import { hasDecoupledJson, getFromDecoupledJson } from './config';
+import { hasDecoupledJson } from './config';
 
 dotenv.config();
 

@@ -6,6 +6,7 @@ import { merge } from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import { Config } from './config';
+import { appPath } from '../lib';
 
 /**
  * Read any config file match input pattern
@@ -59,9 +60,12 @@ function getFilePattern(env: string = 'default'): RegExp {
 /**
  * Return environment config for single site
  */
-function loadConfig(domain: string, env: string, rootPath: string): AnyObject {
+function loadConfig(domain: string, env: string, rootPath?: string): AnyObject {
 
-    const defaultPath = path.join(rootPath, domain);
+    const basePath = !rootPath
+        ? appPath('config')
+        : rootPath;
+    const defaultPath = path.join(basePath, domain);
     const defaultConfig = readConfigFromFiles(defaultPath, getFilePattern());
 
     if (!env) {
@@ -75,14 +79,13 @@ function loadConfig(domain: string, env: string, rootPath: string): AnyObject {
 }
 
 
-export function provideConfig(siteId: string, environment: string = 'development', rootPath: string = './'): Config {
+export function provideConfig(siteId: string, environment?: string, rootPath?: string): Config {
 
-    const rootConfigPath = (path.isAbsolute(rootPath)) ?
-        rootPath :
-        path.resolve(process.env.PWD || __dirname, rootPath);
+    const env = environment || process.env.NODE_ENV;
+    const rootConfigPath = path.resolve(rootPath || appPath('config'));
 
-    const defaultConfig = loadConfig('default', environment, rootConfigPath);
-    const siteConfig = siteId !== 'default' ? loadConfig(siteId, environment, rootConfigPath) : {};
+    const defaultConfig = loadConfig('default', env, rootConfigPath);
+    const siteConfig = siteId !== 'default' ? loadConfig(siteId, env, rootConfigPath) : {};
 
     return new Config(merge(defaultConfig, siteConfig));
 

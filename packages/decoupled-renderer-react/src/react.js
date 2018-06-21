@@ -2,20 +2,20 @@
  * React Template engine
  */
 
-const path = require('path');
+const { resolve } = require('path');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 const { logger, config } = require('decoupled');
 const packageJson = require('../package.json');
 
-module.exports = async (store = {}) => {
+const pre = (...args) => `<pre>${args.join('\n')}</pre>`;
 
-    const { views, entryFile } = config.get('render');
+module.exports = async (site, store = {}) => {
 
-    const viewPath = path.resolve(process.env.PWD, views);
-    const templateFile = `${viewPath}/${entryFile || 'index.js'}`;
+    const { views, entryFile } = site.config.get('render');
 
-    const templatePath = path.resolve(templateFile);
+    const templateFile = `${views}/${entryFile || 'index.js'}`;
+    const templatePath = resolve(templateFile);
     logger.debug('React rendering template', templatePath);
 
     let result;
@@ -23,7 +23,20 @@ module.exports = async (store = {}) => {
         const Component = require(templatePath).default; // eslint-disable-line
         result = ReactDOMServer.renderToStaticMarkup(React.createElement(Component, store));
     } catch (e) {
-        logger.error(`${packageJson.name}`, e.error, e.stack);
+        logger.error(packageJson.name, e.message, e.stack);
+
+        const renderError = site.config.get('render.renderError');
+
+        if (typeof renderError === 'function') {
+            return renderError(e, site);
+        }
+
+        switch (renderError) {
+            case "off": return pre('An error occurred, please contact support.');
+            case "short": return pre(e.message);
+            case "full":
+            default: return pre(`Error reported by ${packageJson.name}`, e.message, e.stack);
+        }
     }
 
     return result;

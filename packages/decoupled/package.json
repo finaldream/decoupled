@@ -52,7 +52,7 @@
     "typescript": "^2.8.3",
     "url-pattern": "^1.0.3",
     "vhost": "^3.0.2",
-    "winston": "^2.3.1"
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "jest": "^22.4.3",

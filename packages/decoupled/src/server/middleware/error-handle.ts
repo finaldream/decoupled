@@ -2,9 +2,7 @@
  * Error handle middleware
  */
 
-import { logger } from '../../logger';
-
-export default (err, req, res, next) => {
+export default (logger) => (err, req, res, next) => {
     if (err) {
         const statusCode = err.statusCode || 500;
 

@@ -7,7 +7,6 @@
 import Chalk from 'chalk';
 import { merge } from 'lodash';
 import { validateHttpMethod } from '../lib';
-import { logger } from '../logger';
 import { ServerRequest } from '../server/server-request';
 import { ServerResponse } from '../server/server-response';
 import { collectRoutes } from './collect-routes';
@@ -23,7 +22,6 @@ export class Router extends SiteDependent {
     public routes: object = {};
     public redirects: Redirect[] = [];
 
-
     /**
      * Define routes to be used
      * @param {Route} route
@@ -31,11 +29,11 @@ export class Router extends SiteDependent {
     public addRoute(route: Route) {
 
         if (!route.pattern) {
-            logger.error('Router.useRoute: invalid pattern for', route.method, route.route);
+            this.logger.error('Router.useRoute: invalid pattern for', route.method, route.route);
             return;
         }
 
-        logger.debug('Router.useRoute', route.method, route.route);
+        this.logger.debug('Router.useRoute', route.method, route.route);
 
         if (!this.routes[route.method]) {
             this.routes[route.method] = [];
@@ -75,7 +73,7 @@ export class Router extends SiteDependent {
 
         const method = req.method || 'GET';
 
-        logger.debug('Router.match', method, req.url);
+        this.logger.debug('Router.match', method, req.url);
 
         validateHttpMethod(method);
 
@@ -104,24 +102,24 @@ export class Router extends SiteDependent {
      */
     public async resolveUrl(request: ServerRequest, response: ServerResponse): Promise<ResponseData> {
 
-        logger.debug('Router.resolveURL', request.method, request.url);
+        this.logger.debug('Router.resolveURL', request.method, request.url);
 
         // Find matched route
         const route = this.match(request);
 
         if (!route) {
-            logger.debug(`Router.resolveURL: ${Chalk.red('No match')}`, request.url);
+            this.logger.debug(`Router.resolveURL: ${Chalk.red('No match')}`, request.url);
             throw new HttpError(404, 'Not found');
         }
 
         if (!route.handler) {
-            logger.error(`Router.resolveURL: ${Chalk.red('Empty route-handler')}`, route.route, request.url);
+            this.logger.error(`Router.resolveURL: ${Chalk.red('Empty route-handler')}`, route.route, request.url);
             throw new HttpError(500, 'Empty route-handler');
         }
 
         request.route = route;
 
-        logger.debug(`Router.resolveURL: ${Chalk.green('matched')}`, request.url);
+        this.logger.debug(`Router.resolveURL: ${Chalk.green('matched')}`, request.url);
 
         // Prepare state data
         let state = {};
@@ -129,7 +127,7 @@ export class Router extends SiteDependent {
         try {
             state = await route.handle(this.site, request);
         } catch (e) {
-            logger.error('Router.resolveUrl', e);
+            this.logger.error('Router.resolveUrl', e);
         }
 
         return {

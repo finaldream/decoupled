@@ -3,12 +3,11 @@
  */
 
 import { unionBy } from 'lodash';
-import { Redirect, RedirectProps } from '../../router/redirect';
+import { Redirect } from '../../router/redirect';
 import { getHostUrl, isAbsoluteUrl } from '../../lib';
-import { logger } from '../../logger';
 import globalStore from '../../services/global-store';
 
-export default (staticRedirects: AnyObject[]) => (req, res, next) => {
+export default (staticRedirects: AnyObject[], logger) => (req, res, next) => {
 
     const globalState = globalStore.getState();
     const dynamicRedirects = globalState.redirects || [];

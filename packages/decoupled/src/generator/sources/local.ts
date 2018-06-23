@@ -4,7 +4,7 @@
  * There's actually nothing to do - Metalsmith will source local files itself.
  */
 
-module.exports = logger => (files, metalsmith, done) => {
+module.exports = (logger) => (files, metalsmith, done) => {
     const fileCount = Object.keys(files).length;
     const sourcePath = metalsmith.source();
 

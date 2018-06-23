@@ -1,6 +1,6 @@
 /**
  * Selects the proper source-module for collecting state.
- * 
+ *
  * @throws {Error} when failing to load the requested plugin from ../sources
  */
 export default function sourcePlugin(sourceType, logger) {
@@ -13,4 +13,4 @@ export default function sourcePlugin(sourceType, logger) {
         logger.error(err);
         throw new Error(`Invalid source-type "${sourceType}"`);
     }
-};
+}

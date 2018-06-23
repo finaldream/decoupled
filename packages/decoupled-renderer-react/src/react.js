@@ -5,7 +5,6 @@
 const { resolve } = require('path');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
-const { logger, config } = require('decoupled');
 const packageJson = require('../package.json');
 
 const pre = (...args) => `<pre>${args.join('\n')}</pre>`;
@@ -16,14 +15,14 @@ module.exports = async (site, store = {}) => {
 
     const templateFile = `${views}/${entryFile || 'index.js'}`;
     const templatePath = resolve(templateFile);
-    logger.debug('React rendering template', templatePath);
+    site.logger.debug('React rendering template', templatePath);
 
     let result;
     try {
         const Component = require(templatePath).default; // eslint-disable-line
         result = ReactDOMServer.renderToStaticMarkup(React.createElement(Component, store));
     } catch (e) {
-        logger.error(packageJson.name, e.message, e.stack);
+        site.logger.error(packageJson.name, e);
 
         const renderError = site.config.get('render.renderError');
 

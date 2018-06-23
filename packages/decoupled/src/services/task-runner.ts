@@ -3,7 +3,6 @@
  */
 
 import cron from 'cron';
-import { logger } from '../logger';
 import { SiteDependent } from '../lib/common/site-dependent';
 import { Site } from '../site/site';
 
@@ -42,9 +41,9 @@ export class TaskRunner extends SiteDependent {
             )
                 .forEach((task) => this.register(task.interval, () => task.handler(this.site), task.startup));
 
-            logger.info(`TaskRunner.init Registered ${this.registedTasks.length} tasks`);
+            this.logger.info(`TaskRunner.init Registered ${this.registedTasks.length} tasks`);
         } else {
-            logger.info(`TaskRunner.init No tasks found`);
+            this.logger.info(`TaskRunner.init No tasks found`);
         }
     }
 
@@ -79,7 +78,7 @@ export class TaskRunner extends SiteDependent {
 
             return newTask;
         } catch (error) {
-            logger.error(error.message);
+            this.logger.error(error.message);
         }
     }
 

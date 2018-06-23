@@ -10,11 +10,8 @@ import { SiteDependent } from '../../lib/common/site-dependent';
 
 class RenderPlugin extends SiteDependent {
 
-    private logger: any;
-
-    constructor(site: Site, logger) {
+    constructor(site: Site) {
         super(site);
-        this.logger = logger;
     }
 
     public async run(files, metalsmith, done) {
@@ -64,7 +61,7 @@ class RenderPlugin extends SiteDependent {
 }
 
 export default (site: Site, logger) => async (files, metalsmith, done) => {
-    const plugin = new RenderPlugin(site, logger);
+    const plugin = new RenderPlugin(site);
 
     try {
         await plugin.run(files, metalsmith, done);

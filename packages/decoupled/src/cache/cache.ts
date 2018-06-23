@@ -1,7 +1,6 @@
 
 import chalk from 'chalk';
 
-import { logger } from '../logger';
 import NodeCache from './node-cache';
 import RedisCache from './redis-cache';
 import { Site } from '../site/site';
@@ -42,12 +41,12 @@ export class Cache extends SiteDependent implements CacheInterface {
     }
 
     private init() {
-        logger.info('Initialize cache configuration');
+        this.logger.info('Initialize cache configuration');
 
         // TODO: plug out
         const redis = this.site.config.get('cache.redis', false);
 
-        logger.info(`Using ${chalk.yellow((redis) ? 'REDIS' : 'NODE-CACHE')} as caching service.`);
+        this.logger.info(`Using ${chalk.yellow((redis) ? 'REDIS' : 'NODE-CACHE')} as caching service.`);
 
         // TODO: remove hard-wired cache-provider
         this.cache = (redis) ? new RedisCache(this.site) : new NodeCache(this.site);

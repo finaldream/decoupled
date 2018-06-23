@@ -7,7 +7,6 @@ import httpError from 'http-errors';
 import { get } from 'lodash';
 import fetch from 'node-fetch';
 import qs from 'qs';
-import { logger } from '../logger';
 import { Site } from '../site/site';
 
 
@@ -32,19 +31,19 @@ export default async (site: Site, { type, params }) => {
         url = `${url}?${qs.stringify(params)}`;
     }
 
-    logger.log('debug', `Requesting ${url}`);
+    site.logger.log('debug', `Requesting ${url}`);
 
     let res;
 
     try {
         res = await fetch(url, { method: 'GET', headers });
     } catch (e) {
-        logger.error('api-fetch', url, e.message);
+        site.logger.error('api-fetch', url, e.message);
         throw e;
     }
 
     if (!res.ok) {
-        logger.error('api-fetch: reponse not ok', url, res.status, res.statusText);
+        site.logger.error('api-fetch: reponse not ok', url, res.status, res.statusText);
         throw httpError(res.status, res.statusText);
     }
 
@@ -52,7 +51,7 @@ export default async (site: Site, { type, params }) => {
     try {
         json = await res.json();
     } catch (e) {
-        logger.error('api-fetch: json error', e.message);
+        site.logger.error('api-fetch: json error', e.message);
         throw e;
     }
 
@@ -74,7 +73,7 @@ export default async (site: Site, { type, params }) => {
         Object.assign(result, json.result || json);
     }
 
-    logger.debug('api-fetch', chalk.green('success'), url);
+    site.logger.debug('api-fetch', chalk.green('success'), url);
 
     return result;
 };

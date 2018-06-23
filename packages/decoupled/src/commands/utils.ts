@@ -5,7 +5,7 @@
  */
 import { join } from 'path';
 import { getSiteIDs } from '../config';
-import { initLogger, logger } from '../logger';
+import { logger } from '../logger';
 
 let sitesCache = null;
 export const sites = () => sitesCache ? sitesCache : sitesCache = getSiteIDs() && sitesCache;
@@ -37,7 +37,6 @@ export async function prepareAction(args, options) {
     //     throw new Error(`Unknown site "${opts.site}"`);
     // }
 
-    initLogger(opts.env);
     logger.info(`Using environment "${opts.env}"`);
 
     return opts;

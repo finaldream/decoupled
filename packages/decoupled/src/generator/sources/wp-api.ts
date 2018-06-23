@@ -16,11 +16,9 @@ const DEFAULT_CONCURRENCY = 8;
 
 class WpApi extends SiteDependent {
 
-    private logger: any;
 
-    constructor(site: Site, logger) {
+    constructor(site: Site) {
         super(site);
-        this.logger = logger;
     }
 
     /**
@@ -75,14 +73,14 @@ class WpApi extends SiteDependent {
     }
 }
 
-module.exports = function wpApi(site: Site, logger) {
+module.exports = function wpApi(site: Site) {
     return function wpApiPlugin(files, metalsmith, done) {
-        const plugin = new WpApi(site, logger);
+        const plugin = new WpApi(site);
 
         try {
             plugin.run(files, metalsmith, done);
         } catch (error) {
-            logger.error(`${Chalk.red('error')} ApiPluginError:`, error.message, error.stack);
+            site.logger.error(`${Chalk.red('error')} ApiPluginError:`, error.message, error.stack);
         }
     };
 };

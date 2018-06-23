@@ -40,17 +40,17 @@ export default class SiteServer extends SiteDependent {
         const staticExpires = this.site.config.get('router.staticExpires', []);
         const staticRedirects = this.site.config.get('router.redirects', []);
 
-        this.app.use(requestLogger);
+        this.app.use(requestLogger(this.logger));
         this.app.use(statusCodeHelper);
         this.app.use(basicAuth());
-        this.app.use(redirects(staticRedirects));
+        this.app.use(redirects(staticRedirects, this.logger));
         this.app.use(expiresHeader(staticExpires));
         this.app.use(bodyParser.json());
 
         const staticFiles = this.getStaticFiles();
         // Set up static file locations
         staticFiles.forEach((dir) => {
-            logger.info('Serving static files from:', dir);
+            this.logger.info('Serving static files from:', dir);
             this.app.use(serveStatic(dir));
         });
 
@@ -77,7 +77,7 @@ export default class SiteServer extends SiteDependent {
      */
     public async handleError(res = null, error, responseData: ResponseData) {
 
-        logger.error(error);
+        this.logger.error(error);
 
         const errorCode = error.statusCode || 500;
 
@@ -100,7 +100,7 @@ export default class SiteServer extends SiteDependent {
             try {
                 body = await this.site.renderer.render(responseData);
             } catch (e) {
-                logger.error(e);
+                this.logger.error(e);
             }
         }
 
@@ -116,7 +116,7 @@ export default class SiteServer extends SiteDependent {
 
         const { statusCode = 301, location = '/' } = data;
 
-        logger.info(`SiteServer.handleRedirect: Redirect (${statusCode}) to "${location}"`);
+        this.logger.info(`SiteServer.handleRedirect: Redirect (${statusCode}) to "${location}"`);
 
         res.writeHead(statusCode, { Location: location });
         res.end();
@@ -156,7 +156,7 @@ export default class SiteServer extends SiteDependent {
      * Handle regular request
      */
     public async handleRequest(request: ServerRequest, response: ServerResponse) {
-        logger.debug('SiteServer.handleRequest', this.site.id, request.method, request.originalUrl);
+        this.logger.debug('SiteServer.handleRequest', this.site.id, request.method, request.originalUrl);
 
         try {
 

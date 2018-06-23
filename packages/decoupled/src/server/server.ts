@@ -32,7 +32,6 @@ export class Server {
             const site = new Site(siteId);
 
             if (!site.enabled) {
-                logger.warn(`${site.id} is disabled.`);
                 continue;
             }
 

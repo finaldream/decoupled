@@ -13,6 +13,7 @@ import { GlobalStore } from '../services/global-store';
 import { cachedFetch } from '../fetch';
 import SiteServer from './site-server';
 import { appPath } from '../lib';
+import { initLogger, Logger } from '../logger';
 
 export class Site {
 
@@ -21,6 +22,7 @@ export class Site {
     public readonly config: Config;
     public readonly directory: string;
     public readonly enabled: boolean;
+    public readonly logger: Logger;
     public readonly router: Router;
     public readonly renderer: Renderer;
     public readonly server: SiteServer;
@@ -32,6 +34,7 @@ export class Site {
         this.id = siteId;
 
         this.config = provideConfig(siteId);
+        this.logger = initLogger(this.id);
 
         this.enabled = this.config.get('site.enabled', false);
         this.directory = this.getDirectory();
@@ -40,15 +43,18 @@ export class Site {
             throw new Error(`Required value 'site.directory' not set for ${siteId}.`);
         }
 
+        this.logger.info('Running', this.id, 'from', this.directory);
+
         // Stop here if the site is not enabled
         if (!this.enabled) {
+            this.logger.info(this.id, 'is disabled by config');
             return;
         }
 
         this.cache = new Cache(this);
         this.renderer = new Renderer(this, this.config.get('render.engine', null));
         this.router = this.makeRouter();
-        this.taskrunner = new TaskRunner(this.config.get('tasks'));
+        this.taskrunner = new TaskRunner(this, this.config.get('tasks'));
         this.globalStore = new GlobalStore();
 
         // When all done, init the server

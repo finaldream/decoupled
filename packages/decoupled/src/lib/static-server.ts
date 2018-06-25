@@ -1,4 +1,4 @@
-import connect from 'connect';
+import express from 'express';
 import { AddressInfo } from 'net';
 import serveStatic from 'serve-static';
 
@@ -16,7 +16,7 @@ export function staticServer(directory, address = '127.0.0.1', port: number = 80
 
     log('Serving from', directory);
 
-    const app = connect();
+    const app = express();
     app.use(logWare);
     app.use('/', serveStatic(directory));
 

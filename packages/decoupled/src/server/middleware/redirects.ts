@@ -14,7 +14,7 @@ export default (staticRedirects: AnyObject[], logger) => (req, res, next) => {
     const redirects: any[] = unionBy(staticRedirects, dynamicRedirects, 'source');
 
     if (!redirects.length) {
-        next();
+        return next();
     }
 
     const { url } = req;

@@ -51,7 +51,8 @@ export default class SiteServer extends SiteDependent {
         // Set up static file locations
         staticFiles.forEach((dir) => {
             this.logger.info('Serving static files from:', dir);
-            this.app.use(serveStatic(dir));
+            // TODO: implement uri-property for mount
+            this.app.use('/', express.static(path.resolve(dir)));
         });
 
         this.app.use((req, res) => this.handleRequest(new ServerRequest(req), res));
@@ -68,7 +69,7 @@ export default class SiteServer extends SiteDependent {
             staticFiles = [staticFiles];
         }
 
-        return staticFiles.map((location) => path.resolve(process.env.PWD, location.path));
+        return staticFiles.map((location) => path.resolve(location.path));
 
     }
 
@@ -156,6 +157,11 @@ export default class SiteServer extends SiteDependent {
      * Handle regular request
      */
     public async handleRequest(request: ServerRequest, response: ServerResponse) {
+
+        if (response.headersSent) {
+            return void 0;
+        }
+
         this.logger.debug('SiteServer.handleRequest', this.site.id, request.method, request.originalUrl);
 
         try {

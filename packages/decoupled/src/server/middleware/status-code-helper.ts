@@ -17,7 +17,7 @@ const StatusCodeHelper = (req, res, next) => {
      * Send HTTP status code
      * @param statusCode
      */
-    res.sendStatus = statusCode => res.status(statusCode).end();
+    res.sendStatus = (statusCode) => res.status(statusCode).end();
 
     next();
 };

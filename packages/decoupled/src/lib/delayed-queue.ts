@@ -9,13 +9,15 @@ import { logger } from '../logger';
 
 export class DelayedQueue {
 
+    private invalidates: any;
     private timeout: number;
     private callback: any;
     private items: any[];
     private timeoutId: any;
 
-    constructor(timeout, callback) {
+    constructor(invalidates: any, timeout, callback) {
 
+        this.invalidates = invalidates;
         this.timeout = timeout;
         this.callback = callback;
         this.items = [];
@@ -57,7 +59,7 @@ export class DelayedQueue {
 
         const items = this.items.slice();
         this.reset();
-        this.callback(items);
+        this.callback(this.invalidates, items);
     }
 }
 

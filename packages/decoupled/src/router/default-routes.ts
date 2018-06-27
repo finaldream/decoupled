@@ -7,8 +7,8 @@ import path from 'path';
 
 import apiFetch from '../fetch/api-fetch';
 import { DelayedQueue } from '../lib/delayed-queue';
-import { genAPICacheKey } from '../lib/gen-api-cache-key';
-import { ServerRequest } from '../server/server-request';
+import { genAPICacheKey } from '../lib';
+import { ServerRequest } from '../server';
 import { Route } from './route';
 import { Site } from '../site/site';
 
@@ -45,9 +45,8 @@ const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
     return site.cachedFetch({ type, params });
 };
 
-const handleDelayedCacheInvalidate = async (site: Site, items) => {
+const handleDelayedCacheInvalidate = async (invalidator, items) => {
 
-    const invalidator = site.config.get('cache.invalidator', false);
     // TODO: generalize / bullet-proof this callable-from-config pattern,
     // it's used in multiple locations (also see require-muliple)
     const callback =
@@ -92,12 +91,20 @@ const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
             break;
     }
 
-    if (!invalidationQueue) {
-        invalidationQueue =
-            new DelayedQueue(site.config.get('cache.invalidationTimeout', 15000), handleDelayedCacheInvalidate);
-    }
+    const customInvalidates = site.config.get('cache.invalidator', false);
 
-    invalidationQueue.push(data);
+    if (customInvalidates) {
+        if (!invalidationQueue) {
+            invalidationQueue =
+                new DelayedQueue(
+                    customInvalidates,
+                    site.config.get('cache.invalidationTimeout', 15000),
+                    handleDelayedCacheInvalidate
+                );
+        }
+
+        invalidationQueue.push(data);
+    }
 
     return true;
 };

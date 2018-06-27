@@ -10,7 +10,7 @@ import { genAPICacheKey } from '../lib';
 import { ServerRequest } from '../server';
 import { Route } from './route';
 import { Site } from '../site/site';
-import { handleDelayedCacheInvalidate } from "../cache/utils";
+import { handleDelayedCacheInvalidate } from '../cache/utils';
 
 let invalidationQueue;
 
@@ -76,9 +76,9 @@ const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
         if (!invalidationQueue) {
             invalidationQueue =
                 new DelayedQueue(
-                    customInvalidates,
+                    site,
                     site.config.get('cache.invalidationTimeout', 15000),
-                    handleDelayedCacheInvalidate
+                    handleDelayedCacheInvalidate,
                 );
         }
 

@@ -5,17 +5,23 @@
  * I.e. Invalidation-triggers can be collected that way and run just once.
  */
 
-import { logger } from '../logger';
+import { Logger } from '../logger';
+import { SiteDependent } from './common/site-dependent';
+import { Site } from '../site/site';
 
-export class DelayedQueue {
+export class DelayedQueue extends SiteDependent {
 
-    private timeout: number;
+    public readonly site: Site;
+    public readonly logger: Logger;
+    private  timeout: number;
     private callback: any;
     private items: any[];
     private timeoutId: any;
 
-    constructor(timeout, callback) {
+    constructor(site: Site, timeout, callback) {
+        super(site);
 
+        this.site = site;
         this.timeout = timeout;
         this.callback = callback;
         this.items = [];
@@ -37,7 +43,7 @@ export class DelayedQueue {
 
         this.items.push(...arrayItems);
 
-        logger.info(`DelayedQueue.push ${this.items.length} items are queued`);
+        this.logger.info(`DelayedQueue.push ${this.items.length} items are queued`);
 
         if (this.timeoutId) {
             return;
@@ -53,11 +59,11 @@ export class DelayedQueue {
     }
 
     public trigger() {
-        logger.info(`DelayQueue triggered with ${this.items.length} items`);
+        this.logger.info(`DelayQueue triggered with ${this.items.length} items`);
 
         const items = this.items.slice();
         this.reset();
-        this.callback(items);
+        this.callback(this.site, items);
     }
 }
 

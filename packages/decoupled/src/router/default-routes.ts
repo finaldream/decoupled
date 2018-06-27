@@ -3,7 +3,6 @@
  */
 
 import { get } from 'lodash';
-import path from 'path';
 
 import apiFetch from '../fetch/api-fetch';
 import { DelayedQueue } from '../lib/delayed-queue';
@@ -11,6 +10,7 @@ import { genAPICacheKey } from '../lib';
 import { ServerRequest } from '../server';
 import { Route } from './route';
 import { Site } from '../site/site';
+import { handleDelayedCacheInvalidate } from "../cache/utils";
 
 let invalidationQueue;
 
@@ -43,27 +43,6 @@ const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
     }
 
     return site.cachedFetch({ type, params });
-};
-
-const handleDelayedCacheInvalidate = async (invalidator, items) => {
-
-    // TODO: generalize / bullet-proof this callable-from-config pattern,
-    // it's used in multiple locations (also see require-muliple)
-    const callback =
-        (typeof invalidator === 'string') ? require(path.resolve(process.env.PWD, invalidator)) || false : invalidator;
-
-    if (typeof callback === 'function') {
-        await callback(items);
-    } else if (Array.isArray(callback)) {
-        const promises = [];
-
-        callback.forEach((promise) => {
-            promises.push(promise(items));
-        });
-
-        await Promise.all(promises);
-    }
-
 };
 
 const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {

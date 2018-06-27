@@ -9,6 +9,7 @@ import { logger } from '../logger';
 
 export class DelayedQueue {
 
+    public logger: Logger; // allows to override the logger
     private timeout: number;
     private callback: any;
     private items: any[];
@@ -20,6 +21,7 @@ export class DelayedQueue {
         this.callback = callback;
         this.items = [];
         this.timeoutId = null;
+        this.logger = logger;
 
         this.trigger = this.trigger.bind(this);
 
@@ -37,7 +39,7 @@ export class DelayedQueue {
 
         this.items.push(...arrayItems);
 
-        logger.info(`DelayedQueue.push ${this.items.length} items are queued`);
+        this.logger.debug(`DelayedQueue.push ${this.items.length} items are queued`);
 
         if (this.timeoutId) {
             return;
@@ -53,7 +55,7 @@ export class DelayedQueue {
     }
 
     public trigger() {
-        logger.info(`DelayQueue triggered with ${this.items.length} items`);
+        this.logger.debug(`DelayQueue triggered with ${this.items.length} items`);
 
         const items = this.items.slice();
         this.reset();

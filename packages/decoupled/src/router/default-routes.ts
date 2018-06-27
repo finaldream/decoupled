@@ -3,16 +3,17 @@
  */
 
 import { get } from 'lodash';
-import path from 'path';
 
 import apiFetch from '../fetch/api-fetch';
 import { DelayedQueue } from '../lib/delayed-queue';
-import { genAPICacheKey } from '../lib/gen-api-cache-key';
-import { ServerRequest } from '../server/server-request';
+import { genAPICacheKey } from '../lib';
+import { ServerRequest } from '../server';
 import { Route } from './route';
 import { Site } from '../site/site';
+import { delayedCacheInvalidate } from '../cache/delayed-cache-invalidate';
 
-let invalidationQueue;
+// Keeps an invalidation-queue per site
+const invalidationQueues: Map<Site, DelayedQueue> = new Map();
 
 const handleMenus = async (site: Site) => {
     const result = await site.cachedFetch({
@@ -32,7 +33,6 @@ const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
     slug = slug.split('?').shift();
 
     const queries = req.query || {};
-
     const type = 'permalink';
     const params = { q: slug };
 
@@ -43,28 +43,6 @@ const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
     }
 
     return site.cachedFetch({ type, params });
-};
-
-const handleDelayedCacheInvalidate = async (site: Site, items) => {
-
-    const invalidator = site.config.get('cache.invalidator', false);
-    // TODO: generalize / bullet-proof this callable-from-config pattern,
-    // it's used in multiple locations (also see require-muliple)
-    const callback =
-        (typeof invalidator === 'string') ? require(path.resolve(process.env.PWD, invalidator)) || false : invalidator;
-
-    if (typeof callback === 'function') {
-        await callback(items);
-    } else if (Array.isArray(callback)) {
-        const promises = [];
-
-        callback.forEach((promise) => {
-            promises.push(promise(items));
-        });
-
-        await Promise.all(promises);
-    }
-
 };
 
 const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
@@ -92,12 +70,22 @@ const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
             break;
     }
 
-    if (!invalidationQueue) {
-        invalidationQueue =
-            new DelayedQueue(site.config.get('cache.invalidationTimeout', 15000), handleDelayedCacheInvalidate);
+    if (!site.config.get('cache.invalidator', false)) {
+        return true;
     }
 
-    invalidationQueue.push(data);
+    let queue = invalidationQueues.get(site);
+
+    if (!queue) {
+        queue = new DelayedQueue(
+            site.config.get('cache.invalidationTimeout', 15000),
+            (items) => delayedCacheInvalidate(site, items),
+        );
+        queue.logger = site.logger;
+        invalidationQueues.set(site, queue);
+    }
+
+    queue.push(data);
 
     return true;
 };

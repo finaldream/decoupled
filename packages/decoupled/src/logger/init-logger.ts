@@ -1,4 +1,4 @@
-import { provideConfig } from '../config';
+import { provideConfig, hasDecoupledJson } from '../config';
 import { logFormat } from './log-format';
 import { Logger } from './logger';
 
@@ -6,13 +6,28 @@ export function initLogger(siteId: string, env?: string) {
 
     const defaultOptions = {
         format: logFormat(siteId),
+        level: 'info',
         transports: [
-            { type: 'Console', level: 'debug' },
+            { type: 'Console' },
         ],
     };
 
-    const config = provideConfig(siteId, env);
-    const logging = config.get('logging', defaultOptions);
+    let logging = {};
+    if (hasDecoupledJson()) { // skip errors when running in non-project environments (i.e. tests)
+        try {
+            const config = provideConfig(siteId, env);
+            logging = config.get('logging', defaultOptions);
+        } catch (e) {
+            console.error('Can not load default config.');
+        }
+    }
 
-    return new Logger({ ...defaultOptions, ...logging });
+    const options = { ...defaultOptions, ...logging };
+
+    // Allow setting a global log-level
+    if (process.env.LOG_LEVEL) {
+        options.level = process.env.LOG_LEVEL;
+    }
+
+    return new Logger(options);
 }

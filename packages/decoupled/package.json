@@ -13,7 +13,8 @@
     "build": "scripts/build.sh",
     "install": "scripts/build.sh",
     "watch": "tsc -p tsconfig.dev.json --watch",
-    "lint": "tslint -t verbose src/**/*.ts{,x}"
+    "lint": "tslint -t verbose src/**/*.ts{,x}",
+    "test": "jest dist"
   },
   "engines": {
     "node": "node >= 8.0.0"

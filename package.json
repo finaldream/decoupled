@@ -13,7 +13,8 @@
     "bootstrap": "lerna bootstrap",
     "publish": "lerna exec -- \"npm publish\"",
     "watch": "cd packages/decoupled && yarn run watch && cd -",
-    "new-version": "scripts/new-version.sh"
+    "new-version": "scripts/new-version.sh",
+    "test": "lerna run test"
   },
   "devDependencies": {
     "lerna": "^2.11.0"

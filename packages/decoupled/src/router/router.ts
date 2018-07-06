@@ -12,7 +12,6 @@ import { ServerResponse } from '../server/server-response';
 import { collectRoutes } from './collect-routes';
 import { DefaultRoutes } from './default-routes';
 import HttpError from './http-error';
-import { Redirect } from './redirect';
 import { Route } from './route';
 import { ResponseData } from './response-data';
 import { SiteDependent } from '../lib/common/site-dependent';
@@ -20,7 +19,6 @@ import { SiteDependent } from '../lib/common/site-dependent';
 export class Router extends SiteDependent {
 
     public routes: object = {};
-    public redirects: Redirect[] = [];
 
     /**
      * Define routes to be used
@@ -33,7 +31,7 @@ export class Router extends SiteDependent {
             return;
         }
 
-        this.logger.debug('Router.useRoute', route.method, route.route);
+        this.logger.debug(() => ['Router.useRoute', route.method, route.route]);
 
         if (!this.routes[route.method]) {
             this.routes[route.method] = [];

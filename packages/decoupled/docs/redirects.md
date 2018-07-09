@@ -3,16 +3,40 @@
 ## Define Redirects
 
 * Redirects are usually defined in each site's config `router.redirects`.
-* Redirects always operate on the whole URL.
+* Redirects can operate on the whole URL or just the path-section.
 * The config consists of an array of objects with the following properties:
-  * `source: string | RegExp | function(subject: string): object | boolean`
-    * the matcher can simply return a boolean, indicating the match
-    * or it can return an object on success, containing matched properties.
-    * a string might be in the [url-pattern](https://www.npmjs.com/package/url-pattern)-format, also allowing to capture properties
-    * a regexp might return capture-groups with numberd-keys
-  * `target: string | function(subject: string, params?: object): string`
-    * a function might recieve properties from the matcher as second argument
-    * a string might contain template-literals like `${var}`. 
+  * `url: string | RegExp | function(subject: string): object | boolean`
+    * string:
+      * can be an exact string to match
+      * can contain wildcards (`*`) to match any part of the URL
+      * the path-section may contain named segments in [url-pattern](https://www.npmjs.com/package/url-pattern)-format. 
+        I.e. `/api/user/:id`. Named-segment can't be used in the host-section of the URL though!
+      * wildcards and named sections are available as placeholders to the `target`.
+    * RegExp:
+      * any valid RegExp can be specified
+      * capture-groups are available as placeholders in numbered sequence to the `target`.
+    * function:
+      * a custom matcher-function that receives the requested URL and returns either a
+        boolean (whether it matches) or an object with placeholder values.
+  * `path: string | RegExp | function(subject: string): object | boolean`
+    * works similar to the `url`-matching
+    * paths are always relative to the site, they have been defined for.
+  * `target: string | function(subject: string, placeholders?: object): string`
+    * string:
+      * the target-URL for the redirect.
+      * can contain placeholders like `${var}`. Placeholders are provided by named-sections, wildcards
+        or capture-groups. For named-sections, the placeholders are named accordingly. For wildcards or
+        capture-groups, they are named `${$n}`, where `n` is the index of the resulting RegExp match.
+    * function:
+      * returns a string for the URL to redirect to.
+      * the second argument may be an object of placeholders from the matcher.
+
+  * `resolver: function(url: string, req: Request, redirect: Redirect): string | null`
+    * The resolver allows to fully customize redirect handling, by receiving the requested URL
+      and returning the target-URL.
+    * if the request doesn't match, it is expected to return `null`.
+    * an alternative way for specifying the resolver is to provide the function directly to the config,
+      instead of using the redirect-object.
 
 ## Redirect URLs
 

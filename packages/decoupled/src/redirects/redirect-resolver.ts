@@ -11,7 +11,8 @@ export type RedirectResolverFunction = GenericFunction<object, string>;
 
 export class RedirectResolver {
 
-    protected stringValue?: TemplateExecutor;
+    protected stringValue?: string;
+    protected stringExecutor?: TemplateExecutor;
     protected functionValue?: RedirectResolverFunction;
 
     constructor(subject: any) {
@@ -19,7 +20,8 @@ export class RedirectResolver {
         if (isFunction(subject)) {
             this.functionValue = subject as RedirectResolverFunction;
         } else if (typeof subject === 'string') {
-            this.stringValue = template(subject, templateOptions);
+            this.stringValue = subject;
+            this.stringExecutor = template(subject, templateOptions);
         }
 
     }
@@ -31,8 +33,8 @@ export class RedirectResolver {
      */
     public resolve(params: object): string {
 
-        if (this.stringValue) {
-            return this.stringValue(params);
+        if (this.stringExecutor) {
+            return this.stringExecutor(params);
         }
         if (this.functionValue) {
             return this.functionValue(params);

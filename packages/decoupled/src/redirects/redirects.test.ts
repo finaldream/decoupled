@@ -52,6 +52,22 @@ describe('Redirect', () => {
 
     });
 
+    describe('string URLs may contain simple wildcards', () => {
+
+
+        runCases([
+            {
+                request: 'http://dev.string-wildcards.tld/lorem/ipsum/',
+                expect: 'http://www.redirect-wildcards.tld/dev/lorem/ipsum/',
+            },
+            {
+                request: 'http://dev.string-wildcards.de/lorem/ipsum/',
+                expect: 'http://www.redirect-wildcards.de/dev/lorem/ipsum/',
+            },
+        ]);
+
+    });
+
     describe('it will process Function-URLs properly', () => {
 
         runCases([
@@ -85,6 +101,21 @@ describe('Redirect', () => {
             {
                 request: 'https://www.path-request.tld/rest/lorem/impsum/dolor/sit/amet/',
                 expect: 'https://www.path-request.tld/dolor/impsum/lorem/',
+            },
+        ]);
+
+    });
+
+    describe('it will process resolve-handlers properly', () => {
+
+        runCases([
+            {
+                request: 'https://www.resolve-handler.tld/a/b/c/',
+                expect: 'https://www.resolved-the-redirect.tld/a/b/c/',
+            },
+            {
+                request: 'https://direct-handler.tld/a/b/c/',
+                expect: 'http://directly-resolved-the-redirect.tld',
             },
         ]);
 

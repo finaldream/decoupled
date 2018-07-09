@@ -11,6 +11,14 @@ export default [
     { url: 'http://www.domain5.tld/:cat/:post(/)', target: 'https://www.redirect5.tld/${cat}/${post}/' },
     { url: 'http://www.domain5.tld/:cat/:post/*', target: 'https://www.redirect5.tld/${cat}/${post}/${_}' },
     {
+        url: 'http://*.string-wildcards.tld/:arg1/:arg2/',
+        target: 'http://www.redirect-wildcards.tld/${$1}/${arg1}/${arg2}/',
+    },
+    {
+        url: 'http://*.string-wildcards.*/:arg1/:arg2/',
+        target: 'http://www.redirect-wildcards.${$2}/${$1}/${arg1}/${arg2}/',
+    },
+    {
         target: 'https://www.redirect6.tld/',
         url: (url) => url.indexOf('http://www.domain6.tld') === 0,
     },
@@ -48,5 +56,12 @@ export default [
         path: (url) => url.indexOf('/rest') === 0 && url.split('/'),
         target: 'https://www.path-request.tld/${$4}/${$3}/${$2}/',
     },
+    {
+        resolver: (url) => {
+            if (url.indexOf('resolve-handler.tld') === -1) { return null; }
+            return url.replace('resolve-handler.tld', 'resolved-the-redirect.tld');
+        },
+    },
+    (url) => url.indexOf('direct-handler.tld') === -1 ? null : 'http://directly-resolved-the-redirect.tld',
 
 ];

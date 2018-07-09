@@ -41,6 +41,12 @@ export const registerRedirects = (redirect: AnyObject | AnyObject[], site?: Site
         : null;
 
     redirects = redirects.map((r) => {
+
+        // Allow raw resolvers a functions
+        if (typeof r === 'function') {
+            r = { resolver: r };
+        }
+
         r.hostname = r.hostname || hostname;
         return r;
     });

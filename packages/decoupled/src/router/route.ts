@@ -2,17 +2,18 @@ import { merge } from 'lodash';
 import UrlPattern from 'url-pattern';
 import { joinPromises, validateHttpMethod } from '../lib';
 import { AsyncFunction } from '../lib/types/async-function';
+import { RenderEngineInterface } from '../renderer';
 
 export type RouteHandlerType = AsyncFunction | AsyncFunction[] | null;
 
-interface IRouteInternalType {
+interface RouteInternalInterface {
     handler: RouteHandlerType;
 }
 
 export class Route {
 
 
-    public internal: IRouteInternalType;
+    public internal: RouteInternalInterface;
     public method: string = 'GET';
     public route: string = '(*)';
     public docType: string = '<!DOCTYPE html>';
@@ -20,6 +21,7 @@ export class Route {
     public pattern: UrlPattern;
     public expires: number | null = null;
     public statusCode: number | null = null;
+    public render?: RenderEngineInterface = null;
 
     get handler(): RouteHandlerType {
         return this.internal.handler;
@@ -44,6 +46,7 @@ export class Route {
         const pattern = this.route.split('?', 1).pop();
 
         this.pattern = (pattern.length) ? new UrlPattern(pattern) : null;
+        this.render = props.render || null;
 
     }
 

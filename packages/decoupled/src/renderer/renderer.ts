@@ -31,6 +31,11 @@ export class Renderer extends SiteDependent {
     }
 
     public render(store: ResponseData) {
+
+        if (store.route && typeof store.route.render === 'function') {
+            return store.route.render(this.site, store);
+        }
+
         if (!this.engine || typeof this.engine !== 'function') {
             throw new Error('Please set a renderer engine in your site configuration');
         }

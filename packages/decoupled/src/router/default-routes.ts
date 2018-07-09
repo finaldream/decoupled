@@ -49,7 +49,7 @@ const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
     const data = (req.body && req.body.cache) ? req.body.cache : false;
 
     if (!data) {
-        return false;
+        return { error: 'Invalid request' };
     }
 
     switch (data.action) {
@@ -71,7 +71,7 @@ const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
     }
 
     if (!site.config.get('cache.invalidator', false)) {
-        return true;
+        return { status: 'ok' };
     }
 
     let queue = invalidationQueues.get(site);
@@ -87,7 +87,7 @@ const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
 
     queue.push(data);
 
-    return true;
+    return { status: 'ok' };
 };
 
 const handlePreviewRequest = async (site: Site, req: ServerRequest) => {
@@ -108,6 +108,8 @@ export const DefaultRoutes = [
         handler: handleCacheInvalidate,
         method: 'POST',
         route: '/cache(/)',
+        docType: '',
+        render: (site, { state }) => JSON.stringify(state),
     }),
     new Route({
         handler: [handleMenus, handleRouteWithSlug],

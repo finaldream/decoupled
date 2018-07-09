@@ -3,24 +3,46 @@ import {
     Logger as WinstonLogger,
     transports,
 } from 'winston';
+import Chalk from 'chalk';
 import * as Transport from 'winston-transport';
 import { LoggerInterface } from './logger-interface';
 import { anyToString } from '../lib/any-to-string';
 
 export class Logger implements LoggerInterface {
 
+    public lazyLogging: boolean = true;
     private logger: WinstonLogger;
 
     constructor(options: AnyObject = {}) {
 
         const opts = {
             ...options,
-            transports: this.initTransports(options.transports),
+            transports: this.initTransports(options.transports, options.level),
         };
 
         this.logger = createLogger(opts);
     }
 
+    /**
+     * Checks if logging for a level is allowed.
+     * Configure with config `logging.level`.
+     * Checks logger.level internally.
+     * @param level level to test
+     */
+    public checkLevel(level: string): boolean {
+
+        const levelId = this.logger.levels[level];
+        const loggerLevelId = this.logger.levels[this.logger.level];
+
+        return (
+            typeof levelId !== 'undefined'
+            && levelId <= loggerLevelId
+        );
+    }
+
+    public deprecate(what: string, instead: string) {
+        this.log('warn', Chalk.redBright('DEPRECATED:'), `${what}.`, `${instead}.`);
+    }
     public error(...args) {
         this.log('error', ...args);
     }
@@ -43,11 +65,28 @@ export class Logger implements LoggerInterface {
         return this.log('silly', ...args);
     }
     public log(level, ...args) {
-        const message = (args || []).map((item) => anyToString(item));
+
+        // Skip disabled log-levels to increase performance for lazy logging
+        if (this.lazyLogging && !this.checkLevel(level)) {
+            return;
+        }
+
+        let argsDef = args || [];
+
+        // Support lazy evaluation of logs at time of render vs. always
+        if (this.lazyLogging && args.length === 1 && typeof args[0] === 'function') {
+            argsDef = args[0]();
+        }
+
+        if (!Array.isArray(argsDef)) {
+            argsDef = [argsDef];
+        }
+
+        const message = (argsDef).map((item) => anyToString(item));
         return this.logger.log(level, message.join(' '));
     }
 
-    private initTransports(transportOptions: AnyObject[] = []): Transport[] {
+    private initTransports(transportOptions: AnyObject[] = [], globalLevel: string = 'info'): Transport[] {
 
         const result: Transport[] = [];
 
@@ -57,6 +96,11 @@ export class Logger implements LoggerInterface {
 
             if (!transports[type]) {
                 throw new Error(`unknown transport ${type}. Choose from ${Object.keys(transports).join()}`);
+            }
+
+            // allow a global level for all transports by omitting the transport-specific level.
+            if (typeof opts.level === 'undefined') {
+                opts.level = globalLevel;
             }
 
             result.push(new transports[type](opts));

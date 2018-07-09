@@ -1,0 +1,10 @@
+{
+  "name": "decoupled-renderer-json",
+  "version": "1.0.0",
+  "description": "Simple JSON renderer for decoupled. Renders the decoupled state to JSON.",
+  "main": "index.js",
+  "license": "MIT",
+  "peerDependencies": {
+    "decoupled": "*"
+  }
+}

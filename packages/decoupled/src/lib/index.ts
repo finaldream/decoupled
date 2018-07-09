@@ -15,3 +15,4 @@ export * from './join-promises';
 export * from './validate-http-method';
 export * from './is-absolute-url';
 export * from './app-path';
+export * from './dummy-req';

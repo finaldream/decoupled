@@ -2,7 +2,7 @@
  * TODO: Description here.
  */
 
-import { provideConfig, Config, getFromDecoupledJson } from '../config';
+import { provideConfig, Config } from '../config';
 import { join, resolve } from 'path';
 import { Route } from '../router/route';
 import { Router } from '../router';
@@ -14,6 +14,7 @@ import { cachedFetch } from '../fetch';
 import SiteServer from './site-server';
 import { appPath } from '../lib';
 import { initLogger, Logger } from '../logger';
+import { registerRedirects } from '../redirects/redirect-store';
 
 export class Site {
 
@@ -50,6 +51,8 @@ export class Site {
             this.logger.info(this.id, 'is disabled by config');
             return;
         }
+
+        registerRedirects(this.config.get('router.redirects'));
 
         this.cache = new Cache(this);
         this.renderer = new Renderer(this, this.config.get('render.engine', null));

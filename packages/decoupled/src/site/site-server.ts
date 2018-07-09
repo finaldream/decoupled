@@ -19,7 +19,6 @@ import { Site } from './site';
 import basicAuth from '../server/middleware/basic-auth';
 import errorHandle from '../server/middleware/error-handle';
 import expiresHeader from '../server/middleware/expires-header';
-import redirects from '../server/middleware/redirects';
 import requestLogger from '../server/middleware/request-logger';
 import statusCodeHelper from '../server/middleware/status-code-helper';
 import { SiteDependent } from '../lib/common/site-dependent';
@@ -43,7 +42,6 @@ export default class SiteServer extends SiteDependent {
         this.app.use(requestLogger(this.logger));
         this.app.use(statusCodeHelper);
         this.app.use(basicAuth());
-        this.app.use(redirects(staticRedirects, this.logger));
         this.app.use(expiresHeader(staticExpires));
         this.app.use(bodyParser.json());
 
@@ -130,9 +128,7 @@ export default class SiteServer extends SiteDependent {
         const route = req.route;
         const docType = route.docType;
 
-        // TODO: Support better response for POST request
-        // TODO: Shouldn't there also be a rendered response?
-        const answer = (req.method === 'POST') ? '' : await this.site.renderer.render(responseData);
+        const answer = await this.site.renderer.render(responseData);
         const content = `${docType}${answer}`;
 
         if (route.expires) {

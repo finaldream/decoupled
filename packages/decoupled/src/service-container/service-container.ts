@@ -9,7 +9,7 @@ import { logger } from '../logger';
 
 const REGEX_JS_FILES = new RegExp('^([^.]+(?!(\\.spec|\\.test|\\.mock)))(\\.[^.]+)*\\.js$');
 
-const NAME_SPACE = 'Dcoupled';
+const NAME_SPACE = 'Decoupled';
 
 /**
  * ServiceContainer class

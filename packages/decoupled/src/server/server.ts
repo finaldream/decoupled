@@ -12,6 +12,7 @@ import { logger } from '../logger';
 
 import { Site } from '../site/site';
 import { getSiteIDs, getFromDecoupledJson } from '../config';
+import { redirectsMiddleware } from '../server/middleware/redirects';
 
 export class Server {
 
@@ -27,6 +28,9 @@ export class Server {
     public init() {
 
         const siteIds = getSiteIDs(appPath('sites'));
+
+        // register redirect middleware before any site-server
+        this.app.use(redirectsMiddleware(logger));
 
         for (const siteId of siteIds) {
             const site = new Site(siteId);

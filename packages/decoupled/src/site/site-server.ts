@@ -128,9 +128,7 @@ export default class SiteServer extends SiteDependent {
         const route = req.route;
         const docType = route.docType;
 
-        // TODO: Support better response for POST request
-        // TODO: Shouldn't there also be a rendered response?
-        const answer = (req.method === 'POST') ? '' : await this.site.renderer.render(responseData);
+        const answer = await this.site.renderer.render(responseData);
         const content = `${docType}${answer}`;
 
         if (route.expires) {

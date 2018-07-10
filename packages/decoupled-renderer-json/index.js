@@ -1,4 +1,4 @@
-const packageJson = require('../package.json');
+const packageJson = require('./package.json');
 
 const pre = (...args) => `<pre>${args.join('\n')}</pre>`;
 

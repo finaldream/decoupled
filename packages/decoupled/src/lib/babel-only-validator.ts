@@ -3,7 +3,7 @@
  * are allowed to be transpiled at run-time
  *
  * Example:
- *  babelOnlyValidator(__dirname, process.env.PWD)
+ *  babelOnlyValidator(__dirname, path.resolve())
  */
 module.exports = function babelOnlyValidator(dcoupledDir, projectDir) {
     const RE_DC_DIR = new RegExp(`${dcoupledDir}(.*)`);
@@ -17,7 +17,7 @@ module.exports = function babelOnlyValidator(dcoupledDir, projectDir) {
             return true;
         }
 
-        // file is in PWD, but not in it's node_modules
+        // file is in path.resolve(), but not in it's node_modules
         if (RE_MAIN_DIR.test(filename) && !RE_MAIN_MOD_DIR.test(filename)) {
             return true;
         }

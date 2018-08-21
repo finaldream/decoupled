@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { resolve } from 'path';
 import { get } from 'lodash';
 
 let decoupledJson: object = null;
@@ -10,7 +10,7 @@ function loadDecoupledJson() {
     }
 
     try {
-        decoupledJson = require(join(process.env.PWD, 'decoupled.json'));
+        decoupledJson = require(resolve('decoupled.json'));
     } catch (e) {
         decoupledJson = null;
     }

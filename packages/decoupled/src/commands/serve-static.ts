@@ -9,7 +9,7 @@ import { staticServer } from '../lib/static-server';
 import { choices, getDefaultEnv } from './utils';
 
 export function serveStaticAction(args, options, logger) {
-    staticServer(path.join(process.env.PWD, 'public', args.site), undefined, undefined, logger.info);
+    staticServer(path.resolve('public', args.site), undefined, undefined, logger.info);
 }
 
 export function serveStaticCommand(app) {

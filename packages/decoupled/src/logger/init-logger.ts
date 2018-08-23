@@ -17,17 +17,13 @@ export function initLogger(siteId: string, env?: string) {
         try {
             const config = provideConfig(siteId, env);
             logging = config.get('logging', defaultOptions);
+            logging = {...logging, ...{format: logFormat(siteId, config.get('logging.format', {}))}};
         } catch (e) {
             console.error('Can not load default config.');
         }
     }
 
     const options = { ...defaultOptions, ...logging };
-
-    // Allow setting a global log-level
-    if (process.env.LOG_LEVEL) {
-        options.level = process.env.LOG_LEVEL;
-    }
 
     return new Logger(options);
 }

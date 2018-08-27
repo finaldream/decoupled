@@ -8,7 +8,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import serveStatic from 'serve-static';
 import { fixTrailingSlash, isAbsoluteUrl, shouldFixTrailingSlash } from '../lib';
-import { logger } from 'decoupled-logger';
+import { logger } from '../logger';
 import { Renderer } from '../renderer';
 import { Router } from '../router';
 import { ResponseData } from '../router/response-data';

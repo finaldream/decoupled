@@ -1,5 +1,5 @@
 import { provideConfig, hasDecoupledJson } from '../config';
-import { logFormat, Logger } from 'decoupled-logger';
+import { Logger, logFormat } from 'decoupled-logger';
 
 export function initLogger(siteId: string, env?: string) {
     const defaultOptions = {

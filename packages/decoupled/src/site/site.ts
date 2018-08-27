@@ -13,7 +13,8 @@ import { GlobalStore } from '../services/global-store';
 import { cachedFetch } from '../fetch';
 import SiteServer from './site-server';
 import { appPath } from '../lib';
-import { initLogger } from '../logger/init-logger';
+import { initLogger } from '../logger';
+import { Logger } from 'decoupled-logger';
 import { registerRedirects } from '../redirects/redirect-store';
 
 export class Site {

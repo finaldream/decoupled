@@ -4,7 +4,7 @@
 
 import Chalk from 'chalk';
 import MetalSmith from 'metalsmith';
-import { logger } from 'decoupled-logger';
+import { logger } from '../logger';
 import path from 'path';
 
 import renderPlugin from './plugins/render-plugin';

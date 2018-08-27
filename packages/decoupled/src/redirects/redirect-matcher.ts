@@ -3,7 +3,7 @@
  */
 
 import { isFunction, isRegExp } from 'lodash';
-import { logger } from 'decoupled-logger';
+import { logger } from '../logger';
 import UrlPattern from 'url-pattern';
 
 export type RedirectMatcherFunction = GenericFunction<string, boolean>;

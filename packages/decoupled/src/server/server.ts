@@ -8,7 +8,7 @@ import express from 'express';
 import vhost from 'vhost';
 
 import { appPath } from '../lib';
-import { logger } from 'decoupled-logger';
+import { logger } from '../logger';
 
 import { Site } from '../site/site';
 import { getSiteIDs, getFromDecoupledJson } from '../config';

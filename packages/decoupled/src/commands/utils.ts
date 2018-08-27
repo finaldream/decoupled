@@ -5,7 +5,7 @@
  */
 import { join } from 'path';
 import { getSiteIDs } from '../config';
-import { logger } from 'decoupled-logger';
+import { logger } from '../logger';
 
 let sitesCache = null;
 export const sites = () => sitesCache ? sitesCache : sitesCache = getSiteIDs() && sitesCache;

@@ -5,7 +5,7 @@
  * I.e. Invalidation-triggers can be collected that way and run just once.
  */
 
-import { logger } from '../logger';
+import { logger } from 'decoupled-logger';
 
 export class DelayedQueue {
 

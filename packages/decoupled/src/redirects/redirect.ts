@@ -5,7 +5,7 @@
 
 import { RedirectResolver, RedirectResolverFunction } from './redirect-resolver';
 import { RedirectMatcher, RedirectMatcherFunction } from './redirect-matcher';
-import { logger } from '../logger';
+import { logger } from 'decoupled-logger';
 import { getHostUrl, isAbsoluteUrl } from '../lib';
 import { Request } from 'express';
 

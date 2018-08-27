@@ -5,7 +5,7 @@
 import { upperFirst, camelCase } from 'lodash';
 import fs from 'fs';
 import path from 'path';
-import { logger } from '../logger';
+import { logger } from 'decoupled-logger';
 
 const REGEX_JS_FILES = new RegExp('^([^.]+(?!(\\.spec|\\.test|\\.mock)))(\\.[^.]+)*\\.js$');
 

@@ -28,7 +28,7 @@ export default class Cache extends SiteDependent implements CacheInterface {
         this.persist = this.site.config.get('cache.persist', false);
 
         if (this.persist) {
-            this.cachePath = path.join(process.env.PWD, '.decoupled-cache');
+            this.cachePath = path.resolve('.decoupled-cache');
             jetpack.dir(this.cachePath);
             this.loadPersisted();
         }

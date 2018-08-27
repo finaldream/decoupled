@@ -5,6 +5,7 @@
 import Chalk from 'chalk';
 import MetalSmith from 'metalsmith';
 import { logger } from '../logger';
+import path from 'path';
 
 import renderPlugin from './plugins/render-plugin';
 import sourcePlugin from './plugins/source-plugin';
@@ -50,7 +51,7 @@ export class Generator {
             const dataSourcePlugin = sourcePlugin(this.source, logger);
 
             try {
-                const smith = MetalSmith(process.env.PWD)
+                const smith = MetalSmith(path.resolve())
                     .source(this.site.config.get('generator.sourcePath'))
                     .use(this.trackProgress(dataSourcePlugin, `Populate input files from ${this.source.toUpperCase()}`))
                     .use(this.trackProgress(renderPlugin(this.site, logger), 'Render views from input files'))

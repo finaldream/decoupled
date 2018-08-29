@@ -3,9 +3,8 @@ import { logFormat } from './log-format';
 import { Logger } from './logger';
 
 export function initLogger(siteId: string, env?: string) {
-
     const defaultOptions = {
-        format: logFormat(siteId),
+        format: {},
         level: 'info',
         transports: [
             { type: 'Console' },
@@ -17,13 +16,17 @@ export function initLogger(siteId: string, env?: string) {
         try {
             const config = provideConfig(siteId, env);
             logging = config.get('logging', defaultOptions);
-            logging = {...logging, ...{format: logFormat(siteId, config.get('logging.format', {}))}};
         } catch (e) {
             console.error('Can not load default config.');
         }
     }
 
     const options = { ...defaultOptions, ...logging };
+    options.format = logFormat(siteId, options.format);
+    // Allow setting a global log-level
+    if (process.env.LOG_LEVEL) {
+        options.level = process.env.LOG_LEVEL;
+    }
 
     return new Logger(options);
 }

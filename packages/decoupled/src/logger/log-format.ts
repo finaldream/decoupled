@@ -1,20 +1,20 @@
 import { format } from 'winston';
-import { get, each } from 'lodash';
+import { get } from 'lodash';
 import moment from 'moment';
 import { colorizeLabel } from './colorize-label';
 
 let maxLabelLength = 0;
 const DEFAULT_TIME_FORMAT = 'DD/MM/YYYY hh:mm:ss';
+const orderLogFormat = ['label', 'timestamp', 'level', 'message'];
 const updateMaxLabelLength = (label: string) => maxLabelLength = Math.max(maxLabelLength, label.length);
 
 const logFormatter = format.printf((info) => {
     const result = [];
-    const order = ['label', 'timestamp', 'level', 'message'];
-    each(order, (item) => {
+    orderLogFormat.forEach((item) => {
         if (info[item]) {
             result.push(info[item]);
         }
-    })    
+    });
     return result.join(' | ');
 });
 

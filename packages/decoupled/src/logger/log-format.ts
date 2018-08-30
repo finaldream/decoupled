@@ -4,7 +4,7 @@ import moment from 'moment';
 import { colorizeLabel } from './colorize-label';
 
 let maxLabelLength = 0;
-
+const DEFAULT_TIME_FORMAT = 'DD/MM/YYYY hh:mm:ss';
 const updateMaxLabelLength = (label: string) => maxLabelLength = Math.max(maxLabelLength, label.length);
 
 const logFormatter = format.printf((info) => {
@@ -28,7 +28,7 @@ const setFormat = format((info, opts) => {
 
     // check option timestamp, set format datetime if there is  a string
     if (opts.timestamp) {
-        let formatDateTime = 'd/MM/YYYY hh:mm:ss';
+        let formatDateTime = DEFAULT_TIME_FORMAT;
         if(typeof opts.timestamp === 'string') {
             formatDateTime = opts.timestamp;
         }

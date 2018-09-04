@@ -12,7 +12,7 @@ const configCache = new Map();
 /**
  * Read any config file match input pattern
  */
-function readConfigFromFiles(configDir: string, pattern: RegExp): AnyObject {
+export function readConfigFromFiles(configDir: string, pattern: RegExp): AnyObject {
 
     const result = {};
 
@@ -47,7 +47,7 @@ const filePatterns = {};
 /**
  * Get environment config file pattern
  */
-function getFilePattern(env: string = 'default'): RegExp {
+export function getFilePattern(env: string = 'default'): RegExp {
 
     if (!filePatterns[env]) {
         filePatterns[env] = (env === 'default') ?
@@ -61,7 +61,7 @@ function getFilePattern(env: string = 'default'): RegExp {
 /**
  * Return environment config for single site
  */
-function loadConfig(domain: string, env: string, rootPath?: string): AnyObject {
+export function loadConfig(domain: string, env: string, rootPath?: string): AnyObject {
 
     const basePath = !rootPath
         ? appPath('config')

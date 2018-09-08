@@ -1,5 +1,5 @@
 import { Site } from '../../site/site';
-import { Logger } from '../../logger';
+import { Logger } from 'decoupled-logger';
 
 export class SiteDependent {
 

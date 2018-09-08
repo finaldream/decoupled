@@ -4,7 +4,7 @@
 
 import { Redirect } from '../../redirects/redirect';
 import { resolveRedirect } from '../../redirects/redirect-store';
-import { Logger } from '../../logger';
+import { Logger } from 'decoupled-logger';
 
 export const redirectsMiddleware = (logger: Logger) => (req, res, next) => {
 

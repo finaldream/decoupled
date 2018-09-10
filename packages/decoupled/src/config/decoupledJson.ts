@@ -10,7 +10,7 @@ function loadDecoupledJson(rootPath?: string) {
     }
 
     try {
-        decoupledJson = rootPath ? require(resolve(rootPath, 'decoupled.json')) : require(resolve('decoupled.json'));
+        decoupledJson = require(resolve(rootPath || '', 'decoupled.json'));
     } catch (e) {
         decoupledJson = null;
     }

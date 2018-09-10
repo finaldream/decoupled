@@ -10,7 +10,7 @@ describe('getSiteIds()', () => {
   test('expect wrong rootPath throw error', () => {
     const rootPath = path.resolve('src/fixtures/something/');
     try {
-      getSiteIDs(rootPath);  
+      getSiteIDs(rootPath);
     } catch (error) {
       expect(error.toString()).toMatch(/no such file or directory/ig);
     }

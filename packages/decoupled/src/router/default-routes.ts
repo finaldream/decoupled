@@ -100,7 +100,7 @@ const handlePreviewRequest = async (site: Site, req: ServerRequest) => {
 
 export const DefaultRoutes = [
     new Route({
-        handler: handlePreviewRequest,
+        handler: [handleMenus, handlePreviewRequest],
         method: 'GET',
         route: '/preview(/)',
     }),

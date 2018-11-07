@@ -1,1 +1,6 @@
-../decoupled/tsconfig.dev.json
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "sourceMap": true
+  }
+}

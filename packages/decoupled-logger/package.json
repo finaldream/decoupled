@@ -1,6 +1,6 @@
 {
   "name": "decoupled-logger",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "decoupled logger.",
   "main": "index.js",
   "license": "MIT",

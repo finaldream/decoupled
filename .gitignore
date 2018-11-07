@@ -50,6 +50,7 @@ node_modules/
 # IDE specific
 .idea/
 .vscode/
+*.iml
 
 dist
 .DS_Store

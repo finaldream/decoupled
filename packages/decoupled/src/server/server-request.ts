@@ -62,6 +62,20 @@ export class ServerRequest {
         return `${this.hostUrl}${this.url}`;
     }
 
+    /**
+     * Returns the full URL without query- or anchor strings
+     */
+    get canonicalUrl(): string {
+        let url = this.fullUrl;
+        if (url.indexOf('?') > -1) {
+            url = url.split('?')[0];
+        }
+        if (url.indexOf('#') > -1) {
+            url = url.split('#')[0];
+        }
+        return url;
+    }
+
     get params(): AnyObject {
         return this.internal.params || {};
     }

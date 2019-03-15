@@ -34,11 +34,9 @@ const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
 
     const queries = req.query || {};
     const type = 'permalink';
-    const params = { q: slug };
+    const params = { q: slug, ...queries };
 
     if (queries.preview) {
-        Object.assign(params, queries);
-
         return apiFetch(site, { type, params });
     }
 

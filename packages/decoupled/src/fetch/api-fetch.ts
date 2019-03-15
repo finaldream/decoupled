@@ -8,6 +8,7 @@ import { get } from 'lodash';
 import fetch from 'node-fetch';
 import qs from 'qs';
 import { Site } from '../site/site';
+import { replaceInContent } from '../lib/replace-in-content';
 
 
 export default async (site: Site, { type, params }) => {
@@ -47,9 +48,11 @@ export default async (site: Site, { type, params }) => {
         throw httpError(res.status, res.statusText);
     }
 
-    let json;
+    let json: AnyObject = {};
     try {
-        json = await res.json();
+        const text = await res.text();
+        const rules: AnyObject = site.config.get('content.replace.fetched');
+        json = JSON.parse(replaceInContent(text, rules));
     } catch (e) {
         site.logger.error('api-fetch: json error', e.message);
         throw e;

@@ -7,6 +7,7 @@ import path from 'path';
 import { ResponseData } from '../router/response-data';
 import { Site } from '../site/site';
 import { SiteDependent } from '../lib/common/site-dependent';
+import { replaceInContent } from '../lib/replace-in-content';
 
 export type RenderEngineInterface = (site: Site, store: any) => string;
 
@@ -30,7 +31,13 @@ export class Renderer extends SiteDependent {
         this.engine = engine;
     }
 
-    public render(store: ResponseData) {
+    public render(store: ResponseData): string {
+
+        return this.cleanUp(this.renderString(store));
+
+    }
+
+    private renderString(store: ResponseData): string {
 
         if (store.route && typeof store.route.render === 'function') {
             return store.route.render(this.site, store);
@@ -41,6 +48,13 @@ export class Renderer extends SiteDependent {
         }
 
         return this.engine(this.site, store);
+
+    }
+
+    private cleanUp(content: string): string {
+
+        const rules: AnyObject = this.site.config.get('content.replace.output');
+        return replaceInContent(content, rules);
 
     }
 }

@@ -53,7 +53,7 @@ export class Renderer extends SiteDependent {
 
     private cleanUp(content: string): string {
 
-        const rules: AnyObject = this.site.config.get('content.replace.output');
+        const rules = this.site.config.get('content.replace.output');
         return replaceInContent(content, rules);
 
     }

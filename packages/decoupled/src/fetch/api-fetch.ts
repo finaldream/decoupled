@@ -51,7 +51,7 @@ export default async (site: Site, { type, params }) => {
     let json: AnyObject = {};
     try {
         const text = await res.text();
-        const rules: AnyObject = site.config.get('content.replace.fetched');
+        const rules = site.config.get('content.replace.fetched');
         json = JSON.parse(replaceInContent(text, rules));
     } catch (e) {
         site.logger.error('api-fetch: json error', e.message);

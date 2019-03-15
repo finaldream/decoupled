@@ -1,19 +1,18 @@
-export const replaceInContent = (content: string, rules?: AnyObject): string => {
+interface ReplaceInContentRule {
+    search: string | RegExp;
+    replace: string | RegExp | GenericFunction<any, string>;
+}
 
-    if (!rules) {
-        return content;
-    }
+export const replaceInContent = (content: string, rules?: ReplaceInContentRule[]): string => {
 
-    const keys = Object.keys(rules);
-
-    if (!keys.length) {
+    if (!rules || !rules.length) {
         return content;
     }
 
     let result = content;
 
-    keys.forEach((key) => {
-        result = result.replace(key, rules[key]);
+    rules.forEach((rule) => {
+        result = result.replace(rule.search, rule.replace as any);
     });
 
     return result;

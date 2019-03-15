@@ -6,4 +6,5 @@ then
     exit 1
 fi
 
+yarn config set version-git-tag false
 lerna exec --scope "${1}" -- yarn version

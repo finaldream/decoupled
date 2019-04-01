@@ -12,10 +12,10 @@ export class PluginManager extends SiteDependent {
     /**
      * PluginManager constructor
      */
-    constructor(site: Site, plugins?: object) {
+    constructor(site: Site, plugins: object = {}) {
         super(site);
 
-        this.plugins = plugins || {};
+        this.plugins = plugins;
 
         this.init();
     }

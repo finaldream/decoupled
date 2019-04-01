@@ -16,6 +16,7 @@ import { appPath } from '../lib';
 import { initLogger } from '../logger';
 import { Logger } from 'decoupled-logger';
 import { registerRedirects } from '../redirects/redirect-store';
+import { PluginManager } from '../services/plugin-manager';
 
 export class Site {
 
@@ -30,6 +31,7 @@ export class Site {
     public readonly server: SiteServer;
     public readonly taskrunner: TaskRunner;
     public readonly globalStore: GlobalStore;
+    public readonly plugins: PluginManager;
 
     constructor(siteId: string) {
 
@@ -55,6 +57,7 @@ export class Site {
 
         registerRedirects(this.config.get('router.redirects'));
 
+        this.plugins = new PluginManager(this, this.config.get('plugins'));
         this.cache = new Cache(this);
         this.renderer = new Renderer(this, this.config.get('render.engine', null));
         this.router = this.makeRouter();

@@ -12,17 +12,15 @@ export class PluginManager extends SiteDependent {
     /**
      * PluginManager constructor
      */
-    constructor(site: Site, plugins: object = {}) {
+    constructor(site: Site, plugins: Nullable<object>) {
         super(site);
 
-        this.plugins = plugins;
+        this.plugins = plugins || {};
 
         this.init();
     }
 
     public init() {
-        this.logger.info('Initialize plugins');
-
         Object.entries(this.plugins).forEach(([path, args]) => {
             try {
                 const modulePath = resolve(appPath(), path);
@@ -30,8 +28,9 @@ export class PluginManager extends SiteDependent {
                 const plugin = module.default || module;
 
                 this.initializedPlugins[path] = plugin(this.site, args);
+                this.logger.info(`Plugin loaded: ${path}`);
             } catch (e) {
-                this.logger.error(`PluginManager can not load plugin: ${path}`);
+                this.logger.error(`Plugin failed to load: ${path}`);
             }
         });
 

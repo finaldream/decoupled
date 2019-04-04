@@ -3,6 +3,8 @@ declare module "*.json" {
     export default value;
 }
 
+type Nullable<T> = T | null;
+
 declare type AnyObject = {
     [key: string]: any;
 }

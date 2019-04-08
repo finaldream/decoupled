@@ -50,6 +50,8 @@ export class DelayedQueue {
     }
 
     public reset() {
+        this.logger.debug(`DelayedQueue clearing all queued items`);
+
         this.timeoutId = null;
         this.items = [];
     }

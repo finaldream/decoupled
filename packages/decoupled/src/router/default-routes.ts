@@ -45,6 +45,9 @@ const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
 
 const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
     const data = (req.body && req.body.cache) ? req.body.cache : false;
+    const invalidator = site.config.get('cache.invalidator', false);
+
+    let queue = invalidationQueues.get(site);
 
     if (!data) {
         return { error: 'Invalid request' };
@@ -61,29 +64,35 @@ const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
             const cacheKey = genAPICacheKey(type, params);
 
             site.cache.delete(cacheKey);
+
+            if (invalidator) {
+                if (!queue) {
+                    queue = new DelayedQueue(
+                        site.config.get('cache.invalidationTimeout', 15000),
+                        (items) => delayedCacheInvalidate(site, items),
+                    );
+                    queue.logger = site.logger;
+                    invalidationQueues.set(site, queue);
+                }
+
+                queue.push(data);
+            }
+
             break;
 
         case 'flush':
             site.cache.clear();
+
+            if (invalidator) {
+                if (queue) {
+                    queue.reset();
+                }
+
+                await delayedCacheInvalidate(site, ['/*']);
+            }
+
             break;
     }
-
-    if (!site.config.get('cache.invalidator', false)) {
-        return { status: 'ok' };
-    }
-
-    let queue = invalidationQueues.get(site);
-
-    if (!queue) {
-        queue = new DelayedQueue(
-            site.config.get('cache.invalidationTimeout', 15000),
-            (items) => delayedCacheInvalidate(site, items),
-        );
-        queue.logger = site.logger;
-        invalidationQueues.set(site, queue);
-    }
-
-    queue.push(data);
 
     return { status: 'ok' };
 };

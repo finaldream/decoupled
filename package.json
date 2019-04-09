@@ -1,6 +1,6 @@
 {
-  "name": "decoupled",
-  "version": "1.0.0",
+  "name": "decoupled-monorepo",
+  "version": "0.1.0",
   "description": "node.js framework for building decoupled web-clients",
   "main": "index.js",
   "repository": "git@github.com:finaldream/decoupled.git",

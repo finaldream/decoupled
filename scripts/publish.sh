@@ -16,7 +16,13 @@ if ! git diff-index --quiet HEAD --; then
     exit 1
 fi
 
-yarn version --no-git-tag-version
-git add package.json
 VER=$(node -pe "var {name, version}=require('./package.json'); name + '@' + version")
-git commit -m "${VER}"
+
+test -z "$(npm info ${VER})"
+if [ $? -eq 0 ]; then
+    echo "Publishing $VER"
+    npm publish
+else
+    echo "$VER already is published!"
+    exit 1
+fi

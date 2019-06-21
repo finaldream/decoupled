@@ -31,13 +31,14 @@ export class Renderer extends SiteDependent {
         this.engine = engine;
     }
 
-    public render(store: ResponseData): string {
+    public async render(store: ResponseData): Promise<string> {
 
-        return this.cleanUp(this.renderString(store));
+        const result = await this.renderString(store);
+        return this.cleanUp(result);
 
     }
 
-    private renderString(store: ResponseData): string {
+    private async renderString(store: ResponseData): Promise<string> {
 
         if (store.route && typeof store.route.render === 'function') {
             return store.route.render(this.site, store);
@@ -47,7 +48,7 @@ export class Renderer extends SiteDependent {
             throw new Error('Please set a renderer engine in your site configuration');
         }
 
-        return this.engine(this.site, store);
+        return await this.engine(this.site, store);
 
     }
 

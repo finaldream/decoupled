@@ -2,12 +2,7 @@
  * Expires header middleware
  */
 
-export interface StaticExpiryItem {
-    match: RegExp;
-    expires: number;
-}
-
-export default (staticExpires: StaticExpiryItem[]) => (req, res, next) => {
+export default () => (req, res, next) => {
 
     /**
      * Set expires headers
@@ -19,17 +14,6 @@ export default (staticExpires: StaticExpiryItem[]) => (req, res, next) => {
 
         return res;
     };
-
-    /**
-     * Set expire header for static files
-     */
-    for (const item of staticExpires) {
-
-        if (item.match.test(req.url)) {
-            res.expires(item.expires);
-            break;
-        }
-    }
 
     next();
 };

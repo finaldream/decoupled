@@ -6,7 +6,6 @@ import { get } from 'lodash';
 import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
-import serveStatic from 'serve-static';
 import { fixTrailingSlash, isAbsoluteUrl, shouldFixTrailingSlash } from '../lib';
 import { logger } from '../logger';
 import { Renderer } from '../renderer';
@@ -36,21 +35,19 @@ export default class SiteServer extends SiteDependent {
     }
 
     public connect(): any {
-        const staticExpires = this.site.config.get('router.staticExpires', []);
         const staticRedirects = this.site.config.get('router.redirects', []);
 
         this.app.use(requestLogger(this.logger));
         this.app.use(statusCodeHelper);
         this.app.use(basicAuth());
-        this.app.use(expiresHeader(staticExpires));
+        this.app.use(expiresHeader());
         this.app.use(bodyParser.json());
 
-        const staticFiles = this.getStaticFiles();
         // Set up static file locations
-        staticFiles.forEach((dir) => {
+        this.staticFiles.forEach(({ uri, path: dir, ...options }) => {
             this.logger.info('Serving static files from:', dir);
-            // TODO: implement uri-property for mount
-            this.app.use('/', express.static(path.resolve(dir)));
+
+            this.app.use(uri, express.static(path.resolve(dir), options));
         });
 
         this.app.use((req, res) => this.handleRequest(new ServerRequest(req), res));
@@ -59,16 +56,10 @@ export default class SiteServer extends SiteDependent {
         return this.app;
     }
 
-    public getStaticFiles(): string[] {
+    get staticFiles(): AnyObject[] {
+        const files = this.site.config.get('router.staticFiles', []);
 
-        let staticFiles = this.site.config.get('site.staticFiles', []);
-
-        if (!Array.isArray(staticFiles)) {
-            staticFiles = [staticFiles];
-        }
-
-        return staticFiles.map((location) => path.resolve(location.path));
-
+        return (!Array.isArray(files)) ? [files] : files;
     }
 
     /**

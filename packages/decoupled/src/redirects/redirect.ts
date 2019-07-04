@@ -57,16 +57,15 @@ export class Redirect {
 
     }
 
-    public match(req: Request): object | boolean {
+    public match(hostUrl: string, urlPath: string): object | boolean {
 
 
         if (this.url) {
-            const hostUrl = getHostUrl(req);
-            logger.silly(() => ['Redirect matching url:', this.url, `${hostUrl}${req.url}`]);
-            return this.url.match(`${hostUrl}${req.url}`);
+            logger.silly(() => ['Redirect matching url:', this.url, `${hostUrl}${urlPath}`]);
+            return this.url.match(`${hostUrl}${urlPath}`);
         } else if (this.path) {
-            logger.silly(() => ['Redirect matching path:', this.url, req.url]);
-            return this.path.match(req.url);
+            logger.silly(() => ['Redirect matching path:', this.url, urlPath]);
+            return this.path.match(urlPath);
         }
 
         return false;
@@ -77,7 +76,11 @@ export class Redirect {
      */
     public resolve(req: Request): string | null {
 
-        const fullUrl = `${getHostUrl(req)}${req.url}`;
+        // Only match the path without query-string
+        // TODO: ability to rewrite / modify query-string
+        const hostUrl = getHostUrl(req);
+        const [urlPath, query] = req.url.split('?');
+        const fullUrl = `${hostUrl}${urlPath}`;
 
         logger.silly(() => [
             'Redirect resolving',
@@ -100,7 +103,7 @@ export class Redirect {
                 return null;
             }
 
-            const matched = this.match(req);
+            const matched = this.match(hostUrl, urlPath);
 
             if (!matched) {
                 return null;
@@ -111,6 +114,10 @@ export class Redirect {
 
         if (!result || !result.length) {
             return null;
+        }
+
+        if (query) {
+            result = `${result}?${query}`;
         }
 
         logger.debug(() => ['Redirect RESOLVED', (this.url || this.path || this.resolver).toString(), result]);

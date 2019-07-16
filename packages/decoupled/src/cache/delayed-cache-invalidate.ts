@@ -3,6 +3,7 @@ import { Site } from '../site/site';
 
 export const delayedCacheInvalidate = async (site: Site, items: any[]) => {
 
+    site.logger.debug('[CACHE] delayedCacheInvalidate started');
     const invalidator = site.config.get('cache.invalidator', false);
 
     if (!invalidator) {
@@ -24,7 +25,11 @@ export const delayedCacheInvalidate = async (site: Site, items: any[]) => {
             promises.push(promise(site, items));
         });
 
-        await Promise.all(promises);
-    }
+        await Promise.all(promises).then(
+            site.logger.debug('[CACHE] delayedCacheInvalidate promises resolved')
+        );
+    } 
+    
+    site.logger.debug('[CACHE] delayedCacheInvalidate finished');  
 
 };

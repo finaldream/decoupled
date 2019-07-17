@@ -37,7 +37,6 @@ export class Cache extends SiteDependent implements CacheInterface {
     }
 
     public clear() {
-        this.logger.debug('clear of packages/decoupled/src/cache/cache.ts called');
         this.cache.clear();
     }
 

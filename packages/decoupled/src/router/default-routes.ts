@@ -92,8 +92,6 @@ const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
 
             break;
     }
-
-    site.logger.debug('[CACHE] handleCacheInvalidate finished');
     return { status: 'ok' };
 };
 

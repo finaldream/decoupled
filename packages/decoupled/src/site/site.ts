@@ -17,6 +17,7 @@ import { initLogger } from '../logger';
 import { Logger } from 'decoupled-logger';
 import { registerRedirects } from '../redirects/redirect-store';
 import { PluginManager } from '../services/plugin-manager';
+import { BackendNotify } from '../services/backend-notify';
 
 export class Site {
 
@@ -32,6 +33,7 @@ export class Site {
     public readonly taskrunner: TaskRunner;
     public readonly globalStore: GlobalStore;
     public readonly plugins: PluginManager;
+    public readonly backendNotify: BackendNotify;
 
     constructor(siteId: string) {
 
@@ -63,6 +65,7 @@ export class Site {
         this.router = this.makeRouter();
         this.taskrunner = new TaskRunner(this, this.config.get('tasks'));
         this.globalStore = new GlobalStore();
+        this.backendNotify = new BackendNotify(this, this.config.get('backendnotify.path', null));
 
         // When all done, init the server
         this.server = new SiteServer(this);

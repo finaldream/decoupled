@@ -45,8 +45,8 @@ export class BackendNotify extends SiteDependent {
         return JSON.stringify(message);
     }
 
-    private async postMessage(content: string) {
-        const headers = {};
+    private async postMessage(body: string) {
+        const headers = {'Content-Type': 'application/json'};
         const authentication = this.site.config.get('services.wpapi.authentication');
         if (authentication) {
             if (authentication.username && authentication.password) {
@@ -59,7 +59,7 @@ export class BackendNotify extends SiteDependent {
         }
         const res = await fetch(this.notifyEndpoint, {
             method: 'post',
-            body: content,
+            body,
             headers
         })
         if (!res.ok) {

@@ -18,24 +18,24 @@ export class BackendNotify extends SiteDependent {
 
         super(site);
         if (!notifyPath) {
-            this.logger.warn('[BACKEND NOTIFY] No endpoint path provided! Errors probably ahead');
+            this.logger.debug('[BACKEND NOTIFY] No endpoint path provided!');
         }
         this.notifyEndpoint = `${site.config.get('services.wpapi.endpoint')}${notifyPath}`;
         this.logger.debug('[BACKEND NOTIFY] intialized with endpoint:', this.notifyEndpoint);
 
     }
 
-    public sendNotification(message: string|object, senderTags?: string[]) {
+    public async sendNotification(message: string|object, senderTags?: string[]) {
         const body = this.prepareMessage(message, senderTags);
-        this.postMessage(body).then(() => {
-                this.logger.info('[BACKEND NOTIFY] message succesfully sent:', message);
-                this.logger.debug('[BACKEND NOTIFY] ...with the following tags:', senderTags);
-                return true;
-            }).catch( (err) => {
-                this.logger.error('[BACKEND NOTIFY] Could not send message:', message, err.message);
-                return false;
-            }
-        );
+        try {
+            await this.postMessage(body);
+            this.logger.info('[BACKEND NOTIFY] message succesfully sent:', message);
+            this.logger.debug('[BACKEND NOTIFY] ...with the following tags:', senderTags);
+            return true;
+        } catch (err) {            
+            this.logger.error('[BACKEND NOTIFY] Could not send message:', message, err.message);
+            return false;
+        }
     }
 
     private prepareMessage(content: string|object, senderTags?: string[]) {

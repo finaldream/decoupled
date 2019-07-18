@@ -8,11 +8,13 @@ import fetch from 'node-fetch';
 
 export class BackendNotify extends SiteDependent {
 
+    private notifyEndpoint: string;
+
     /**
      * BackendNotify constructor
+     * @param site Site
+     * @param notifyPath string
      */
-
-    private notifyEndpoint: string;
 
     constructor(site: Site, notifyPath?: string) {
 
@@ -24,6 +26,14 @@ export class BackendNotify extends SiteDependent {
         this.logger.debug('[BACKEND NOTIFY] intialized with endpoint:', this.notifyEndpoint);
 
     }
+
+    /**
+     * sendNotification
+     * Send notification to the Decoupled Backend
+     * Accept a string or object as message and an optional array of strings tags 
+     * @param message string|object 
+     * @param senderTags string[]
+     */
 
     public async sendNotification(message: string|object, senderTags?: string[]) {
         const body = this.prepareMessage(message, senderTags);
@@ -49,6 +59,7 @@ export class BackendNotify extends SiteDependent {
 
     private async postMessage(body: string) {
         const headers = {'Content-Type': 'application/json'};
+        // TODO: unify fetch-function with api-fetch.ts https://finaldream.atlassian.net/browse/DC-36
         const authentication = this.site.config.get('services.wpapi.authentication');
         if (authentication) {
             if (authentication.username && authentication.password) {

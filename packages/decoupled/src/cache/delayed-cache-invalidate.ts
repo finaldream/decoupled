@@ -24,8 +24,9 @@ export const delayedCacheInvalidate = async (site: Site, items: any[]) => {
             promises.push(promise(site, items));
         });
 
-        await Promise.all(promises).then(
-            site.backendNotify.sendNotification("All Cache invalidation processes ended", ['Cache'])
+        await Promise.all(promises).then( () => {
+            site.backendNotify.sendNotification('All Cache invalidation processes ended', ['Cache']);
+            }
         );
     }
 

@@ -6,7 +6,7 @@ import { SiteDependent } from '../lib/common/site-dependent';
 import { Site } from '../site/site';
 import fetch from 'node-fetch';
 
-export class BackendNotify extends SiteDependent {  
+export class BackendNotify extends SiteDependent {
 
     /**
      * BackendNotify constructor
@@ -17,7 +17,7 @@ export class BackendNotify extends SiteDependent {
     constructor(site: Site, notifyPath?: string) {
 
         super(site);
-        if(!notifyPath) {
+        if (!notifyPath) {
             this.logger.warn('[BACKEND NOTIFY] No endpoint path provided! Errors probably ahead');
         }
         this.notifyEndpoint = `${site.config.get('services.wpapi.endpoint')}${notifyPath}`;
@@ -25,18 +25,20 @@ export class BackendNotify extends SiteDependent {
 
     }
 
-    public sendNotification(message: string|object, senderTags?: Array<string>[]) {
+    public sendNotification(message: string|object, senderTags?: string[]) {
         const body = this.prepareMessage(message, senderTags);
         this.postMessage(body).then(() => {
                 this.logger.info('[BACKEND NOTIFY] message succesfully sent:', message);
                 this.logger.debug('[BACKEND NOTIFY] ...with the following tags:', senderTags);
-            }).catch( err => {
+                return true;
+            }).catch( (err) => {
                 this.logger.error('[BACKEND NOTIFY] Could not send message:', message, err.message);
+                return false;
             }
         );
     }
 
-    private prepareMessage(content: string|object, senderTags?: Array<string>[]) {
+    private prepareMessage(content: string|object, senderTags?: string[]) {
         const message = {
             date: new Date().toISOString(),
             tags: [...senderTags],
@@ -61,7 +63,7 @@ export class BackendNotify extends SiteDependent {
             method: 'post',
             body,
             headers
-        })
+        });
         if (!res.ok) {
             throw new Error(res.status);
         }

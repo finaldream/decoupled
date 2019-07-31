@@ -82,7 +82,7 @@ export default class SiteServer extends SiteDependent {
             },
         };
 
-        if (error.result) Object.assign(errorState, {result: error.result});
+        if (error.result) Object.assign(errorState, {posts: error.result});
 
         Object.assign(responseData.state, errorState);
 

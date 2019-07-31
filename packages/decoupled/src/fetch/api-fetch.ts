@@ -34,6 +34,8 @@ export default async (site: Site, { type, params }) => {
 
     site.logger.log('debug', `Requesting ${url}`);
 
+    const rules = site.config.get('content.replace.fetched');
+
     let res;
 
     try {
@@ -45,13 +47,14 @@ export default async (site: Site, { type, params }) => {
 
     if (!res.ok) {
         site.logger.error('api-fetch: reponse not ok', url, res.status, res.statusText);
-        throw httpError(res.status, res.statusText);
+        const payload = await res.text();
+        const parsedPayload = JSON.parse(replaceInContent(payload, rules));
+        throw httpError(res.status, res.statusText, {add: false, result: parsedPayload.result, meta: parsedPayload.meta});
     }
 
     let json: AnyObject = {};
     try {
         const text = await res.text();
-        const rules = site.config.get('content.replace.fetched');
         json = JSON.parse(replaceInContent(text, rules));
     } catch (e) {
         site.logger.error('api-fetch: json error', e.message);

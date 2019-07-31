@@ -66,7 +66,7 @@ export default class SiteServer extends SiteDependent {
      * Handle error response
      */
     public async handleError(res = null, error, responseData: ResponseData) {
-
+        
         this.logger.error(error);
 
         const errorCode = error.statusCode || 500;
@@ -77,10 +77,12 @@ export default class SiteServer extends SiteDependent {
         const errorState = {
             code: errorCode,
             error: (traceError) ? error : false,
-            meta: {
+            meta: error.meta || {
                 template: 'error',
             },
         };
+
+        if (error.result) Object.assign(errorState, {result: error.result});
 
         Object.assign(responseData.state, errorState);
 

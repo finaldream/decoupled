@@ -38,7 +38,7 @@ export default async (site: Site, { type, params }) => {
 
     let res;
     let json: AnyObject = {};
-    
+
     try {
         res = await fetch(url, { method: 'GET', headers });
     } catch (e) {
@@ -60,7 +60,7 @@ export default async (site: Site, { type, params }) => {
         } else {
             throw httpError(res.status, res.statusText);
         }
-        
+
     }
 
     try {

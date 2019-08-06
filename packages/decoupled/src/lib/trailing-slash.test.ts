@@ -21,7 +21,7 @@ describe('Trailing Slashes', () => {
             { request: 'http://www.domain1.tld/resource//', expect: expected },
             { request: 'http://www.domain1.tld/resource///////', expect: expected },
             { request: `http://www.domain1.tld/resource${randomSlahes}`, expect: expected },
-            { request: `http://www.domain1.tld/resource${'/'.repeat(10000)}`, expect: expected },
+            { request: `http://www.domain1.tld/resource${'/'.repeat(1000000)}`, expect: expected },
         ])
     });
     describe('Detect if there are more than one trailing slash', () => {

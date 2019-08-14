@@ -82,7 +82,6 @@ const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
 
         case 'flush':
             site.cache.clear();
-
             if (invalidator) {
                 if (queue) {
                     queue.reset();
@@ -93,7 +92,6 @@ const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
 
             break;
     }
-
     return { status: 'ok' };
 };
 

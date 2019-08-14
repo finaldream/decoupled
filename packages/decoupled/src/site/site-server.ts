@@ -77,10 +77,14 @@ export default class SiteServer extends SiteDependent {
         const errorState = {
             code: errorCode,
             error: (traceError) ? error : false,
-            meta: {
+            meta: error.meta || {
                 template: 'error',
             },
         };
+
+        if (error.result) {
+            Object.assign(errorState, {posts: error.result});
+        }
 
         Object.assign(responseData.state, errorState);
 

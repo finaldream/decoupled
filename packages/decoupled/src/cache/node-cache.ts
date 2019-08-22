@@ -71,9 +71,9 @@ export default class Cache extends SiteDependent implements CacheInterface {
 
         /* eslint-disable */
         for (const file of list) {
-            let key = file.split('.');
-            key.pop();
-            key = key.join('.');
+            let arrkey = file.split('.');
+            arrkey.pop();
+            const key = arrkey.join('.');
 
             const data = jetpack.read(path.join(this.cachePath, file), 'json');
             if (!data) {

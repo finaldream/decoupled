@@ -57,7 +57,7 @@ export class Site {
             return;
         }
 
-        registerRedirects(this.config.get('router.redirects'));
+        registerRedirects(this.config.get('router.redirects', []));
 
         this.plugins = new PluginManager(this, this.config.get('plugins'));
         this.cache = new Cache(this);

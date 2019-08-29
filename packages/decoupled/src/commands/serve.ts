@@ -4,7 +4,7 @@
  * Serves a static site.
  */
 
-import { Server } from '../server';
+import { Server, DevServer } from '../server';
 import { choices, getDefaultEnv, prepareAction } from './utils';
 
 /**
@@ -15,7 +15,9 @@ import { choices, getDefaultEnv, prepareAction } from './utils';
 export async function serveAction(args, options) {
     const opts = await prepareAction(args, options);
     const { env, host, port } = opts;
-    const server = new Server(env);
+
+    const constructor = (env === 'development') ? DevServer : Server;
+    const server = new constructor(env);
 
     const siteHost = host || process.env.HOST || '127.0.0.1';
     const sitePort = port || process.env.PORT || 3000;

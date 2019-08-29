@@ -25,14 +25,16 @@ export class Server {
         this.app = express();
     }
 
-    public init() {
+    get siteIds() {
+        return getSiteIDs(appPath('sites'));
+    }
 
-        const siteIds = getSiteIDs(appPath('sites'));
+    public init() {
 
         // register redirect middleware before any site-server
         this.app.use(redirectsMiddleware(logger));
 
-        for (const siteId of siteIds) {
+        for (const siteId of this.siteIds) {
             const site = new Site(siteId);
 
             if (!site.enabled) {
@@ -46,6 +48,7 @@ export class Server {
         }
 
     }
+
     /**
      * Start the server
      */
@@ -62,6 +65,5 @@ export class Server {
 
         });
     }
-
 
 }

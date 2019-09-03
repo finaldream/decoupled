@@ -1,6 +1,6 @@
 {
   "name": "decoupled",
-  "version": "0.19.0-rc",
+  "version": "0.19.0",
   "description": "Decoupled client",
   "main": "index.js",
   "repository": "https://github.com/finaldream/dcoupled",

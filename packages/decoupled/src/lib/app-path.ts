@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { getFromDecoupledConfig, getFromDecoupledJson } from '../config';
+import { getFromDecoupledConfig } from '../config';
 
 let basePath: string;
 
@@ -9,9 +9,7 @@ export const appPath = (path: string | string[] = [''], environment?: string) =>
     const env = environment || process.env.NODE_ENV || 'development';
 
     if (!basePath) {
-        basePath = env === 'development'
-            ? getFromDecoupledConfig('distDir')
-            : getFromDecoupledJson('appPath', './');
+        basePath = getFromDecoupledConfig('distDir');
     }
 
     return join(basePath, ...paths);

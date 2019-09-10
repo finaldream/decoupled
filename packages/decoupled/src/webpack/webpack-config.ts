@@ -1,19 +1,15 @@
-import webpack from 'webpack';
-import 'webpack-hot-middleware';
 import glob from 'glob';
 import { resolve, relative, join } from 'path';
 
-import {getFromDecoupledConfig} from '../config';
-import { appPath } from './app-path';
+import nodeExternals from 'webpack-node-externals';
 
-const hotMiddlewareScript = 'webpack-hot-middleware/client?path=/__webpack_hmr&timeout=20000&reload=true';
+import { RestartServerPlugin } from './restart-server-plugin';
+import { getFromDecoupledConfig } from '../config';
+import { appPath } from '../lib';
+
 
 const DEFAULT_WEBPACK_CONFIG = {
     mode: 'development',
-    context: null,
-    entry: {},
-    output: null,
-    target: 'node',
     devtool: '#source-map',
     module: {
         rules : [
@@ -24,6 +20,8 @@ const DEFAULT_WEBPACK_CONFIG = {
             },
         ]
     },
+    externals: [nodeExternals()],
+    plugins: [],
 };
 
 const getWebpackEntries = () => {
@@ -33,15 +31,20 @@ const getWebpackEntries = () => {
 
     files.forEach((path) => {
         const relativePath = relative(srcDir, path);
-        // entries[relativePath] = [path, hotMiddlewareScript];
         entries[relativePath] = [path];
     });
 
     return entries;
 };
 
-export const getWebpackConfigs = () => {
+export const getWebpackConfigs = (target = 'node', watch = true) => {
     const entries = getWebpackEntries();
+
+    const plugins = DEFAULT_WEBPACK_CONFIG.plugins || [];
+
+    if (target === 'node') {
+        plugins.push(new RestartServerPlugin({}));
+    }
 
     return {
         ...DEFAULT_WEBPACK_CONFIG,
@@ -51,6 +54,8 @@ export const getWebpackConfigs = () => {
             path: resolve(appPath('', 'development')),
             filename: '[name]',
             libraryTarget: 'commonjs2',
-        }
+        },
+        watch,
+        target,
     };
 };

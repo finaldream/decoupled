@@ -1,4 +1,4 @@
-import { provideConfig, hasDecoupledJson } from '../config';
+import { provideConfig, hasDecoupledConfig } from '../config';
 import { Logger, logFormat } from 'decoupled-logger';
 
 export function initLogger(siteId: string, env?: string) {
@@ -11,7 +11,7 @@ export function initLogger(siteId: string, env?: string) {
     };
 
     let logging = {};
-    if (hasDecoupledJson()) { // skip errors when running in non-project environments (i.e. tests)
+    if (hasDecoupledConfig()) { // skip errors when running in non-project environments (i.e. tests)
         try {
             const config = provideConfig(siteId, env);
             logging = config.get('logging', defaultOptions);

@@ -1,21 +1,15 @@
-/**
- * `serve`-command
- *
- * Serves a static site.
- */
-
-import { Server } from '../server';
-import { choices, getDefaultEnv, prepareAction } from './utils';
+import { getDefaultEnv, prepareAction } from './utils';
+import { DevServer } from '../server';
 
 /**
  * Implementation of the serve-command's action.
  * @param {Object} args
  * @param {Object} options
  */
-export async function serveAction(args, options) {
+export async function watchAction(args, options) {
     const opts = await prepareAction(args, options);
     const { env, host, port } = opts;
-    const server = new Server(env);
+    const server = new DevServer(env);
 
     const siteHost = host || process.env.HOST || '127.0.0.1';
     const sitePort = port || process.env.PORT || 3000;
@@ -29,11 +23,11 @@ export async function serveAction(args, options) {
  *
  * @param {Caporal} app
  */
-export function serveCommand(app) {
+export function watchCommand(app) {
     app
-        .command('serve', 'Serve a dynamic site')
+        .command('watch', 'Start server with watch mode')
         .argument('[env]', `Current environment`, null, getDefaultEnv())
         .option('--host <host>', 'host to server from. Defaults to env HOST or 127.0.0.1')
         .option('--port <port>', 'Port to server from. Defaults to env PORT or 3000')
-        .action(serveAction);
+        .action(watchAction);
 }

@@ -1,7 +1,7 @@
 import { resolve } from 'path';
 import { get } from 'lodash';
 
-let decoupledJson: object = null;
+let decoupledConfig: object = null;
 
 const DEFAULT_CONFIGS = {
     distDir: '.decoupled',
@@ -9,18 +9,23 @@ const DEFAULT_CONFIGS = {
 };
 
 function loadDecoupledConfig() {
-    if (decoupledJson) {
-        return {...DEFAULT_CONFIGS, ...decoupledJson};
+    if (decoupledConfig) {
+        return {...DEFAULT_CONFIGS, ...decoupledConfig};
     }
 
     try {
-        decoupledJson = require(resolve('decoupled.config.js'));
+        decoupledConfig = require(resolve('decoupled.config.js'));
     } catch (e) {
-        decoupledJson = {};
+        decoupledConfig = null;
     }
 
-    return {...DEFAULT_CONFIGS, ...decoupledJson};
+    return {...DEFAULT_CONFIGS, ...decoupledConfig};
 }
+
+export const hasDecoupledConfig = (): boolean => {
+    loadDecoupledConfig();
+    return decoupledConfig !== null;
+};
 
 export const getFromDecoupledConfig = (keyPath: string, defaultValue: any = null): any => {
     return get(

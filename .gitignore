@@ -54,3 +54,6 @@ node_modules/
 
 dist
 .DS_Store
+
+# Auto generated types
+*/*/types/

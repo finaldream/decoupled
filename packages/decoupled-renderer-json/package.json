@@ -4,6 +4,7 @@
   "description": "Simple JSON renderer for decoupled. Renders the decoupled state to JSON.",
   "main": "index.js",
   "license": "MIT",
+  "types": "./typings.d.ts",
   "peerDependencies": {
     "decoupled": "*"
   }

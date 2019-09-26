@@ -1,7 +1,7 @@
 {
-  "name": "decoupled-cloundfront",
+  "name": "decoupled-cloudfront",
   "version": "1.0.0",
-  "description": "decoupled CloudFron Support.",
+  "description": "decoupled CloudFront Support.",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -27,5 +27,8 @@
     "ts-node": " 8.4.*",
     "tslint": "^5.19.*",
     "typescript": "^3.6.*"
+  },
+  "peerDependencies": {
+    "decoupled": "*"
   }
 }

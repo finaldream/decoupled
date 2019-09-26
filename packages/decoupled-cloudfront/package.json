@@ -1,0 +1,31 @@
+{
+  "name": "decoupled-cloundfront",
+  "version": "1.0.0",
+  "description": "decoupled CloudFron Support.",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "scripts/build.sh",
+    "install": "scripts/build.sh",
+    "watch": "tsc -p tsconfig.dev.json --watch",
+    "lint": "tslint -t verbose src/**/*.ts{,x}",
+    "test": "jest --config jest.config.js"
+  },
+  "engines": {
+    "node": "node >= 8.0.0"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.521.*",
+    "uuid": "^3.3.*"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.*",
+    "@types/node": "^12.7.*",
+    "@types/uuid": "3.4.*",
+    "jest": "^24.9.*",
+    "ts-jest": "24.1.*",
+    "ts-node": " 8.4.*",
+    "tslint": "^5.19.*",
+    "typescript": "^3.6.*"
+  }
+}

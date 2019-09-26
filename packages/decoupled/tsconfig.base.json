@@ -8,7 +8,7 @@
       "dom",
       "es6"
     ],
-    "rootDir": "src",
+    "rootDirs": ["./", "./src"],
     "outDir": "dist",
     "strict": false,
     "esModuleInterop": true,

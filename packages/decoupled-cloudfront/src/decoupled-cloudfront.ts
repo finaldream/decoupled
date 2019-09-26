@@ -4,23 +4,22 @@
 
 import AWS from 'aws-sdk';
 import uuid from 'uuid/v4';
+import Decoupled from 'decoupled';
 
 export default class CloudFront {
 
-    private site: any;
-    private logger: any;
-    private backendNotify: any;
+    private logger: Decoupled.logger;
+    private backendNotify: Decoupled.backendNotify;
     private distributionId: string;
     private client: AWS.CloudFront;
 
-    constructor(site: any) {
-        this.site = site;
-        this.logger = site.logger;
-        this.backendNotify = site.backendNotify;
+    constructor(decoupledSite: Decoupled.Site) {
+        this.logger = decoupledSite.logger;
+        this.backendNotify = decoupledSite.backendNotify;
 
 
-        const { accessKey, secretKey } = site.config.get('services.amazon.awsConfig', {});
-        this.distributionId = site.config.get('services.amazon.cloudfront.distributionId');
+        const { accessKey, secretKey } = decoupledSite.config.get('services.amazon.awsConfig', {});
+        this.distributionId = decoupledSite.config.get('services.amazon.cloudfront.distributionId');
         if (this.distributionId && accessKey && secretKey) {
             this.logger.debug('CloudFront Invalidation support enabled.');
         } else {

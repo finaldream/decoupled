@@ -17,7 +17,7 @@ import { redirectsMiddleware } from '../server/middleware/redirects';
 export class Server {
 
     public environment: string;
-    public app: any;
+    public app: express.Express;
     public sites: Site[] = [];
 
     constructor(environment) {

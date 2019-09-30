@@ -9,13 +9,12 @@ import { DevServer } from '../server';
 export async function watchAction(args, options) {
     const opts = await prepareAction(args, options);
     const { env, host, port } = opts;
-    const server = new DevServer(env);
 
     const siteHost = host || process.env.HOST || '127.0.0.1';
     const sitePort = port || process.env.PORT || 3000;
 
-    server.init();
-    server.listen(sitePort, siteHost);
+    const server = new DevServer(env, siteHost, sitePort);
+    await server.setup();
 }
 
 /**

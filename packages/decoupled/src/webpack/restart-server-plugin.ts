@@ -1,8 +1,8 @@
+import { logger } from '../logger';
+
 export class RestartServerPlugin {
 
-    constructor(options) {
-        console.log(options);
-    }
+    constructor(protected readonly server) {}
 
     public apply(compiler) {
         const plugin = {name: 'StartServerPlugin'};
@@ -10,11 +10,24 @@ export class RestartServerPlugin {
         compiler.hooks.afterEmit.tapAsync(plugin, this.afterEmit);
     }
 
-    public afterEmit(compilation, callback) {
-        console.log('emitted');
+    public afterEmit = (compilation, callback) => {
 
-        // Do server restart here
+        this.server.server.close(() => {
+            logger.log('info', `Starting development server`);
 
-        return callback();
+            const { host, port } = this.server;
+
+            this.server.server.listen(port, host, () => {
+                logger.log('info', `Development server listening on http://${host}:${port}`);
+
+                const maybePort = port !== 80 ? `:${port}` : '';
+
+                for (const site of this.server.sites) {
+                    logger.log('info', `${site.id} on http://${site.host}${maybePort}`);
+                }
+
+                return callback();
+            });
+        });
     }
 }

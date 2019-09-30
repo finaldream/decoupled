@@ -1,30 +1,4 @@
-declare module 'decoupled-logger' {
-    export class Logger {
-        constructor(...args: any[]);
+export { Logger } from './dist/logger';
+export function logFormat(label: any, options: any): any;
 
-        checkLevel(...args: any[]): void;
-
-        debug(...args: any[]): void;
-
-        deprecate(...args: any[]): void;
-
-        error(...args: any[]): void;
-
-        http(...args: any[]): void;
-
-        info(...args: any[]): void;
-
-        initTransports(...args: any[]): void;
-
-        log(...args: any[]): void;
-
-        silly(...args: any[]): void;
-
-        verbose(...args: any[]): void;
-
-        warn(...args: any[]): void;
-
-    }
-
-    export function logFormat(label: any, options: any): any;
-}
+export as namespace DecoupledLogger;

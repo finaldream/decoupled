@@ -3,11 +3,10 @@
   "exclude": [
     "node_modules",
     "**/*.test.ts",
-    "**/*.d.ts"
+    "dist",
+    "index.d.ts"
   ],
   "compilerOptions": {
-    "resolveJsonModule": true,
-    "outDir": "dist",
     "declaration": true,
     "declarationDir": "dist"
   }

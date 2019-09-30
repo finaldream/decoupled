@@ -4,7 +4,7 @@
   "description": "decoupled logger.",
   "main": "index.js",
   "license": "MIT",
-  "types": "./typings.d.ts",
+  "types" : "index.d.ts",
   "scripts": {
     "build": "scripts/build.sh",
     "install": "scripts/build.sh",

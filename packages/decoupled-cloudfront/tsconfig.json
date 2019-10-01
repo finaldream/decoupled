@@ -3,11 +3,11 @@
   "exclude": [
     "node_modules",
     "**/*.test.ts",
-    "src/types"
+    "dist",
+    "index.d.ts"
   ],
   "compilerOptions": {
-    "outDir": "dist",
     "declaration": true,
-    "declarationDir": "src/types"
+    "declarationDir": "dist"
   }
 }

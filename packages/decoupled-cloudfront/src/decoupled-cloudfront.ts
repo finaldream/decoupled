@@ -8,8 +8,8 @@ import Decoupled from 'decoupled';
 
 export default class CloudFront {
 
-    private logger: Decoupled.logger;
-    private backendNotify: Decoupled.backendNotify;
+    private logger: Decoupled.Logger;
+    private backendNotify: Decoupled.BackendNotify;
     private distributionId: string;
     private client: AWS.CloudFront;
 

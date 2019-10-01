@@ -7,7 +7,6 @@ import Chalk from 'chalk';
 import * as Transport from 'winston-transport';
 import { LoggerInterface } from './logger-interface';
 import { anyToString } from './lib/any-to-string';
-import { AnyObject } from '../typings';
 
 export class Logger implements LoggerInterface {
 

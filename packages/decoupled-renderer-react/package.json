@@ -4,6 +4,7 @@
   "description": "React renderer for decoupled",
   "main": "index.js",
   "license": "MIT",
+  "types": "./typings.d.ts",
   "peerDependencies": {
     "decoupled": "*",
     "react": "*",

@@ -1,6 +1,6 @@
 # decoupled-data-markdown
 
-Markdown with YAML parser for decoupled and general usage.
+Markdown with YAML data-source for decoupled and general usage.
 
 Parses Markdown into HTML and supports full-featured YAML frontmatter.
 

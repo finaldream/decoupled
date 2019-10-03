@@ -13,7 +13,7 @@ const ShowdownOptions = (metadata: boolean = false) => ({
     tables: true,
     requireSpaceBeforeHeadingText: true,
     emoji: true,
-})
+});
 
 export const parseMarkdown = (input: string): string => {
 

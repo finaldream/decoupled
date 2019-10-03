@@ -1,5 +1,5 @@
 type Nullable<T> = T | null;
 
-declare type AnyObject = {
+declare interface AnyObject {
     [key: string]: any;
 }

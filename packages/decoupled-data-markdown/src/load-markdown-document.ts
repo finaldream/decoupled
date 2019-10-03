@@ -1,18 +1,39 @@
+import fs from 'fs';
+import util from 'util';
 import { resolve } from 'path';
 import { parseMarkdownWithMeta } from './parse-markdown';
 import { MarkdownMetaResult } from './markdown-meta-result';
+
+
+const readFile = (fileName: string): Promise<string> => util.promisify(fs.readFile)(fileName, 'utf8');
 
 export const loadMarkdownDocument = async (
     documentName: string,
     docDir: string = 'content'
 ): Promise<MarkdownMetaResult> => {
 
-    const file = documentName === '/'
+    const slug = documentName === '/'
         ? 'index'
         : documentName;
 
-    const { default: content } = await import(resolve(docDir, `${file}.md`));
+    let content;
+    try {
+        content = await readFile(resolve(docDir, `${slug}.md`));
+    } catch (e) {
+        return {
+            html: '',
+            meta: {
+                error: 'not-found',
+                message: e.message,
+            },
+        };
+    }
 
-    return parseMarkdownWithMeta(content);
+    const result = parseMarkdownWithMeta(content);
+    result.meta = result.meta || [];
+    result.meta.slug = slug;
+
+    return result;
+
 
 };

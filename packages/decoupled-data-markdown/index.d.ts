@@ -1,3 +1,3 @@
 export * from './lib';
 
-export as namespace DecoupledCloudfront;
+export as namespace DecoupledDataMarkdown;

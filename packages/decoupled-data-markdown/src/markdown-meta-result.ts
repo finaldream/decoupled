@@ -1,4 +1,4 @@
 export interface MarkdownMetaResult {
     html: string;
-    meta: object;
+    meta: AnyObject;
 }

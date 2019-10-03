@@ -3,7 +3,7 @@
  * todo: also move to typescript
  */
 
-const { logger } = require('./dist/logger');
+const { logger } = require('./lib/logger');
 
 module.exports = {
     logger,

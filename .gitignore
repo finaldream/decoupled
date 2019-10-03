@@ -52,6 +52,7 @@ node_modules/
 .vscode/
 *.iml
 
+lib
 dist
 .DS_Store
 

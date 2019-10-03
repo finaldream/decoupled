@@ -6,6 +6,8 @@ then
     exit 1
 fi
 
+OLD_DIR=`pwd`
+
 if ! cd "packages/${1}"; then
     echo "Unknown package ${1}"
     exit 1
@@ -19,10 +21,18 @@ fi
 VER=$(node -pe "var {name, version}=require('./package.json'); name + '@' + version")
 
 test -z "$(npm info ${VER})"
-if [ $? -eq 0 ]; then
-    echo "Publishing $VER"
-    npm publish
-else
+if [ $? -ne 0 ]; then
     echo "$VER already is published!"
     exit 1
 fi
+
+echo "Prepublish tests"
+
+yarn test
+yarn lint
+
+echo "Publishing $VER"
+yarn build
+npm publish
+
+cd "${OLD_DIR}"

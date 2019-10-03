@@ -9,12 +9,15 @@
   },
   "license": "MIT",
   "scripts": {
-    "build": "scripts/build.sh",
-    "install": "scripts/build.sh",
-    "watch": "tsc -p tsconfig.dev.json --watch",
+    "build": "../../scripts/build-package.sh",
+    "watch": "tsc --watch",
     "lint": "tslint -t verbose src/**/*.ts{,x}",
     "test": "jest --config jest.config.js"
   },
+  "files": [
+    "/lib",
+    "/index.*"
+  ],
   "dependencies": {
     "jest": "^24.9.0",
     "showdown": "^1.9.0",

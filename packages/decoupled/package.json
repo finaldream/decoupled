@@ -11,12 +11,16 @@
   "license": "MIT",
   "types": "index.d.ts",
   "scripts": {
-    "build": "scripts/build.sh",
-    "install": "scripts/build.sh",
-    "watch": "tsc -p tsconfig.dev.json --watch",
+    "build": "../../scripts/build-package.sh",
+    "watch": "tsc --watch",
     "lint": "tslint -t verbose src/**/*.ts{,x}",
-    "test": "NODE_ENV=development yarn build && jest dist"
+    "test": "NODE_ENV=development yarn build && jest lib"
   },
+  "files": [
+    "/bin",
+    "/lib",
+    "/index.*"
+  ],
   "engines": {
     "node": "node >= 8.0.0"
   },
@@ -64,7 +68,7 @@
       "**/*.test.js"
     ],
     "roots": [
-      "<rootDir>/dist"
+      "<rootDir>/lib"
     ]
   }
 }

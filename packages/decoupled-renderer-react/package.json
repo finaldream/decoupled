@@ -3,8 +3,14 @@
   "version": "1.3.0",
   "description": "React renderer for decoupled",
   "main": "index.js",
-  "license": "MIT",
   "types": "./typings.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "echo no-op",
+    "watch": "echo no-op",
+    "lint": "echo TODO",
+    "test": "echo TODO"
+  },
   "peerDependencies": {
     "decoupled": "*",
     "react": "*",

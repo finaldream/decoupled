@@ -3,8 +3,14 @@
   "version": "1.0.1",
   "description": "Simple JSON renderer for decoupled. Renders the decoupled state to JSON.",
   "main": "index.js",
-  "license": "MIT",
   "types": "./typings.d.ts",
+  "license": "MIT",
+  "scripts": {
+    "build": "echo no-op",
+    "watch": "echo no-op",
+    "lint": "echo TODO",
+    "test": "echo TODO"
+  },
   "peerDependencies": {
     "decoupled": "*"
   }

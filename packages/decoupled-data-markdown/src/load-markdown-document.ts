@@ -1,5 +1,6 @@
 import { resolve } from 'path';
-import { parseMarkdownWithMeta, MarkdownMetaResult } from './parse-markdown';
+import { parseMarkdownWithMeta } from './parse-markdown';
+import { MarkdownMetaResult } from './markdown-meta-result';
 
 export const loadMarkdownDocument = async (
     documentName: string,

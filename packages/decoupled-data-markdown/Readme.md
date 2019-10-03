@@ -17,3 +17,21 @@ Parses Markdown into HTML and supports full-featured YAML frontmatter.
 * metadata support for posts
 * complex data-structures for enriching pages
 * use frontmatter for complex page-builder structures 
+
+## Usage
+
+In `config/SITE/router.js` use:
+
+```js
+import { decoupledMarkdownHandler } from 'decoupled-data-markdown';
+
+module.exports.router = {
+    routes: [
+        {
+            method: 'GET',
+            route: '(.*)',
+            handler: decoupledMarkdownHandler,
+        },
+    ]
+};
+```

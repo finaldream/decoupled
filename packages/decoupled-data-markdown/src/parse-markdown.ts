@@ -1,5 +1,6 @@
 import showdown from 'showdown';
 import { parseMetadata } from './parse-metadata';
+import { MarkdownMetaResult } from './markdown-meta-result';
 
 /**
  * https://github.com/showdownjs/showdown/wiki/Showdown-options
@@ -12,12 +13,7 @@ const ShowdownOptions = (metadata: boolean = false) => ({
     tables: true,
     requireSpaceBeforeHeadingText: true,
     emoji: true,
-});
-
-export interface MarkdownMetaResult {
-    html: string;
-    meta: object;
-}
+})
 
 export const parseMarkdown = (input: string): string => {
 
@@ -26,7 +22,6 @@ export const parseMarkdown = (input: string): string => {
 
 };
 export const parseMarkdownWithMeta = (input: string): MarkdownMetaResult => {
-
 
     const result: MarkdownMetaResult = {
         html: '',

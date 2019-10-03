@@ -1,0 +1,58 @@
+{
+  "title": "Layout Test",
+  "date": "2019-08-07T18:30:00.000Z",
+  "layout": [
+    {
+      "type": "text",
+      "value": [
+        "<h2>Hello World!</h2>",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ex odio, elementum non luctus eget, mollis vitae orci.",
+        "Quisque dapibus purus eget turpis accumsan congue. Quisque blandit dui non purus hendrerit, vel ornare eros dignissim.",
+        "Integer malesuada velit consequat dolor vulputate, eu bibendum lectus suscipit. Vivamus dapibus, ipsum et lobortis lacinia,",
+        "ex elit tristique ex, quis placerat lorem arcu quis ligula. Aliquam orci tellus, placerat eget velit at, egestas lobortis eros."
+      ]
+    },
+    {
+      "type": "services",
+      "title": "Services",
+      "description": "Duis a viverra est. **Pellentesque dictum purus neque**, nec efficitur lectus malesuada nec. In sem sapien, venenatis nec erat eu, blandit scelerisque magna.",
+      "value": {
+        "UI/UX": "/ui-ux",
+        "Single Page Applications": "/single-page-applications",
+        "Static Site Generators": "/static-site-generator",
+        "Microservices": "/microservices",
+        "Full-Stack Development": "/full-stack-development",
+        "Mobile Development": "/mobile-development ",
+        "CI / CD": "/ci-cd"
+      }
+    },
+    {
+      "type": "workflow",
+      "title": "Workflow",
+      "value": [
+        "Analyse & Planning",
+        "Development",
+        "Maintenance"
+      ]
+    },
+    {
+      "type": "tech",
+      "title": "Technologies",
+      "value": [
+        "Node.js",
+        "Typescript",
+        "React.js",
+        "React Native",
+        "Javascript",
+        "Redux",
+        "Jest",
+        "GraphQL"
+      ]
+    },
+    {
+      "type": "contact",
+      "title": "Contact",
+      "description": "Duis a viverra est. **Pellentesque dictum purus neque**, nec efficitur lectus malesuada nec. In sem sapien, venenatis nec erat eu, blandit scelerisque magna."
+    }
+  ]
+}

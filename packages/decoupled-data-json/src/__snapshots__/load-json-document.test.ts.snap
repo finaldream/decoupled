@@ -1,0 +1,80 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loadJsonDocument() should parse complex Json 1`] = `
+Object {
+  "date": "2019-08-07T18:30:00.000Z",
+  "layout": Array [
+    Object {
+      "type": "text",
+      "value": Array [
+        "<h2>Hello World!</h2>",
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ex odio, elementum non luctus eget, mollis vitae orci.",
+        "Quisque dapibus purus eget turpis accumsan congue. Quisque blandit dui non purus hendrerit, vel ornare eros dignissim.",
+        "Integer malesuada velit consequat dolor vulputate, eu bibendum lectus suscipit. Vivamus dapibus, ipsum et lobortis lacinia,",
+        "ex elit tristique ex, quis placerat lorem arcu quis ligula. Aliquam orci tellus, placerat eget velit at, egestas lobortis eros.",
+      ],
+    },
+    Object {
+      "description": "Duis a viverra est. **Pellentesque dictum purus neque**, nec efficitur lectus malesuada nec. In sem sapien, venenatis nec erat eu, blandit scelerisque magna.",
+      "title": "Services",
+      "type": "services",
+      "value": Object {
+        "CI / CD": "/ci-cd",
+        "Full-Stack Development": "/full-stack-development",
+        "Microservices": "/microservices",
+        "Mobile Development": "/mobile-development ",
+        "Single Page Applications": "/single-page-applications",
+        "Static Site Generators": "/static-site-generator",
+        "UI/UX": "/ui-ux",
+      },
+    },
+    Object {
+      "title": "Workflow",
+      "type": "workflow",
+      "value": Array [
+        "Analyse & Planning",
+        "Development",
+        "Maintenance",
+      ],
+    },
+    Object {
+      "title": "Technologies",
+      "type": "tech",
+      "value": Array [
+        "Node.js",
+        "Typescript",
+        "React.js",
+        "React Native",
+        "Javascript",
+        "Redux",
+        "Jest",
+        "GraphQL",
+      ],
+    },
+    Object {
+      "description": "Duis a viverra est. **Pellentesque dictum purus neque**, nec efficitur lectus malesuada nec. In sem sapien, venenatis nec erat eu, blandit scelerisque magna.",
+      "title": "Contact",
+      "type": "contact",
+    },
+  ],
+  "slug": "layout",
+  "title": "Layout Test",
+}
+`;
+
+exports[`loadJsonDocument() should resolve "/" to "index" 1`] = `
+Object {
+  "content": Array [
+    "<h2>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>",
+    "Aliquam ex odio, elementum non luctus eget, mollis vitae orci. Quisque dapibus purus eget turpis accumsan congue.",
+    "Quisque blandit dui non purus hendrerit, vel ornare eros dignissim. Integer malesuada velit consequat dolor vulputate, eu bibendum lectus suscipit.",
+    "Vivamus dapibus, ipsum et lobortis lacinia, ex elit tristique ex, quis placerat lorem arcu quis ligula. Aliquam orci tellus, placerat eget velit at,",
+    "egestas lobortis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer ut odio iaculis, vestibulum elit vel",
+    "sagittis nisl. Nam convallis quam id massa convallis mollis. Phasellus ut nunc ullamcorper, placerat lacus non, viverra libero. Curabitur semper urna tortor.",
+    "Phasellus varius aliquam odio eu malesuada. Nunc tempus egestas ante, non mollis purus blandit a. Etiam ac vulputate elit.",
+  ],
+  "date": "2019-10-01T10:33:18.754Z",
+  "slug": "index",
+  "title": "Homepage",
+}
+`;

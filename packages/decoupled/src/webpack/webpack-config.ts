@@ -13,7 +13,7 @@ const DEFAULT_WEBPACK_CONFIG = {
     mode: 'development',
     devtool: '#source-map',
     module: {
-        rules : [
+        rules: [
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
@@ -38,7 +38,7 @@ const getWebpackEntries = () => {
     return entries;
 };
 
-const getBackendConfigs = (server: DevServer, target: string = 'node', watch: boolean = true) => {
+const getBackendConfig = (server: DevServer, target: string = 'node', watch: boolean = true) => {
     const entries = getWebpackEntries();
 
     const plugins = DEFAULT_WEBPACK_CONFIG.plugins || [];
@@ -52,7 +52,7 @@ const getBackendConfigs = (server: DevServer, target: string = 'node', watch: bo
         entry: entries,
         context: resolve(getFromDecoupledConfig('srcDir')),
         output: {
-            path: resolve(appPath('', 'development')),
+            path: resolve(appPath('')),
             filename: '[name]',
             libraryTarget: 'commonjs2',
         },
@@ -61,7 +61,7 @@ const getBackendConfigs = (server: DevServer, target: string = 'node', watch: bo
     };
 };
 
-const getFrontendConfigs = (server: DevServer, target: string = 'web', watch: boolean = true) => {
+const getFrontendConfig = (server: DevServer, target: string = 'web', watch: boolean = true) => {
     const configs = require(resolve('./webpack.config.js'));
 
     return {
@@ -72,5 +72,5 @@ const getFrontendConfigs = (server: DevServer, target: string = 'web', watch: bo
 };
 
 export const getWebpackConfigs = (server: DevServer, target: string = 'node', watch: boolean = true) => {
-    return (target === 'node') ? getBackendConfigs(server, target, watch) : getFrontendConfigs(server, target, watch);
+    return (target === 'node') ? getBackendConfig(server, target, watch) : getFrontendConfig(server, target, watch);
 };

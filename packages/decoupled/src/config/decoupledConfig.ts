@@ -3,23 +3,23 @@ import { get } from 'lodash';
 
 let decoupledConfig: object = null;
 
-const DEFAULT_CONFIGS = {
+const DEFAULT_CONFIG = {
     distDir: '.decoupled',
     srcDir: 'src',
 };
 
 function loadDecoupledConfig() {
     if (decoupledConfig) {
-        return {...DEFAULT_CONFIGS, ...decoupledConfig};
+        return { ...DEFAULT_CONFIG, ...decoupledConfig };
     }
 
     try {
-        decoupledConfig = require(resolve('decoupled.config.js'));
+        decoupledConfig = require(resolve('decoupled.config'));
     } catch (e) {
         decoupledConfig = null;
     }
 
-    return {...DEFAULT_CONFIGS, ...decoupledConfig};
+    return { ...DEFAULT_CONFIG, ...decoupledConfig };
 }
 
 export const hasDecoupledConfig = (): boolean => {

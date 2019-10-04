@@ -1,9 +1,7 @@
-declare type AnyObject = {
+declare interface AnyObject {
     [key: string]: any;
 }
 
 type Nullable<T> = T | null;
 
-declare interface GenericFunction<A, R> {
-    (arg: A): R;
-}
+declare type GenericFunction<A, R> = (arg: A) => R;

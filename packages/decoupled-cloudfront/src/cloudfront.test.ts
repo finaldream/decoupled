@@ -1,5 +1,5 @@
 describe('Cloudfront', () => {
-    test.skip('should skip if no credentials are provided', () => { });
-    test.skip('should create an invalidation-request', () => { });
-    test.skip('should send a backend notification', () => { });
-})
+    test.todo('should skip if no credentials are provided');
+    test.todo('should create an invalidation-request');
+    test.todo('should send a backend notification');
+});

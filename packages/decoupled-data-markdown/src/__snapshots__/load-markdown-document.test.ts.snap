@@ -1,0 +1,124 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`loadMarkdownDocument() should parse markdown with complex yaml-frontmatter 1`] = `
+Object {
+  "html": "<h1 id=\\"curabituretlectusdapibusurnapretiummattisetnonleo\\">Curabitur et lectus dapibus urna pretium mattis et non leo.</h1>
+<p>Vestibulum a dui in ligula suscipit auctor sed id sapien. Cras diam felis, tristique dictum diam nec, dignissim congue quam. Curabitur nisi nulla, lobortis eget lacus et, molestie accumsan ex. </p>
+<h2 id=\\"vestibulumvariusetorcineccongue\\">Vestibulum varius et orci nec congue.</h2>
+<p>Sed interdum ex erat. Ut bibendum egestas fermentum. Duis a viverra est. Pellentesque dictum purus neque, nec efficitur lectus malesuada nec. In sem sapien, venenatis nec erat eu, blandit scelerisque magna. In vitae mi nulla. Pellentesque malesuada, ante sit amet sodales egestas, justo lorem dictum urna, id bibendum est dolor id leo. Etiam vestibulum lorem in dolor molestie sodales. Donec sed consectetur dolor. Vivamus a dictum est. </p>
+<h2 id=\\"etiamaliquetmalesuadacommodo\\">Etiam aliquet malesuada commodo.</h2>
+<p>Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. In convallis porta mauris non aliquam. Aenean felis lorem, eleifend auctor elit eget, lacinia accumsan enim. Nunc sit amet ipsum sem. Nunc eget mollis lectus, ac dignissim enim. Curabitur metus est, auctor vel mattis eget, porttitor eu velit. Ut viverra nisi metus, a pharetra purus sagittis vel. Donec nec sapien neque. Nulla tempus id lorem sit amet fringilla.</p>",
+  "meta": Object {
+    "data": "2019-09-24T08:10:00.000Z",
+    "metadata": Object {
+      "prop1": "Property 1",
+      "prop2": "Property 2",
+      "prop3": "Property 3",
+      "prop4": Array [
+        "Item 1",
+        "Item 2",
+        "Item 3",
+      ],
+    },
+    "slug": "page",
+    "title": "Test Page",
+  },
+}
+`;
+
+exports[`loadMarkdownDocument() should parse markdown with complex yaml-frontmatter 2`] = `
+Object {
+  "html": "",
+  "meta": Object {
+    "date": "2019-08-07T18:30:00.000Z",
+    "layout": Array [
+      Object {
+        "type": "text",
+        "value": "<h2 id=\\"helloworld\\">Hello World!</h2>
+<p>orem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam ex odio, elementum non luctus eget, mollis vitae orci. Quisque dapibus purus eget turpis accumsan congue. Quisque blandit dui non purus hendrerit, vel ornare eros dignissim. Integer malesuada velit consequat dolor vulputate, eu bibendum lectus suscipit. Vivamus dapibus, ipsum et lobortis lacinia, ex elit tristique ex, quis placerat lorem arcu quis ligula. Aliquam orci tellus, placerat eget velit at, egestas lobortis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer ut odio iaculis, vestibulum elit vel, sagittis nisl. Nam convallis quam id massa convallis mollis. Phasellus ut nunc ullamcorper, placerat lacus non, viverra libero. Curabitur semper urna tortor. Phasellus varius aliquam odio eu malesuada. Nunc tempus egestas ante, non mollis purus blandit a. Etiam ac vulputate elit.</p>
+<p>Curabitur et lectus dapibus urna pretium mattis et non leo. Vestibulum a dui in ligula suscipit auctor sed id sapien. Cras diam felis, tristique dictum diam nec, dignissim congue quam. Curabitur nisi nulla, lobortis eget lacus et, molestie accumsan ex. Vestibulum varius et orci nec congue. Sed interdum ex erat. Ut bibendum egestas fermentum. Duis a viverra est. Pellentesque dictum purus neque, nec efficitur lectus malesuada nec. In sem sapien, venenatis nec erat eu, blandit scelerisque magna. In vitae mi nulla. Pellentesque malesuada, ante sit amet sodales egestas, justo lorem dictum urna, id bibendum est dolor id leo. Etiam vestibulum lorem in dolor molestie sodales. Donec sed consectetur dolor. Vivamus a dictum est. Etiam aliquet malesuada commodo.</p>",
+      },
+      Object {
+        "CI / CD": "/ci-cd",
+        "Full-Stack Development": "/full-stack-development",
+        "Microservices": "/microservices",
+        "Mobile Development": "/mobile-development",
+        "Single Page Applications": "/single-page-applications",
+        "Static Site Generators": "/static-site-generator",
+        "UI/UX": "/ui-ux",
+        "description": "<p>Duis a viverra est. <strong>Pellentesque dictum purus neque</strong>, nec efficitur lectus malesuada nec. In sem sapien, venenatis nec erat eu, blandit scelerisque magna.</p>",
+        "title": "Services",
+        "type": "services",
+        "value": null,
+      },
+      Object {
+        "title": "Workflow",
+        "type": "workflow",
+        "value": Array [
+          "Analyse & Planning",
+          "Development",
+          "Maintenance",
+        ],
+      },
+      Object {
+        "title": "Technologies",
+        "type": "tech",
+        "value": Array [
+          "Node.js",
+          "Typescript",
+          "React.js",
+          "React Native",
+          "Javascript",
+          "Redux",
+          "Jest",
+          "GraphQL",
+        ],
+      },
+      Object {
+        "description": "<p>Duis a viverra est. <strong>Pellentesque dictum purus neque</strong>, nec efficitur lectus malesuada nec. In sem sapien, venenatis nec erat eu, blandit scelerisque magna.</p>",
+        "title": "Contact",
+        "type": "contact",
+      },
+    ],
+    "slug": "layout",
+    "title": "Layout Test",
+  },
+}
+`;
+
+exports[`loadMarkdownDocument() should parse markdown with simple yaml-frontmatter 1`] = `
+Object {
+  "html": "<h2 id=\\"loremipsumdolorsitametconsecteturadipiscingelit\\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+<p>Aliquam ex odio, elementum non luctus eget, mollis vitae orci. Quisque dapibus purus eget turpis accumsan congue. Quisque blandit dui non purus hendrerit, vel ornare eros dignissim. Integer malesuada velit consequat dolor vulputate, eu bibendum lectus suscipit. </p>
+<p>Vivamus dapibus, ipsum et lobortis lacinia, ex elit tristique ex, quis placerat lorem arcu quis ligula. Aliquam orci tellus, placerat eget velit at, egestas lobortis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer ut odio iaculis, vestibulum elit vel, sagittis nisl. Nam convallis quam id massa convallis mollis. Phasellus ut nunc ullamcorper, placerat lacus non, viverra libero. Curabitur semper urna tortor. Phasellus varius aliquam odio eu malesuada. Nunc tempus egestas ante, non mollis purus blandit a. Etiam ac vulputate elit.</p>",
+  "meta": Object {
+    "date": "2019-10-01T10:33:18.754Z",
+    "slug": "index",
+    "title": "Homepage",
+  },
+}
+`;
+
+exports[`loadMarkdownDocument() should parse pure markdown without frontmatter 1`] = `
+Object {
+  "html": "<h2 id=\\"loremipsumdolorsitametconsecteturadipiscingelit\\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+<p>Aliquam ex odio, elementum non luctus eget, mollis vitae orci. Quisque dapibus purus eget turpis accumsan congue. Quisque blandit dui non purus hendrerit, vel ornare eros dignissim. Integer malesuada velit consequat dolor vulputate, eu bibendum lectus suscipit. </p>
+<p>Vivamus dapibus, ipsum et lobortis lacinia, ex elit tristique ex, quis placerat lorem arcu quis ligula. Aliquam orci tellus, placerat eget velit at, egestas lobortis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer ut odio iaculis, vestibulum elit vel, sagittis nisl. Nam convallis quam id massa convallis mollis. Phasellus ut nunc ullamcorper, placerat lacus non, viverra libero. Curabitur semper urna tortor. Phasellus varius aliquam odio eu malesuada. Nunc tempus egestas ante, non mollis purus blandit a. Etiam ac vulputate elit.</p>",
+  "meta": Object {
+    "slug": "pure-markdown",
+  },
+}
+`;
+
+exports[`loadMarkdownDocument() should resolve "/" to "index" 1`] = `
+Object {
+  "html": "<h2 id=\\"loremipsumdolorsitametconsecteturadipiscingelit\\">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</h2>
+<p>Aliquam ex odio, elementum non luctus eget, mollis vitae orci. Quisque dapibus purus eget turpis accumsan congue. Quisque blandit dui non purus hendrerit, vel ornare eros dignissim. Integer malesuada velit consequat dolor vulputate, eu bibendum lectus suscipit. </p>
+<p>Vivamus dapibus, ipsum et lobortis lacinia, ex elit tristique ex, quis placerat lorem arcu quis ligula. Aliquam orci tellus, placerat eget velit at, egestas lobortis eros. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Integer ut odio iaculis, vestibulum elit vel, sagittis nisl. Nam convallis quam id massa convallis mollis. Phasellus ut nunc ullamcorper, placerat lacus non, viverra libero. Curabitur semper urna tortor. Phasellus varius aliquam odio eu malesuada. Nunc tempus egestas ante, non mollis purus blandit a. Etiam ac vulputate elit.</p>",
+  "meta": Object {
+    "date": "2019-10-01T10:33:18.754Z",
+    "slug": "index",
+    "title": "Homepage",
+  },
+}
+`;

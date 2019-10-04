@@ -1,0 +1,35 @@
+{
+  "name": "decoupled-data-markdown",
+  "version": "1.0.0",
+  "description": "Markdown with YAML data-source for Decoupled",
+  "repository": "https://github.com/finaldream/decoupled",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "engines": {
+    "node": "node >= 8.0.0"
+  },
+  "license": "MIT",
+  "scripts": {
+    "build": "../../scripts/build-package.sh",
+    "watch": "tsc --watch",
+    "lint": "tslint -t verbose src/**/*.ts{,x}",
+    "test": "jest"
+  },
+  "files": [
+    "/lib",
+    "/index.*"
+  ],
+  "dependencies": {
+    "decoupled": "^0.21.0",
+    "jest": "^24.9.0",
+    "showdown": "^1.9.0",
+    "typescript": "^3.6.*",
+    "yaml": "^1.7.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.*",
+    "@types/node": "^12.7.*",
+    "@types/yaml": "^1.0.2",
+    "ts-jest": "^24.1.0"
+  }
+}

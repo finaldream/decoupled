@@ -2,6 +2,7 @@
   "name": "decoupled-logger",
   "version": "1.1.0",
   "description": "decoupled logger.",
+  "repository": "https://github.com/finaldream/decoupled",
   "main": "index.js",
   "license": "MIT",
   "types": "index.d.ts",

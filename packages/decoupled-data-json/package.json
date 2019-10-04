@@ -2,6 +2,7 @@
   "name": "decoupled-data-json",
   "version": "0.0.1",
   "description": "JSON data-source for Decoupled",
+  "repository": "https://github.com/finaldream/decoupled",
   "main": "index.js",
   "types": "index.d.ts",
   "engines": {

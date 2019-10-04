@@ -13,10 +13,10 @@ if ! cd "packages/${1}"; then
     exit 1
 fi
 
-if ! git diff-index --quiet HEAD --; then
-    echo "You have staged changes, please commit first."
-    exit 1
-fi
+# if ! git diff-index --quiet HEAD --; then
+#     echo "You have staged changes, please commit first."
+#     exit 1
+# fi
 
 VER=$(node -pe "var {name, version}=require('./package.json'); name + '@' + version")
 
@@ -33,6 +33,6 @@ yarn lint
 
 echo "Publishing $VER"
 yarn build
-npm publish
+yarn publish --non-interaction
 
 cd "${OLD_DIR}"

@@ -8,6 +8,6 @@ export declare interface GenericFunction<A, R> {
     (arg: A): R;
 }
 
-export * from './lib/decoupled-cloudfront';
+export * from './lib';
 
 export as namespace DecoupledCloudfront;

@@ -6,7 +6,7 @@ import AWS from 'aws-sdk';
 import uuid from 'uuid/v4';
 import Decoupled from 'decoupled';
 
-export default class CloudFront {
+export class CloudFront {
 
     private logger: Decoupled.Logger;
     private backendNotify: Decoupled.BackendNotify;

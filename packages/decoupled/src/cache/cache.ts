@@ -3,13 +3,13 @@ import chalk from 'chalk';
 
 import NodeCache from './node-cache';
 import RedisCache from './redis-cache';
+import fetch from './fetch';
 import { Site } from '../site/site';
 import { CacheInterface } from './cache-interface';
 import { SiteDependent } from '../lib/common/site-dependent';
 
 export class Cache extends SiteDependent implements CacheInterface {
 
-    // @todo create an interface
     private cache: CacheInterface;
 
     constructor(site: Site) {
@@ -51,5 +51,9 @@ export class Cache extends SiteDependent implements CacheInterface {
         // TODO: remove hard-wired cache-provider
         this.cache = (redis) ? new RedisCache(this.site) : new NodeCache(this.site);
 
+    }
+
+    public async fetch(apiFetch: CallableFunction, { type, params }) {
+        return await fetch(this.site, apiFetch,  { type, params });
     }
 }

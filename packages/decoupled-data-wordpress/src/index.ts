@@ -1,1 +1,1 @@
-export * from './decoupled-wordpress-handler';
+export * from './handlers';

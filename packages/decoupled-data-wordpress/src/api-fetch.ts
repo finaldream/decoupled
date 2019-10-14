@@ -1,13 +1,13 @@
 import httpError from 'http-errors';
+import chalk from 'chalk';
 import { get } from 'lodash';
 import fetch from 'node-fetch';
 import qs from 'qs';
 import { Site } from 'decoupled';
 import { replaceInContent } from './lib/replace-in-content';
 
-export const decoupledWordpressHandler = async (site: Site, { type, params }) => {
+export const apiFetch = async (site: Site, { type, params }) => {
     const { endpoint, authentication } = site.config.get('services.wpapi');
-
     const headers = {};
 
     if (authentication) {
@@ -26,7 +26,7 @@ export const decoupledWordpressHandler = async (site: Site, { type, params }) =>
         url = `${url}?${qs.stringify(params)}`;
     }
 
-    site.logger.log('debug', `Requesting ${url}`);
+    site.logger.debug('[WP-API]', `Requesting ${url}`);
 
     const rules = site.config.get('content.replace.fetched');
 
@@ -36,17 +36,17 @@ export const decoupledWordpressHandler = async (site: Site, { type, params }) =>
     try {
         res = await fetch(url, { method: 'GET', headers });
     } catch (e) {
-        site.logger.error('api-fetch', url, e.message);
+        site.logger.error('[WP-API]', url, e.message);
         throw e;
     }
 
     if (!res.ok) {
-        site.logger.error('api-fetch: reponse not ok', url, res.status, res.statusText);
+        site.logger.error('[WP-API]: reponse not ok', url, res.status, res.statusText);
         try {
             const payload = await res.text();
             json = JSON.parse(replaceInContent(payload, rules));
         } catch (e) {
-            site.logger.error('api-fetch: json error', e.message);
+            site.logger.error('[WP-API]: json error', e.message);
             throw e;
         }
         if (json) {
@@ -61,7 +61,7 @@ export const decoupledWordpressHandler = async (site: Site, { type, params }) =>
         const text = await res.text();
         json = JSON.parse(replaceInContent(text, rules));
     } catch (e) {
-        site.logger.error('api-fetch: json error', e.message);
+        site.logger.error('[WP-API]: json error', e.message);
         throw e;
     }
 
@@ -83,7 +83,7 @@ export const decoupledWordpressHandler = async (site: Site, { type, params }) =>
         Object.assign(result, json.result || json);
     }
 
-    site.logger.debug('api-fetch', 'success', url);
+    site.logger.debug('[WP-API]', chalk.green('success'), url);
 
     return result;
 };

@@ -1,12 +1,12 @@
 import { join } from 'path';
-import { getFromDecoupledJson } from '../config';
+import { getFromDecoupledConfig } from '../config';
 
 let basePath: string;
 
 export const appPath = (path: string = '') => {
 
     if (!basePath) {
-        basePath = getFromDecoupledJson('appPath', './');
+        basePath = getFromDecoupledConfig('appPath');
     }
     return join(basePath, path);
 

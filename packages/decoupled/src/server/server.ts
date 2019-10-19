@@ -2,8 +2,6 @@
  * Server class for serving dynamic sites
  */
 
-
-
 import express from 'express';
 import vhost from 'vhost';
 
@@ -11,7 +9,7 @@ import { appPath } from '../lib';
 import { logger } from '../logger';
 
 import { Site } from '../site/site';
-import { getSiteIDs, getFromDecoupledJson } from '../config';
+import { getSiteIDs } from '../config';
 import { redirectsMiddleware } from '../server/middleware/redirects';
 
 export class Server {

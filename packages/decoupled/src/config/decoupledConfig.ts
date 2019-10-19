@@ -4,19 +4,18 @@ import { get } from 'lodash';
 let decoupledConfig: object = null;
 
 const DEFAULT_CONFIG = {
-    distDir: '.decoupled',
-    srcDir: 'src',
+    appPath: resolve('.decoupled'),
+    srcDir: resolve('.'),
 };
 
 function loadDecoupledConfig() {
-    if (decoupledConfig) {
-        return { ...DEFAULT_CONFIG, ...decoupledConfig };
-    }
 
-    try {
-        decoupledConfig = require(resolve('decoupled.config'));
-    } catch (e) {
-        decoupledConfig = null;
+    if (!decoupledConfig) {
+        try {
+            decoupledConfig = require(resolve('decoupled.config'));
+        } catch (e) {
+            decoupledConfig = null;
+        }
     }
 
     return { ...DEFAULT_CONFIG, ...decoupledConfig };

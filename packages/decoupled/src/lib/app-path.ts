@@ -8,7 +8,7 @@ export const appPath = (path: string | string[] = ['']) => {
     const paths = (Array.isArray(path)) ? path : [path];
 
     if (!basePath) {
-        basePath = getFromDecoupledConfig('distDir');
+        basePath = getFromDecoupledConfig('appPath');
     }
 
     return join(basePath, ...paths);

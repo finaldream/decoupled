@@ -52,8 +52,8 @@ node_modules/
 .vscode/
 *.iml
 
-lib
-dist
+/packages/*/lib
+/packages/*/dist
 .DS_Store
 
 # Auto generated types

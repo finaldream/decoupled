@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { Config } from './config';
 import { getSitePath } from '../lib/get-site-path';
+import { getFromDecoupledConfig } from './decoupled-config';
 
 const configCache = new Map();
 /**
@@ -91,22 +92,21 @@ export function provideConfig(siteId: string, environment?: string): Config {
         return configCache[cacheKey];
     }
 
-    const paths = [getSitePath('default', 'config')];
+    // check for custom config definition first. Paths need to be absolute.
+    let paths = getFromDecoupledConfig(`sites.${siteId}.configs`, null);
 
-    if (siteId !== 'default') {
-        paths.push(getSitePath(siteId, 'config'));
+    // Preset configs: default + site
+    if (!paths) {
+        paths = [getSitePath('default', 'config')];
+        if (siteId !== 'default') {
+            paths.push(getSitePath(siteId, 'config'));
+        }
     }
 
-    const configs = paths.map(p => loadConfig(p, environment));
+    const configs = paths.map(p => loadConfig(p, env));
 
     const config = new Config(merge({}, ...configs));
     configCache[cacheKey] = config;
-
-    console.log(
-        'Configs',
-        paths,
-        config,
-    )
 
     return config;
 

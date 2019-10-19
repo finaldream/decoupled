@@ -2,17 +2,12 @@
  * SiteServer class for single site
  */
 
-import { get } from 'lodash';
 import path from 'path';
 import express from 'express';
 import bodyParser from 'body-parser';
 import { fixTrailingSlash, isAbsoluteUrl, shouldFixTrailingSlash } from '../lib';
-import { logger } from '../logger';
-import { Renderer } from '../renderer';
-import { Router } from '../router';
 import { ResponseData } from '../router/response-data';
 import { ServerRequest, ServerResponse } from '../server';
-import { Site } from './site';
 
 // Connect Middleware
 import basicAuth from '../server/middleware/basic-auth';
@@ -35,7 +30,6 @@ export default class SiteServer extends SiteDependent {
     }
 
     public connect(): any {
-        const staticRedirects = this.site.config.get('router.redirects', []);
 
         this.app.use(requestLogger(this.logger));
         this.app.use(statusCodeHelper);
@@ -83,7 +77,7 @@ export default class SiteServer extends SiteDependent {
         };
 
         if (error.result) {
-            Object.assign(errorState, {posts: error.result});
+            Object.assign(errorState, { posts: error.result });
         }
 
         Object.assign(responseData.state, errorState);

@@ -6,7 +6,8 @@ import { merge } from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import { Config } from './config';
-import { appPath } from '../lib';
+import { getSitePath } from '../lib/get-site-path';
+import { getFromDecoupledConfig } from './decoupled-config';
 
 const configCache = new Map();
 /**
@@ -51,8 +52,8 @@ function getFilePattern(env: string = 'default'): RegExp {
 
     if (!filePatterns[env]) {
         filePatterns[env] = (env === 'default') ?
-            new RegExp('^([^.]*.(js)$)') :
-            new RegExp(`^([^.]*.(${env}.js)$)`);
+            new RegExp('^([^.]*\.(ts|js)$)') :
+            new RegExp(`^([^.]*\.${env}\.(ts|js)$)`);
     }
 
     return filePatterns[env];
@@ -61,20 +62,16 @@ function getFilePattern(env: string = 'default'): RegExp {
 /**
  * Return environment config for single site
  */
-function loadConfig(domain: string, env: string, rootPath?: string): AnyObject {
+function loadConfig(configPath: string, env: string): AnyObject {
 
-    const basePath = !rootPath
-        ? appPath('config')
-        : rootPath;
-    const defaultPath = path.join(basePath, domain);
-    const defaultConfig = readConfigFromFiles(defaultPath, getFilePattern());
+    const defaultConfig = readConfigFromFiles(configPath, getFilePattern());
 
     if (!env) {
         return defaultConfig;
     }
 
     const pattern = getFilePattern(env);
-    const envConfig = readConfigFromFiles(defaultPath, pattern);
+    const envConfig = readConfigFromFiles(configPath, pattern);
 
     return merge(defaultConfig, envConfig);
 }
@@ -85,10 +82,8 @@ function loadConfig(domain: string, env: string, rootPath?: string): AnyObject {
  *
  * @param siteId site-id to load
  * @param environment environment version. Defaults to NODE_ENV or 'development'
- * @param rootPath path to look for a config
  */
-export function provideConfig(siteId: string, environment?: string, rootPath?: string): Config {
-
+export function provideConfig(siteId: string, environment?: string): Config {
 
     const env = environment || process.env.NODE_ENV;
     const cacheKey = `${siteId}/${environment}`;
@@ -97,13 +92,20 @@ export function provideConfig(siteId: string, environment?: string, rootPath?: s
         return configCache[cacheKey];
     }
 
-    const rootConfigPath = path.resolve(rootPath || appPath('config'));
+    // check for custom config definition first. Paths need to be absolute.
+    let paths = getFromDecoupledConfig(`sites.${siteId}.configs`, null);
 
+    // Preset configs: default + site
+    if (!paths) {
+        paths = [getSitePath('default', 'config')];
+        if (siteId !== 'default') {
+            paths.push(getSitePath(siteId, 'config'));
+        }
+    }
 
-    const defaultConfig = loadConfig('default', env, rootConfigPath);
-    const siteConfig = siteId !== 'default' ? loadConfig(siteId, env, rootConfigPath) : {};
+    const configs = paths.map(p => loadConfig(p, env));
 
-    const config = new Config(merge(defaultConfig, siteConfig));
+    const config = new Config(merge({}, ...configs));
     configCache[cacheKey] = config;
 
     return config;

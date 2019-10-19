@@ -1,9 +1,9 @@
 import http from 'http';
-import reload from 'reload';
 import webpack from 'webpack';
 import { Server } from './server';
 import { getWebpackConfigs } from '../webpack';
-import {logger} from '../logger';
+
+const BackendWatchOptions = {};
 
 export class DevServer extends Server {
 
@@ -16,21 +16,28 @@ export class DevServer extends Server {
     }
 
     public async setup() {
-        super.init();
+
         const backendConfig = getWebpackConfigs(this);
-        const frontendConfig = getWebpackConfigs(this, 'web');
+        // const frontendConfig = getWebpackConfigs(this, 'web');
 
-        webpack(frontendConfig, (error, stats) => {
-            if (error) {
-                console.error(error);
-            }
-        });
+        // webpack(frontendConfig, (error, stats) => {
+        //     if (error) {
+        //         console.error(error);
+        //     }
+        // });
 
-        webpack(backendConfig, (error, stats) => {
-            if (error) {
-                console.error(error);
-            }
-        });
+        const backend = webpack(backendConfig);
+
+        backend.watch(
+            BackendWatchOptions,
+            (error, stats) => {
+                if (error) {
+                    console.error(error);
+                } else {
+                    console.log(stats);
+                    super.init();
+                }
+            });
     }
 }
 

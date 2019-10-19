@@ -1,5 +1,6 @@
 import glob from 'glob';
 import { resolve, relative, join } from 'path';
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 import nodeExternals from 'webpack-node-externals';
 
@@ -44,6 +45,7 @@ const getBackendConfig = (server: DevServer, target: string = 'node', watch: boo
     const plugins = DEFAULT_WEBPACK_CONFIG.plugins || [];
 
     if (target === 'node') {
+        plugins.push(new CleanWebpackPlugin());
         plugins.push(new RestartServerPlugin(server));
     }
 
@@ -56,7 +58,6 @@ const getBackendConfig = (server: DevServer, target: string = 'node', watch: boo
             filename: '[name]',
             libraryTarget: 'commonjs2',
         },
-        watch,
         target,
     };
 };

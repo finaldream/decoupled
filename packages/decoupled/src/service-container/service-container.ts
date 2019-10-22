@@ -7,7 +7,9 @@ import fs from 'fs';
 import path from 'path';
 import { logger } from '../logger';
 
-const REGEX_JS_FILES = new RegExp('^([^.]+(?!(\\.spec|\\.test|\\.mock)))(\\.[^.]+)*\\.js$');
+// TODO: HACK - account for .ts in local watch-mode and testing
+const FILE_EXT = typeof __dirname === 'undefined' ? 'js' : __filename.split('.').pop();
+const REGEX_JS_FILES = new RegExp(`^([^.]+(?!(\\.spec|\\.test|\\.mock)|\\.d))(\\.[^.]+)*\\.${FILE_EXT}$`);
 
 const NAME_SPACE = 'Decoupled';
 
@@ -90,9 +92,10 @@ export class ServiceContainer {
      * @param {string} customName
      */
     public bind(customPath, customName = false) {
-        const modulePath = (customPath.endsWith('.js')) ?
+
+        const modulePath = (customPath.endsWith(`.${FILE_EXT}`)) ?
             this._resolve(customPath) :
-            this._resolve(`${customPath}.js`);
+            this._resolve(`${customPath}.${FILE_EXT}`);
 
         this._bind(modulePath, customName);
     }

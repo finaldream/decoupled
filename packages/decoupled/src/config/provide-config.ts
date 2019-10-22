@@ -103,7 +103,7 @@ export function provideConfig(siteId: string, environment?: string): Config {
         }
     }
 
-    const configs = paths.map(p => loadConfig(p, env));
+    const configs = paths.map((p) => loadConfig(p, env));
 
     const config = new Config(merge({}, ...configs));
     configCache[cacheKey] = config;

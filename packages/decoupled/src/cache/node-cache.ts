@@ -71,7 +71,7 @@ export default class Cache extends SiteDependent implements CacheInterface {
 
         /* eslint-disable */
         for (const file of list) {
-            let arrkey = file.split('.');
+            const arrkey = file.split('.');
             arrkey.pop();
             const key = arrkey.join('.');
 

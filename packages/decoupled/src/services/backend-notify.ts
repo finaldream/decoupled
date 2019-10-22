@@ -33,8 +33,8 @@ export class BackendNotify extends SiteDependent {
     /**
      * sendNotification
      * Send notification to the Decoupled Backend
-     * Accept a string or object as message and an optional array of strings tags 
-     * @param message string|object 
+     * Accept a string or object as message and an optional array of strings tags
+     * @param message string|object
      * @param senderTags string[]
      */
 

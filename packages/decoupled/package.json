@@ -14,7 +14,7 @@
     "build": "../../scripts/build-package.sh",
     "watch": "tsc --watch",
     "lint": "tslint -t verbose src/**/*.ts{,x}",
-    "test": "NODE_ENV=development yarn build && jest lib"
+    "test": "jest"
   },
   "files": [
     "/bin",

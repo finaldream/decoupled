@@ -12,7 +12,8 @@ export function initLogger(siteId: string, env?: string) {
     };
 
     let logging = {};
-    if (hasDecoupledConfig() && !isTestEnvironment()) { // skip errors when running in non-project environments (i.e. tests)
+    // skip errors when running in non-project environments (i.e. tests)
+    if (hasDecoupledConfig() && !isTestEnvironment()) {
         try {
             const config = provideConfig(siteId, env);
             logging = config.get('logging', defaultOptions);

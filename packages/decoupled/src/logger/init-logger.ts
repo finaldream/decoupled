@@ -1,5 +1,6 @@
 import { provideConfig, hasDecoupledConfig } from '../config';
 import { Logger, logFormat } from 'decoupled-logger';
+import { isTestEnvironment } from '../lib/is-test-environment';
 
 export function initLogger(siteId: string, env?: string) {
     const defaultOptions = {
@@ -11,7 +12,7 @@ export function initLogger(siteId: string, env?: string) {
     };
 
     let logging = {};
-    if (hasDecoupledConfig()) { // skip errors when running in non-project environments (i.e. tests)
+    if (hasDecoupledConfig() && !isTestEnvironment()) { // skip errors when running in non-project environments (i.e. tests)
         try {
             const config = provideConfig(siteId, env);
             logging = config.get('logging', defaultOptions);

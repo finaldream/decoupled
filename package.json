@@ -14,7 +14,8 @@
     "pub": "scripts/publish.sh",
     "watch": "cd packages/decoupled && yarn run watch && cd -",
     "new-version": "scripts/new-version.sh",
-    "test": "lerna run test",
+    "lint": "lerna run lint --stream",
+    "test": "lerna run test --stream",
     "update-core-deps": "lerna exec --stream -- ../../scripts/update-core-deps",
     "clean:build": "lerna exec -- rm -rf ./lib"
   },

@@ -31,6 +31,10 @@
     "ts-jest": "24.1.*",
     "ts-node": " 8.4.*",
     "tslint": "^5.19.*",
-    "typescript": "^3.6.*"
+    "typescript": "^3.6.*",
+    "decoupled": ">=0.22.0"
+  },
+  "peerDependencies": {
+    "decoupled": ">=0.22.0"
   }
 }

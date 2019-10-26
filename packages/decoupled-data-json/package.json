@@ -28,6 +28,10 @@
     "@types/jest": "^24.0.*",
     "@types/node": "^12.7.*",
     "@types/yaml": "^1.0.2",
-    "ts-jest": "^24.1.0"
+    "ts-jest": "^24.1.0",
+    "decoupled": ">=0.22.0"
+  },
+  "peerDependencies": {
+    "decoupled": ">=0.22.0"
   }
 }

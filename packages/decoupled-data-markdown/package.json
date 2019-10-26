@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Markdown with YAML data-source for Decoupled",
   "repository": "https://github.com/finaldream/decoupled",
-  "main": "index.js",
+  "main": "lib/index.js",
   "types": "index.d.ts",
   "engines": {
     "node": "node >= 8.0.0"

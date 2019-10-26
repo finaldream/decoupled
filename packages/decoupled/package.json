@@ -2,7 +2,7 @@
   "name": "decoupled",
   "version": "0.22.2",
   "description": "Decoupled client",
-  "main": "index.js",
+  "main": "lib/index.js",
   "repository": "https://github.com/finaldream/decoupled",
   "authors": [
     "Oliver Erdmann <o.erdmann@finaldream.de>",

@@ -1,6 +1,8 @@
 # Decoupled
 Framework for creating decoupled web-clients.
 
+[![Codeship Status for finaldream/decoupled](https://app.codeship.com/projects/40d17830-da1c-0137-c969-668928a3b859/status?branch=master)](https://app.codeship.com/projects/371312)
+
 ## Installation
 
 * install globally or as your project's dependency

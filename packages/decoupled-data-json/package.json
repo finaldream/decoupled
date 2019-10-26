@@ -19,16 +19,13 @@
     "/lib",
     "/index.*"
   ],
-  "dependencies": {
-    "decoupled": "^0.21.0",
-    "jest": "^24.9.0",
-    "typescript": "^3.6.*"
-  },
   "devDependencies": {
     "@types/jest": "^24.0.*",
     "@types/node": "^12.7.*",
     "@types/yaml": "^1.0.2",
     "ts-jest": "^24.1.0",
+    "jest": "^24.9.0",
+    "typescript": "^3.6.*",
     "decoupled": ">=0.22.0"
   },
   "peerDependencies": {

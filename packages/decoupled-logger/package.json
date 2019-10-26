@@ -10,7 +10,7 @@
     "build": "../../scripts/build-package.sh",
     "watch": "tsc --watch",
     "lint": "tslint -t verbose src/**/*.ts{,x}",
-    "test": "jest lib"
+    "test": "echo TODO"
   },
   "files": [
     "/lib",
@@ -20,16 +20,16 @@
     "node": "node >= 8.0.0"
   },
   "dependencies": {
-    "@types/jest": "^24.0.*",
-    "@types/lodash": "^4.14.*",
-    "@types/node": "^12.7.*",
     "chalk": "^2.4.*",
     "lodash": "^4.17.*",
-    "tslint": "^5.19.*",
-    "typescript": "^3.6.*",
     "winston": "^3.2.*"
   },
   "devDependencies": {
-    "jest": "^24.9.*"
+    "@types/jest": "^24.0.*",
+    "@types/lodash": "^4.14.*",
+    "@types/node": "^12.7.*",
+    "jest": "^24.9.*",
+    "tslint": "^5.19.*",
+    "typescript": "^3.6.*"
   }
 }

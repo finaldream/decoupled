@@ -1,0 +1,85 @@
+#!/usr/bin/env node
+
+const cli = require('caporal');
+const fs = require('fs');
+const { get, set } = require('lodash');
+const { resolve, sep } = require('path');
+const semver = require('semver');
+
+
+const getParentDir = () => {
+    const packagesParts = resolve().split(sep)
+    return packagesParts[packagesParts.length - 2]
+}
+
+const getPackageName = () => {
+    const packagesParts = resolve().split(sep)
+    return packagesParts.pop()
+}
+
+const updatePackageJson = (package, version) => {
+
+    let changed = false
+
+    if (get(package, 'devDependencies.decoupled')) {
+        set(package, 'devDependencies.decoupled', version)
+        changed = true
+    }
+
+    if (get(package, 'peerDependencies.decoupled')) {
+        set(package, 'peerDependencies.decoupled', version)
+        changed = true
+    }
+
+    if (changed) {
+        fs.writeFileSync('package.json', JSON.stringify(package, undefined, 2))
+    }
+
+    return changed
+
+}
+
+
+cli
+    .argument('<version>', "new decoupled version")
+    .action(async (args, _options, logger) => {
+
+        if (getParentDir() !== 'packages') {
+            logger.error(`Script must be run from a aub-package directory. Parent directory should be "packages", is ${getParentDir()}`)
+            process.exit(1)
+        }
+
+        const packageName = getPackageName();
+
+        if (['decoupled', 'core'].includes(packageName)) {
+            logger.info('Skipping core package')
+            return
+        }
+
+        const { version } = args
+
+        if (!version) {
+            console.error("Option --version is required")
+            return
+        }
+
+        const package = require(resolve('./package.json'))
+
+        if (!semver.valid(semver.coerce(version))) {
+            logger.error(`Invalid version format ${version}`)
+            return
+        }
+
+        try {
+            if (updatePackageJson(package, version)) {
+                logger.info(`Successfully updated version to ${version}`)
+            } else {
+                logger.info(`No dependencies defined, nothing to do`)
+            }
+        } catch (e) {
+            logger.error(e)
+        }
+
+    })
+
+cli.parse(process.argv)

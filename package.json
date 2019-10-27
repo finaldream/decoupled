@@ -8,13 +8,16 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "lerna run build",
+    "build": "lerna run build --stream",
     "lerna": "lerna",
     "bootstrap": "lerna bootstrap",
     "pub": "scripts/publish.sh",
     "watch": "cd packages/decoupled && yarn run watch && cd -",
-    "ver": "scripts/new-version.sh",
-    "test": "lerna run test"
+    "new-version": "scripts/new-version.sh",
+    "lint": "lerna run lint --stream",
+    "test": "lerna run test --stream",
+    "update-core-deps": "lerna exec --stream -- ../../scripts/update-core-deps",
+    "clean:build": "lerna exec -- rm -rf ./lib"
   },
   "devDependencies": {
     "lerna": "^3.16.*"

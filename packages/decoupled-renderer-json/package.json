@@ -11,8 +11,5 @@
     "watch": "echo no-op",
     "lint": "echo TODO",
     "test": "echo TODO"
-  },
-  "peerDependencies": {
-    "decoupled": "*"
   }
 }

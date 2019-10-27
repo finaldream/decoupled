@@ -33,6 +33,6 @@ yarn lint
 
 echo "Publishing $VER"
 yarn build
-yarn publish --non-interaction
+yarn publish --non-interactive
 
 cd "${OLD_DIR}"

@@ -1,9 +1,7 @@
 import { get } from 'lodash';
 
 import { apiFetch } from './api-fetch';
-import { DelayedQueue } from './lib/delayed-queue';
-import { genAPICacheKey } from './lib/gen-api-cache-key';
-import { Site, ServerRequest, delayedCacheInvalidate } from 'decoupled';
+import { Site, ServerRequest, delayedCacheInvalidate, genAPICacheKey, DelayedQueue } from 'decoupled';
 
 // Keeps an invalidation-queue per site
 const invalidationQueues: Map<Site, DelayedQueue> = new Map();

@@ -3,8 +3,7 @@ import chalk from 'chalk';
 import { get } from 'lodash';
 import fetch from 'node-fetch';
 import qs from 'qs';
-import { Site } from 'decoupled';
-import { replaceInContent } from './lib/replace-in-content';
+import { Site, replaceInContent } from 'decoupled';
 
 export const apiFetch = async (site: Site, { type, params }) => {
     const { endpoint, authentication } = site.config.get('services.wpapi');

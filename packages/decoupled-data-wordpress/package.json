@@ -4,7 +4,7 @@
   "description": "Wordpress API data-source for Decoupled",
   "repository": "https://github.com/finaldream/decoupled",
   "main": "lib/index.js",
-  "types": "lib/index.d.ts",
+  "types": "index.d.ts",
   "engines": {
     "node": "node >= 8.0.0"
   },

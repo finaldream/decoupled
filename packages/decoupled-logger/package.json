@@ -5,7 +5,7 @@
   "repository": "https://github.com/finaldream/decoupled",
   "main": "lib/index.js",
   "license": "MIT",
-  "types": "lib/index.d.ts",
+  "types": "index.d.ts",
   "scripts": {
     "build": "../../scripts/build-package.sh",
     "watch": "tsc --watch",

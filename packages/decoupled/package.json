@@ -9,7 +9,7 @@
     "Louis Thai <louis.thai@finaldream.de>"
   ],
   "license": "MIT",
-  "types": "index.d.ts",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "../../scripts/build-package.sh",
     "watch": "tsc --watch",

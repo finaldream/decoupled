@@ -10,7 +10,7 @@ import { Renderer } from '../renderer';
 import { Cache } from '../cache/cache';
 import { TaskRunner } from '../services/task-runner';
 import { GlobalStore } from '../services/global-store';
-import { cachedFetch } from '../fetch';
+import { cachedFetch } from '../cache/fetch';
 import SiteServer from './site-server';
 import { appPath } from '../lib';
 import { initLogger } from '../logger';
@@ -80,8 +80,8 @@ export class Site {
      *
      * @TODO: generalize and simplify, get rid of type...
      */
-    public cachedFetch(params): object {
-        return cachedFetch(this, params);
+    public cachedFetch(url: string, cacheKey: string ): object {
+        return cachedFetch(this, url, cacheKey);
     }
 
     public connect(): any {

@@ -5,6 +5,7 @@
 import { get } from 'lodash';
 
 import apiFetch from '../fetch/api-fetch';
+import { cachedFetch } from '../fetch/cached-fetch';
 import { DelayedQueue } from '../lib/delayed-queue';
 import { genAPICacheKey } from '../lib';
 import { ServerRequest } from '../server';
@@ -16,7 +17,7 @@ import { delayedCacheInvalidate } from '../cache/delayed-cache-invalidate';
 const invalidationQueues: Map<Site, DelayedQueue> = new Map();
 
 const handleMenus = async (site: Site) => {
-    const result = await site.cachedFetch({
+    const result = await cachedFetch(site, {
         params: {
             lang: 'all',
         },
@@ -40,7 +41,7 @@ const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
         return apiFetch(site, { type, params });
     }
 
-    return site.cachedFetch({ type, params });
+    return cachedFetch(site, { type, params });
 };
 
 const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {

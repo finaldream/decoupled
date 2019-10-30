@@ -11,7 +11,7 @@ import { Cache } from '../cache/cache';
 import { TaskRunner } from '../services/task-runner';
 import { GlobalStore } from '../services/global-store';
 import { cachedFetch } from '../cache/fetch';
-import fetch from '../fetch/fetch';
+import { fetch } from '../fetch/fetch';
 import SiteServer from './site-server';
 import { appPath } from '../lib';
 import { initLogger } from '../logger';
@@ -19,7 +19,7 @@ import { Logger } from 'decoupled-logger';
 import { registerRedirects } from '../redirects/redirect-store';
 import { PluginManager } from '../services/plugin-manager';
 import { BackendNotify } from '../services/backend-notify';
-import { RequestInit } from 'node-fetch';
+import { RequestInit, Response } from 'node-fetch';
 
 export class Site {
 
@@ -77,16 +77,11 @@ export class Site {
         return this.config.get('site.domain');
     }
 
-    /**
-     * Wrapper for cachedFetch()
-     *
-     * @TODO: generalize and simplify, get rid of type...
-     */
-    public cachedFetch(url: string, cacheKey: string ): object {
+    public cachedFetch(url: string, cacheKey: string ): Promise<AnyObject> {
         return cachedFetch(this, url, cacheKey);
     }
 
-    public fetch(url: string, init?: RequestInit): object {
+    public fetch(url: string, init?: RequestInit): Promise<Response> {
         return fetch(this, url, init);
     }
 

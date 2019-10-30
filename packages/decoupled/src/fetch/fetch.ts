@@ -1,8 +1,8 @@
 
 import { Site } from '../site/site';
-import fetch, { RequestInit } from 'node-fetch';
+import nodeFetch, { RequestInit, Response } from 'node-fetch';
 
-export default async (site: Site, url: string, init?: RequestInit): Promise<AnyObject> => {
+export const fetch = async (site: Site, url: string, init?: RequestInit): Promise<Response> => {
 
     const authentication = this.site.config.get('services.wpapi.authentication');
     if (authentication) {
@@ -21,7 +21,7 @@ export default async (site: Site, url: string, init?: RequestInit): Promise<AnyO
     let result;
     
     try {
-        result = await fetch(url, init);
+        result = await nodeFetch(url, init);
     } catch (e) {
         site.logger.error('decoupled-fetch', url, e.message);
         throw e;

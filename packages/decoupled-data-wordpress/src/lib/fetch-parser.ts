@@ -5,7 +5,7 @@ import { get } from 'lodash';
 import chalk from 'chalk';
 import { Site, replaceInContent } from 'decoupled';
 
-export default async (site: Site, res: Response, type?: string) => {
+export const parser = async (site: Site, res: Response, type?: string): Promise<AnyObject> => {
 
     const rules = site.config.get('content.replace.fetched');
     let json: AnyObject = {};

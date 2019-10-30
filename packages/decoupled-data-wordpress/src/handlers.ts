@@ -1,9 +1,10 @@
 import { get } from 'lodash';
-import qs from 'qs';
-import parser from './fetch-parser';
-import { Site, ServerRequest, genAPICacheKey } from 'decoupled';
+import { urlGenerator, parser} from './lib';
+import { Site, ServerRequest, genAPICacheKey, DelayedQueue, delayedCacheInvalidate } from 'decoupled';
 
-const handleMenus = async (site: Site) => {
+const invalidationQueues: Map<Site, DelayedQueue> = new Map();
+
+export const handleMenus = async (site: Site) => {
 
     site.logger.debug('[WP-API]', 'handleMenus invoked');
 
@@ -14,21 +15,14 @@ const handleMenus = async (site: Site) => {
     };
     const type = 'menus';
 
-    const cacheKey = genAPICacheKey({
-        params,
-        type
-    });
+    const cacheKey = genAPICacheKey(type, params);
 
-    let url = `${endpoint.replace(/\/$/, '')}/${type}/`;
-
-    if (params) {
-        url = `${url}?${qs.stringify(params)}`;
-    }
+    const url = urlGenerator(endpoint, type, params);
 
     const res = await site.cachedFetch(url, cacheKey);
-    const result = await parser(site, res, type);
+    const result = parser(site, res, type);
     
-    return result;
+    return Object.assign({}, result);
 };
 
 export const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
@@ -45,37 +39,93 @@ export const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
     const queries = req.query || {};
     const type = 'permalink';
     const params = { q: slug, ...queries };
-
-    let url = `${endpoint.replace(/\/$/, '')}/${type}/`;
-
-    if (params) {
-        url = `${url}?${qs.stringify(params)}`;
-    }
+    
+    const url = urlGenerator(endpoint, type, params);
 
     if (queries.preview) {
         const preview = await site.fetch(url);
         return parser(site, preview, type);
     }
 
-    const cacheKey = genAPICacheKey({
-        params,
-        type
-    });
+    const cacheKey = genAPICacheKey(type, params);
 
-    const res = await site.cachedFetch(endpoint, cacheKey);
+    const res = await site.cachedFetch(url, cacheKey);
 
-    const result = await parser(site, res, type);
+    const result = parser(site, res, type);
     
     return result;
 };
 
 export const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
+    
     site.logger.debug('[WP-API]', 'handleCacheInvalidate invoked');
-    return Object.assign({});
+
+    const data = (req.body && req.body.cache) ? req.body.cache : false;
+    const invalidator = site.config.get('cache.invalidator', false);
+
+    let queue = invalidationQueues.get(site);
+
+    if (!data) {
+        return { error: 'Invalid request' };
+    }
+
+    switch (data.action) {
+
+        case 'destroy':
+            const type = get(data, 'params.type');
+            const params = {
+                q: get(data, 'params.slug'),
+            };
+
+            const cacheKey = genAPICacheKey(type, params);
+
+            site.cache.delete(cacheKey);
+
+            if (invalidator) {
+                if (!queue) {
+                    queue = new DelayedQueue(
+                        site.config.get('cache.invalidationTimeout', 15000),
+                        (items) => delayedCacheInvalidate(site, items),
+                    );
+                    queue.logger = site.logger;
+                    invalidationQueues.set(site, queue);
+                }
+
+                queue.push(data);
+            }
+
+            break;
+
+        case 'flush':
+            site.cache.clear();
+            if (invalidator) {
+                if (queue) {
+                    queue.reset();
+                }
+
+                await delayedCacheInvalidate(site, ['/*']);
+            }
+
+            break;
+    }
+
+    return { status: 'ok' };
+
 };
 
 export const handlePreviewRequest = async (site: Site, req: ServerRequest) => {
 
     site.logger.debug('[WP-API]', 'handlePreviewRequest invoked');
-    return Object.assign({});
+
+    const { endpoint } = site.config.get('services.wpapi');
+
+    const type = 'preview';
+    const params = req.query || {};
+    
+    const url = urlGenerator(endpoint, type, params);
+
+    const preview = await site.fetch(url);
+    
+    return parser(site, preview, type);
+
 };

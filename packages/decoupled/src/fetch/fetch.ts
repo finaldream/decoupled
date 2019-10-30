@@ -8,9 +8,6 @@ export const fetch = async (site: Site, url: string, init : RequestInit = defaul
 
     const authentication = site.config.get('services.wpapi.authentication');
     if (authentication) {
-        if (!init) {
-
-        }
         if (authentication.username && authentication.password) {
             const encoded = new Buffer(`${authentication.username}:${authentication.password}`).toString('base64');
             Object.assign(init.headers, { Authorization: `Basic ${encoded}` });

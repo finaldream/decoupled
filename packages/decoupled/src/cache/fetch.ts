@@ -2,7 +2,7 @@
  * Function to query cached Fetch state
  */
 
-import fetch from '../fetch/fetch';
+import { fetch } from '../fetch/fetch';
 import { Site } from '../site/site';
 
 

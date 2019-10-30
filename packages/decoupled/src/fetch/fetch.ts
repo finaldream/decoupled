@@ -4,7 +4,7 @@ import nodeFetch, { RequestInit, Response } from 'node-fetch';
 
 export const fetch = async (site: Site, url: string, init?: RequestInit): Promise<Response> => {
 
-    const authentication = this.site.config.get('services.wpapi.authentication');
+    const authentication = site.config.get('services.wpapi.authentication');
     if (authentication) {
         if (authentication.username && authentication.password) {
             const encoded = new Buffer(`${authentication.username}:${authentication.password}`).toString('base64');

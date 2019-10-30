@@ -16,8 +16,12 @@ export const cachedFetch = async (site: Site, url: string, cacheKey: string): Pr
 
     const result = await fetch(site, url);
 
-    // TODO: use Expiry headers
-    site.cache.set(cacheKey, result, 6000);
+    try {
+        // TODO: use Expiry headers
+        site.cache.set(cacheKey, result, 6000);
+    } catch (e) {
+        site.logger.error('cache-fetch: cannnot set!', e.message);        
+    }
 
     return result;
 };

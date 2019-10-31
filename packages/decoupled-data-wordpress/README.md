@@ -48,7 +48,11 @@ wpapi: {
 
 ```js
 
-import { handleCacheInvalidate, handleMenus, handlePreviewRequest, handleRouteWithSlug } from 'decoupled-data-wordpress';
+import {
+  handleCacheInvalidate, 
+  handleMenus, 
+  handlePreviewRequest, 
+  handleRouteWithSlug } from 'decoupled-data-wordpress';
 
 module.exports.router = {
     routes: [        

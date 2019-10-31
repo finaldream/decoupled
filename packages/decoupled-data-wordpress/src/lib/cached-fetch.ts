@@ -1,7 +1,11 @@
 import { Site, genAPICacheKey } from 'decoupled';
-import { parser } from './fetch-parser';
+import { parser, urlGenerator } from './';
 
-export const cachedFetch = async (site: Site, url: string, { type, params }): Promise<AnyObject> => {
+export const cachedFetch = async (site: Site, { type, params }): Promise<AnyObject> => {
+    
+    const { endpoint } = site.config.get('services.wpapi');
+
+    const url = urlGenerator(endpoint, type, params);  
     
     site.logger.debug('[WP-API]', `Requesting cachedFetch ${url}`);
 
@@ -23,6 +27,6 @@ export const cachedFetch = async (site: Site, url: string, { type, params }): Pr
     } catch (e) {
         site.logger.error('[WP-API]: Error setting cache:', e.message);        
     }
-    
+
     return parsed;
 };

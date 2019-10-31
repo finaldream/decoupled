@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import { urlGenerator, parser, cachedFetch} from './lib';
+import { directFetch , cachedFetch} from './lib';
 import { Site, ServerRequest, genAPICacheKey, DelayedQueue, delayedCacheInvalidate } from 'decoupled';
 
 const invalidationQueues: Map<Site, DelayedQueue> = new Map();
@@ -8,16 +8,12 @@ export const handleMenus = async (site: Site) => {
 
     site.logger.debug('[WP-API]', 'handleMenus invoked');
 
-    const { endpoint } = site.config.get('services.wpapi');
-
     const params = {
         lang: 'all',
     };
     const type = 'menus';
 
-    const url = urlGenerator(endpoint, type, params);
-
-    const result = await cachedFetch(site, url, { type, params });
+    const result = await cachedFetch(site, { type, params });
     
     return Object.assign({}, result);
 };
@@ -25,8 +21,6 @@ export const handleMenus = async (site: Site) => {
 export const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
 
     site.logger.debug('[WP-API]', 'handleRouteWithSlug invoked');
-
-    const { endpoint } = site.config.get('services.wpapi');
 
     let slug = req.params._ || req.url;
 
@@ -36,17 +30,12 @@ export const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
     const queries = req.query || {};
     const type = 'permalink';
     const params = { q: slug, ...queries };
-    
-    const url = urlGenerator(endpoint, type, params);
-    
+
     if (queries.preview) {
-        const preview = await site.fetch(url);
-        return parser(site, preview, type);
+        return await directFetch(site, { type, params });
     }
 
-    const result = await cachedFetch(site, url, { type, params });
-    
-    return result;
+    return await cachedFetch(site, { type, params });
 };
 
 export const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
@@ -103,22 +92,14 @@ export const handleCacheInvalidate = async (site: Site, req: ServerRequest) => {
     }
 
     return { status: 'ok' };
-
 };
 
 export const handlePreviewRequest = async (site: Site, req: ServerRequest) => {
 
     site.logger.debug('[WP-API]', 'handlePreviewRequest invoked');
 
-    const { endpoint } = site.config.get('services.wpapi');
-
     const type = 'preview';
     const params = req.query || {};
-    
-    const url = urlGenerator(endpoint, type, params);
-
-    const preview = await site.fetch(url);
-    
-    return parser(site, preview, type);
-
+       
+    return await directFetch(site, { type, params });
 };

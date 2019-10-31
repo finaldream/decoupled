@@ -2,7 +2,6 @@
 import { Response } from 'node-fetch';
 import httpError from 'http-errors';
 import { get } from 'lodash';
-import chalk from 'chalk';
 import { Site, replaceInContent } from 'decoupled';
 
 export const parser = async (site: Site, res: Response, type?: string): Promise<AnyObject> => {
@@ -52,8 +51,6 @@ export const parser = async (site: Site, res: Response, type?: string): Promise<
     } else {
         Object.assign(result, json.result || json);
     }
-
-    site.logger.debug('[WP-API]', chalk.green('success'), res.url);
 
     return result;
 }

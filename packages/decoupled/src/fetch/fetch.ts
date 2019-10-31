@@ -1,11 +1,15 @@
 
 import { Site } from '../site/site';
+import chalk from 'chalk';
 import nodeFetch, { RequestInit, Response } from 'node-fetch';
 
 const defaultInit : RequestInit = { headers: {} };
 
 export const fetch = async (site: Site, url: string, init : RequestInit = defaultInit ): Promise<Response> => {
-    
+
+
+    site.logger.debug('decoupled-fetch', `Requesting ${url}`);
+
     const authentication = site.config.get('services.wpapi.authentication');
     if (authentication) {
         if (authentication.username && authentication.password) {
@@ -17,9 +21,6 @@ export const fetch = async (site: Site, url: string, init : RequestInit = defaul
         }
     }
 
-
-    site.logger.debug('decoupled-fetch', `Requesting ${url}`);
-
     let result;
     
     try {
@@ -28,6 +29,8 @@ export const fetch = async (site: Site, url: string, init : RequestInit = defaul
         site.logger.error('decoupled-fetch', url, e.message);
         throw e;
     }
+
+    site.logger.debug('decoupled-fetch', chalk.green('success'), url);
 
     return result;
 };

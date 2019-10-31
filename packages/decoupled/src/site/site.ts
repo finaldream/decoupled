@@ -10,7 +10,6 @@ import { Renderer } from '../renderer';
 import { Cache } from '../cache/cache';
 import { TaskRunner } from '../services/task-runner';
 import { GlobalStore } from '../services/global-store';
-import { cachedFetch } from '../cache/fetch';
 import { fetch } from '../fetch/fetch';
 import SiteServer from './site-server';
 import { appPath } from '../lib';
@@ -77,10 +76,6 @@ export class Site {
         return this.config.get('site.domain');
     }
 
-    public cachedFetch(url: string, cacheKey: string ): Promise<AnyObject> {
-        return cachedFetch(this, url, cacheKey);
-    }
-
     public fetch(url: string, init?: RequestInit): Promise<Response> {
         return fetch(this, url, init);
     }
@@ -98,7 +93,7 @@ export class Site {
         const routes: Route[] = this.config.get('router.routes', []).map((route) => new Route(route));
 
         const router = new Router(this);
-        router.addRoutesWithDefaults(routes);
+        router.addRoutes(routes);
 
         return router;
     }

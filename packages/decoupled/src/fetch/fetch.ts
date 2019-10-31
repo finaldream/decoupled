@@ -5,7 +5,7 @@ import nodeFetch, { RequestInit, Response } from 'node-fetch';
 const defaultInit : RequestInit = { headers: {} };
 
 export const fetch = async (site: Site, url: string, init : RequestInit = defaultInit ): Promise<Response> => {
-
+    
     const authentication = site.config.get('services.wpapi.authentication');
     if (authentication) {
         if (authentication.username && authentication.password) {

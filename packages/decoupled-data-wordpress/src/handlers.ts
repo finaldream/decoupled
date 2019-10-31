@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import { urlGenerator, parser} from './lib';
+import { urlGenerator, parser, cachedFetch} from './lib';
 import { Site, ServerRequest, genAPICacheKey, DelayedQueue, delayedCacheInvalidate } from 'decoupled';
 
 const invalidationQueues: Map<Site, DelayedQueue> = new Map();
@@ -15,12 +15,9 @@ export const handleMenus = async (site: Site) => {
     };
     const type = 'menus';
 
-    const cacheKey = genAPICacheKey(type, params);
-
     const url = urlGenerator(endpoint, type, params);
 
-    const res = await site.cachedFetch(url, cacheKey);
-    const result = parser(site, res, type);
+    const result = await cachedFetch(site, url, { type, params });
     
     return Object.assign({}, result);
 };
@@ -41,17 +38,13 @@ export const handleRouteWithSlug = async (site: Site, req: ServerRequest) => {
     const params = { q: slug, ...queries };
     
     const url = urlGenerator(endpoint, type, params);
-
+    
     if (queries.preview) {
         const preview = await site.fetch(url);
         return parser(site, preview, type);
     }
 
-    const cacheKey = genAPICacheKey(type, params);
-
-    const res = await site.cachedFetch(url, cacheKey);
-
-    const result = parser(site, res, type);
+    const result = await cachedFetch(site, url, { type, params });
     
     return result;
 };

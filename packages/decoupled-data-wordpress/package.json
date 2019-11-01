@@ -13,7 +13,7 @@
     "build": "../../scripts/build-package.sh",
     "watch": "tsc --watch",
     "lint": "tslint -t verbose src/**/*.ts{,x}",
-    "test": "jest"
+    "test": "jest  --passWithNoTests"
   },
   "files": [
     "/lib",

@@ -19,6 +19,7 @@
   "files": [
     "/bin",
     "/lib",
+    "/misc",
     "/index.*"
   ],
   "engines": {
@@ -60,6 +61,10 @@
     "@types/jest": "^24.0.*",
     "@types/lodash": "^4.14.*",
     "@types/node": "^12.7.*",
+    "@types/webpack": "^4.39.5",
+    "@types/webpack-env": "^1.14.1",
+    "clean-webpack-plugin": "^3.0.0",
+    "ejs": "^2.7.1",
     "jest": "^24.9.*",
     "regenerator-runtime": "^0.13.*",
     "sinon": "^7.4.*",

@@ -6,7 +6,7 @@ import { Server } from '../server';
  * @param {Object} args
  * @param {Object} options
  */
-export async function watchAction(args, options) {
+export async function buildAction(args, options) {
     const opts = await prepareAction(args, options);
     const { env, host, port } = opts;
 
@@ -14,7 +14,7 @@ export async function watchAction(args, options) {
 
     server.host = host || process.env.HOST || '127.0.0.1';
     server.port = port || process.env.PORT || 3000;
-    server.bundleMode = 'watch';
+    server.bundleMode = 'build';
 
     server.init();
 }
@@ -26,9 +26,7 @@ export async function watchAction(args, options) {
  */
 export function watchCommand(app) {
     app
-        .command('watch', 'Start server with watch mode')
+        .command('build', 'Builds the application without starting a server')
         .argument('[env]', `Current environment`, null, getDefaultEnv())
-        .option('--host <host>', 'host to server from. Defaults to env HOST or 127.0.0.1')
-        .option('--port <port>', 'Port to server from. Defaults to env PORT or 3000')
-        .action(watchAction);
+        .action(buildAction);
 }

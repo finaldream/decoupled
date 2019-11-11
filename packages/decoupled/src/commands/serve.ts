@@ -5,7 +5,7 @@
  */
 
 import { Server } from '../server';
-import { choices, getDefaultEnv, prepareAction } from './utils';
+import { getDefaultEnv, prepareAction } from './utils';
 
 /**
  * Implementation of the serve-command's action.
@@ -17,11 +17,11 @@ export async function serveAction(args, options) {
     const { env, host, port } = opts;
     const server = new Server(env);
 
-    const siteHost = host || process.env.HOST || '127.0.0.1';
-    const sitePort = port || process.env.PORT || 3000;
+    server.host = host || process.env.HOST || '127.0.0.1';
+    server.port = port || process.env.PORT || 3000;
+    server.bundleMode = 'build';
 
     server.init();
-    server.listen(sitePort, siteHost);
 }
 
 /**

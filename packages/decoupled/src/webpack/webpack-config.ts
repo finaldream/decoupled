@@ -1,18 +1,15 @@
-import glob from 'glob';
-import { resolve, relative, join } from 'path';
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-
+import { resolve } from 'path';
 import nodeExternals from 'webpack-node-externals';
 
-import { RestartServerPlugin } from './restart-server-plugin';
-import { getFromDecoupledConfig } from '../config';
+import { getFromDecoupledConfig, getSiteIDs } from '../config';
 import { appPath } from '../lib';
-import { DevServer } from '../server';
+import { cacheEntryTemplate, makeSiteEntry } from './utils';
+import webpack = require('webpack');
 
+cacheEntryTemplate(resolve(__dirname, '..', '..', 'misc', 'entry.ejs.js'))
 
 const DEFAULT_WEBPACK_CONFIG = {
-    mode: 'development',
-    devtool: '#source-map',
+    devtool: '#source-map' as webpack.Options.Devtool,
     module: {
         rules: [
             {
@@ -22,56 +19,32 @@ const DEFAULT_WEBPACK_CONFIG = {
             },
         ]
     },
-    externals: [nodeExternals()],
     plugins: [],
 };
 
 const getWebpackEntries = () => {
     const entries = {};
-    const srcDir = resolve(getFromDecoupledConfig('srcDir'));
-    const files = glob.sync(join(srcDir, '**/*.js'));
+    const sites = getSiteIDs(resolve(getFromDecoupledConfig('srcDir'), 'sites'), true);
 
-    files.forEach((path) => {
-        const relativePath = relative(srcDir, path);
-        entries[relativePath] = [path];
-    });
+    sites.forEach(siteId => entries[siteId] = makeSiteEntry(siteId));
 
     return entries;
 };
 
-const getBackendConfig = (server: DevServer, target: string = 'node', watch: boolean = true) => {
-    const entries = getWebpackEntries();
+const getMode = () => process.env.NODE_ENV === 'production' ? 'production' : 'development'
 
-    const plugins = DEFAULT_WEBPACK_CONFIG.plugins || [];
-
-    if (target === 'node') {
-        plugins.push(new CleanWebpackPlugin());
-        plugins.push(new RestartServerPlugin(server));
-    }
-
+export const getServerSideConfig = (watch: boolean): webpack.Configuration => {
     return {
         ...DEFAULT_WEBPACK_CONFIG,
-        entry: entries,
+        mode: getMode(),
+        entry: getWebpackEntries(),
         context: resolve(getFromDecoupledConfig('srcDir')),
         output: {
             path: resolve(appPath('')),
-            filename: '[name]',
+            filename: watch ? '[name]-[hash].js' : '[name].js',
             libraryTarget: 'commonjs2',
         },
-        target,
+        target: 'node',
+        externals: [nodeExternals()],
     };
-};
-
-const getFrontendConfig = (server: DevServer, target: string = 'web', watch: boolean = true) => {
-    const configs = require(resolve('./webpack.config.js'));
-
-    return {
-        ...configs,
-        watch,
-        target,
-    };
-};
-
-export const getWebpackConfigs = (server: DevServer, target: string = 'node', watch: boolean = true) => {
-    return (target === 'node') ? getBackendConfig(server, target, watch) : getFrontendConfig(server, target, watch);
 };

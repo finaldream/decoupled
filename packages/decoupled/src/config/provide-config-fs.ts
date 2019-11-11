@@ -117,3 +117,15 @@ export function provideConfig(siteId: string, environment?: string): Config {
     return config;
 
 }
+
+export function configFromPaths(paths: string[], environment?: string): Config {
+
+    const env = environment || process.env.NODE_ENV;
+
+    const configs = paths.map((p) => loadConfig(p, env));
+
+    const config = new Config(merge({}, ...configs));
+
+    return config;
+
+}

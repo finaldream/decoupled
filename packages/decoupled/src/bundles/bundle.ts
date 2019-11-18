@@ -1,4 +1,5 @@
 import { logger } from "../logger";
+import { stripCwd } from "../lib/strip-cwd";
 
 export interface BundleContent {
     siteId: string
@@ -17,6 +18,10 @@ export class Bundle {
         return this._filename;
     }
 
+    public get shortFilename() {
+        return stripCwd(this.filename);
+    }
+
     public set filename(filename: string) {
         this._filename = filename;
     }
@@ -32,9 +37,9 @@ export class Bundle {
         try {
             this.content = require(this.filename).default;
             this.loaded = true
-            logger.debug(`Loaded bundle from ${this.filename}`)
+            logger.debug(`Loaded bundle from ${this.shortFilename}`)
         } catch (e) {
-            logger.error(`Error loading bundle "${this.filename}": ${e.message}`);
+            logger.error(`Error loading bundle "${this.shortFilename}": ${e.message}`);
         }
 
         if (this.siteId !== this.content.siteId) {

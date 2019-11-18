@@ -55,7 +55,7 @@ export class Site {
             throw new Error(`Required value 'site.directory' not set for ${siteId}.`);
         }
 
-        this.logger.debug('Running', this.id, 'from', this.bundle.filename);
+        this.logger.debug('Running', this.id, 'from', this.bundle.shortFilename);
 
         // Stop here if the site is not enabled
         if (!this.enabled) {
@@ -93,7 +93,7 @@ export class Site {
         this.globalStore.clear();
         this.config.destroy();
 
-        this.logger.info('Reloading', this.id, 'from', this.bundle.filename);
+        this.logger.info('Reloading', this.id, 'from', this.bundle.shortFilename);
 
         this.config = provideConfigFromBundle(this.id);
 

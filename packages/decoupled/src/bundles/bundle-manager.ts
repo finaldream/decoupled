@@ -1,8 +1,9 @@
 import { Bundle } from "./bundle";
 import { logger } from "../logger";
-import { join } from "path";
+import { join, relative } from "path";
 import { compile } from "../webpack/compiler";
 import { EventEmitter } from "events";
+import { stripCwd } from "../lib/strip-cwd";
 
 export type BundleManagerMode = 'load' | 'build' | 'watch'
 
@@ -33,7 +34,7 @@ export class BundleManager extends EventEmitter {
             }
 
             const file = join(this.bundleDirectory, `${id}.js`)
-            logger.debug(`BundleManager: Add ${id} from ${file}`);
+            logger.debug(`BundleManager: Add ${id} from ${stripCwd(file)}`);
 
             const bundle = new Bundle(id, file)
             this.bundles.set(id, bundle)
@@ -73,6 +74,9 @@ export class BundleManager extends EventEmitter {
 
         infos.forEach(info => {
             const bundle = this.bundles.get(info.id);
+            if (!bundle) {
+                logger.error(`bundle ${info.id} not found`)
+            }
             bundle.filename = join(this.bundleDirectory, info.file);
         });
 

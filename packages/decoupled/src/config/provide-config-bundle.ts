@@ -3,11 +3,7 @@
  */
 
 import { merge } from 'lodash';
-import fs from 'fs';
-import path from 'path';
 import { Config } from './config';
-import { getSitePath } from '../lib/get-site-path';
-import { getFromDecoupledConfig } from './decoupled-config';
 import { defaultBundleManager, Bundle } from '../bundles';
 import { logger } from '../logger';
 
@@ -102,7 +98,6 @@ export function provideConfigFromBundle(siteId: string, environment?: string): C
     const bundles = [];
 
     // TODO: instead indirect inheritance, use an explicit "extend-key"
-
     const defaultBundle = defaultBundleManager.getBundle('default');
     if (!defaultBundle) {
         logger.error(`Config: Bundle for "default" not found`)

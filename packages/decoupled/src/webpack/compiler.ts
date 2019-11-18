@@ -1,5 +1,5 @@
-import { getServerSideConfig } from '.';
-import webpack = require('webpack');
+import { getServerSideConfig, getClientSideConfig } from '.';
+import webpack, { compilation, Compiler, ICompiler, Stats } from 'webpack';
 import { logger } from '../logger';
 import Chalk from 'chalk';
 import { BundleFileInfo } from '../bundles';
@@ -7,49 +7,75 @@ import { join } from 'path';
 import { getFromDecoupledConfig } from '../config';
 import { isHash, setHash } from './utils/hash';
 import { DecoupledWebpackPlugin } from './utils/decoupled-webpack-plugin';
+import { friendlyErrors } from './utils/friendly-errors';
 
+
+const printErrors = (stats: Stats) => {
+
+    const errors = friendlyErrors(stats, 'error')
+    const warnings = friendlyErrors(stats, 'warning')
+
+    if (errors && errors.length) {
+        errors.forEach(error => logger.error(error))
+    }
+
+    if (warnings && warnings.length) {
+        warnings.forEach(warning => logger.warn(warning))
+    }
+
+}
 
 export const compile = (callback, watch: boolean) => {
 
-    const config = getServerSideConfig(watch)
-    const compiler = webpack(config);
+    const serverConfig = getServerSideConfig(watch)
+    const browserConfig = getClientSideConfig(watch)
+    const compiler = webpack([serverConfig, browserConfig]);
+    //const compiler = webpack(serverConfig);
 
-    logger.silly(() => ['Webpack Config', config])
+    logger.silly(() => ['Webpack Server Config', serverConfig])
+    logger.silly(() => ['Webpack Browser Config', browserConfig])
 
     new DecoupledWebpackPlugin().apply(compiler);
 
-    const compilerHandler = (error, stats: webpack.Stats) => {
+    const compilerHandler = (error, multiStats: compilation.MultiStats) => {
         if (error) {
             console.error(error);
         } else {
 
-            if (isHash(stats.hash)) {
-                logger.debug(`Compilation hash unchanged, skipping reload`)
-                return;
-            }
+            multiStats.stats.forEach(stats => {
+                const comp = stats.compilation as any;
 
-            setHash(stats.hash);
+                if (isHash(comp.name, stats.hash)) {
+                    logger.debug(`Compilation hash unchanged, skipping reload`)
+                    return;
+                }
 
-            logger.info(Chalk.green(`Compilation finsished, took ${stats.endTime - stats.startTime}ms (hash: ${stats.hash})`))
+                setHash(comp.name, stats.hash);
 
-            if (stats.hasWarnings()) {
-                stats.compilation.warnings.forEach(warning => logger.warn(warning))
-            }
+                logger.info(Chalk.green(`Compilation finsished, took ${stats.endTime - stats.startTime}ms(hash: ${stats.hash})`))
 
-            if (stats.hasErrors()) {
-                stats.compilation.errors.forEach(error => logger.warn(error))
-            }
+                printErrors(stats)
 
-            const bundles: BundleFileInfo[] = [];
 
-            stats.compilation.chunks.forEach(({ id, files }) => {
-                bundles.push({
-                    id,
-                    file: files.find(i => /\.js$/.test(i))
+                if (comp.name !== 'server') {
+                    return
+                }
+
+                const bundles: BundleFileInfo[] = [];
+
+                // console.log(stats.compilation.chunks);
+
+                stats.compilation.chunks.forEach(({ name, files }) => {
+                    bundles.push({
+                        id: name,
+                        file: files.find(i => /\.js$/.test(i))
+                    })
                 })
+
+                callback(bundles, stats);
+
             })
 
-            callback(bundles, stats);
         }
     }
 
@@ -57,9 +83,9 @@ export const compile = (callback, watch: boolean) => {
         const watchOptions = {
             ignored: [join(getFromDecoupledConfig('appPath'), 'entries', '*.*')],
         };
-        compiler.watch(watchOptions, compilerHandler);
+        compiler.watch(watchOptions, compilerHandler as any);
     } else {
-        compiler.run(compilerHandler);
+        compiler.run(compilerHandler as any);
     }
 
 }

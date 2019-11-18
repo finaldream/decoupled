@@ -1,29 +1,11 @@
-import ejs from 'ejs';
 import { resolve, relative } from "path"
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from "fs"
+import { existsSync, writeFileSync, mkdirSync } from "fs"
 import { appPath, srcDir } from "../../lib"
 import { logger } from '../../logger';
+import { checkRequire } from './check-require';
+import { renderEntryTemplate } from "./entry-template";
 
-let entryTemplate = null
-
-export const cacheEntryTemplate = (path: string): any => {
-    const template = readFileSync(path, { encoding: 'utf8' }) as string;
-    entryTemplate = ejs.compile(template);
-}
-
-const checkRequire = (file: string): boolean => {
-
-    try {
-        require.resolve(file)
-    } catch (e) {
-        return false
-    }
-
-    return true
-
-}
-
-export const makeSiteEntry = (siteId: string) => {
+export const makeSiteEntryForServer = (siteId: string) => {
 
     const entriesDir = resolve(appPath('entries'))
 
@@ -37,7 +19,7 @@ export const makeSiteEntry = (siteId: string) => {
     }
 
     const configDir = srcDir('sites', siteId, 'config')
-    const viewsDir = srcDir('sites', siteId, 'views')
+    const viewsDir = srcDir('sites', siteId, 'server')
 
     const hasConfig = existsSync(resolve(configDir))
     const hasViews = checkRequire(resolve(viewsDir))
@@ -50,7 +32,7 @@ export const makeSiteEntry = (siteId: string) => {
         logger.debug(`Exclude views from bundling, module can not be required: ${configDir}`)
     }
 
-    const output = entryTemplate({
+    const output = renderEntryTemplate({
         tpl: {
             siteId,
             config: hasConfig ? relative(entriesDir, configDir) : null,
@@ -61,5 +43,19 @@ export const makeSiteEntry = (siteId: string) => {
     writeFileSync(entry, output, { encoding: 'utf8' })
 
     return entry;
+
+}
+
+export const makeSiteEntryForBrowser = (siteId: string): string | undefined => {
+
+    const browserEntry = srcDir('sites', siteId, 'browser')
+
+    if (!checkRequire(resolve(browserEntry))) {
+        logger.debug(`Exclude browser entry from bundling, module can not be required: ${browserEntry}`)
+        return
+    }
+    logger.debug(`Add browser entry: ${browserEntry}`)
+
+    return resolve(browserEntry);
 
 }

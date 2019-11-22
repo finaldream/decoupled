@@ -1,0 +1,10 @@
+{
+  "properties": {
+    "root": {
+      "type": "number",
+      "default": false,
+      "description": "Test schema"
+    }
+  },
+  "additionalProperties": false
+}

@@ -20,6 +20,7 @@ import { PluginManager } from '../services/plugin-manager';
 import { BackendNotify } from '../services/backend-notify';
 import { Bundle } from '../bundles/bundle';
 import { defaultBundleManager } from '../bundles';
+import { ConfigProvider } from '../config/config-provider';
 
 export class Site {
 
@@ -42,7 +43,12 @@ export class Site {
 
         this.id = siteId;
 
-        this.config = provideConfigFromBundle(siteId);
+        const configProvider = new ConfigProvider(siteId);
+
+        this.config = configProvider.load();
+
+        console.log('Site.constructor', this.config);
+
         this.logger = initLogger(this.id);
 
         this.enabled = this.config.get('site.enabled', false);

@@ -1,10 +1,19 @@
 {
-  "properties": {
-    "root": {
-      "type": "number",
-      "default": false,
-      "description": "Test schema"
+  "contributes": {
+    "configuration": {
+      "title": "Decoupled",
+      "properties": {
+        "site": {
+          "type": "object",
+          "properties": {
+            "key": {
+              "type": "string"
+            }
+          },
+          "required": ["key"]
+        }
+      },
+      "additionalProperties": false
     }
-  },
-  "additionalProperties": false
+  }
 }

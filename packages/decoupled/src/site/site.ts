@@ -46,10 +46,14 @@ export class Site {
         const configProvider = new ConfigProvider(siteId);
 
         this.config = configProvider.load();
-
-        console.log('Site.constructor', this.config);
-
         this.logger = initLogger(this.id);
+
+        const [errors, valid] = configProvider.validate(this.config.configs);
+
+        if (!valid) {
+            this.logger.error(errors);
+            throw new Error('Invalid configuration.');
+        }
 
         this.enabled = this.config.get('site.enabled', false);
         // TODO: remove in favour of bundles

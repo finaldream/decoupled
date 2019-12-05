@@ -20,6 +20,12 @@ export class ConfigProvider {
         return filePatterns[env];
     }
 
+    private validator: ConfigValidator;
+
+    constructor() {
+        this.validator = new ConfigValidator();
+    }
+
     public loadFromBundle(siteId: string, env: string = process.env.NODE_ENV): Config {
         const cacheKey = `${siteId}/${env}`;
 
@@ -51,7 +57,7 @@ export class ConfigProvider {
         const start = process.hrtime();
         logger.debug(Chalk.yellow('Start config validation.'));
 
-        const errors = this.validate(configs);
+        const errors = this.validator.validate(configs);
         const end = process.hrtime(start);
 
         logger.debug(Chalk.yellow(`Config validation finished, took ${end[0]}.${end[1]}s`));
@@ -61,16 +67,12 @@ export class ConfigProvider {
             throw new Error('Config validation failed.');
         }
 
+        const dehydrated = this.validator.getDehydratedSchema();
+
         const config = new Config(configs);
         configCache[cacheKey] = config;
 
         return config;
-    }
-
-    public validate(configuration: {}, AjvOptions: {} = {}) {
-        const validator = new ConfigValidator(AjvOptions);
-
-        return validator.validate(configuration);
     }
 
     private loadConfig(bundle: Bundle, env: string) {

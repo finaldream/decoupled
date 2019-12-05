@@ -1,5 +1,5 @@
 import { dirname, join, resolve } from 'path';
-import { merge } from 'lodash';
+import { merge, set } from 'lodash';
 import { existsSync } from 'fs';
 import glob from 'glob';
 import * as TJS from 'typescript-json-schema';
@@ -35,6 +35,8 @@ export class ConfigValidator {
     private schema: JSONSchemaInterface;
 
     private contributeFileName = 'decoupled-config.d.ts';
+
+    private schemaId: string = 'decoupled.contrib.json';
 
     private readonly TJSSettings: TJS.PartialArgs;
 
@@ -72,6 +74,8 @@ export class ConfigValidator {
     public validate(data: AnyObject): null | ErrorObject[] {
         const { defsSchema, schema } = this;
 
+        // console.log(defsSchema, schema);
+
         const validate = this.validator
             .addSchema(defsSchema)
             .compile(schema);
@@ -79,6 +83,31 @@ export class ConfigValidator {
         validate(data);
 
         return validate.errors;
+    }
+
+    /**
+     * Get dehydrated schema
+     */
+    public getDehydratedSchema() {
+        const { defsSchema: { definitions } } = this;
+        const tree = {};
+
+        function callback(object, branch = null) {
+            Object.entries(object).forEach(([k, props]: [string, AnyObject]) => {
+                const key = k.toLowerCase();
+
+                if (props.type && props.type === 'object' && props.properties
+                    && typeof props.properties === 'object' && !Array.isArray(props.properties)) {
+                    callback(props.properties, branch ? `${branch}.${key}` : key);
+                } else {
+                    set(tree, `${branch}.${key}`, true);
+                }
+            });
+        }
+
+        callback(definitions);
+
+        return tree;
     }
 
     /**
@@ -103,7 +132,7 @@ export class ConfigValidator {
             result = merge(result, schema);
         });
 
-        return { $id: 'decoupled.contrib.json', ...result };
+        return { $id: this.schemaId, ...result };
     }
 
     /**
@@ -123,10 +152,10 @@ export class ConfigValidator {
      * Generate actual schema from definitions schema
      */
     private generateSchemaFromDefinitions(): JSONSchemaInterface {
-        const { defsSchema: { definitions = {} } } = this;
+        const { schemaId, defsSchema: { definitions = {} } } = this;
 
         const properties = Object.entries(definitions).reduce((init, [k, v]) => {
-            init[k.toLowerCase()] = { $ref: `decoupled.contrib.json#/definitions/${k}` };
+            init[k.toLowerCase()] = { $ref: `${schemaId}#/definitions/${k}` };
             return init;
         }, {});
 

@@ -1,4 +1,4 @@
-interface Render {
+export interface Render {
 
     // TODO: Missing `function` type
     engine: any;

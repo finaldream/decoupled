@@ -45,7 +45,8 @@ export class Site {
 
         this.logger = initLogger(this.id);
 
-        this.config = this.loadConfig();
+        const configProvider = new ConfigProvider();
+        this.config = configProvider.loadFromBundle(siteId);
 
         this.enabled = this.config.get('site.enabled', false);
         // TODO: remove in favour of bundles
@@ -86,27 +87,6 @@ export class Site {
 
     public get bundle(): Bundle {
         return defaultBundleManager.getBundle(this.id)
-    }
-
-    public loadConfig(): Config {
-        const configProvider = new ConfigProvider(this.id);
-        const config = configProvider.load();
-        const { configs } = config;
-
-        const start = process.hrtime();
-        this.logger.debug('Start config validation.');
-
-        const [errors, valid] = configProvider.validate(configs);
-        const end = process.hrtime(start);
-
-        this.logger.debug(`Config validation finished, took ${end[0]}.${end[1]}s`);
-
-        if (!valid) {
-            this.logger.error(errors);
-            throw new Error('Config validation failed.');
-        }
-
-        return config;
     }
 
     public reload() {

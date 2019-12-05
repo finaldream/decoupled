@@ -14,10 +14,6 @@ export class Config {
         this.config = config || {};
     }
 
-    get configs() {
-        return this.config;
-    }
-
     /**
      * Get configuration value by key
      */

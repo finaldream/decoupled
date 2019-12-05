@@ -34,11 +34,4 @@ export interface Site {
      */
     name: string;
 
-    /**
-     * TODO: description
-     */
-    head ?: {
-        seo ?: $AnyObject;
-        jsonLd ?: $AnyObject;
-    };
 }

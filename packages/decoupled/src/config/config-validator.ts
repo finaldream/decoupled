@@ -1,10 +1,12 @@
-import { join, resolve } from 'path';
+import { dirname, join, resolve } from 'path';
+import { merge } from 'lodash';
 import { existsSync } from 'fs';
 import glob from 'glob';
 import * as TJS from 'typescript-json-schema';
 import Ajv, { ErrorObject, Options } from 'ajv';
 import addKeywords from 'ajv-keywords';
 import { Definition } from 'typescript-json-schema';
+import { Config, createGenerator, DEFAULT_CONFIG } from 'ts-json-schema-generator';
 
 import { logger } from '../logger';
 import { getFromDecoupledConfig } from './decoupled-config';
@@ -19,71 +21,103 @@ interface JSONSchemaInterface {
     type: string;
     properties: {};
     required: string[];
+    noExtraProps: boolean;
 }
 
 export class ConfigValidator {
 
     private readonly validator;
 
-    private contributes: string[];
+    private contributionPaths: string[];
 
     private defsSchema: DefsSchemaInterface;
 
     private schema: JSONSchemaInterface;
 
-    private contributeFileName = 'decoupled.d.ts';
+    private contributeFileName = 'decoupled-config.d.ts';
+
+    private readonly TJSSettings: TJS.PartialArgs;
+
+    private readonly TJSCompilerOptions: TJS.CompilerOptions;
 
     constructor(
-        private readonly validatorOptions: Options = {},
-        private readonly TJSSettings: TJS.PartialArgs = {
+        validatorOptions: Options = {},
+        TJSSettings: TJS.PartialArgs = {
             id: 'decoupled.contrib.json',
             defaultProps: true,
             noExtraProps: true,
             required: true,
         },
-        private readonly TJSCompilerOptions: TJS.CompilerOptions = {
+        TJSCompilerOptions: TJS.CompilerOptions = {
             strictNullChecks: true,
             useTypeOfKeyword: true,
         },
     ) {
+        this.TJSSettings = TJSSettings;
+        this.TJSCompilerOptions = TJSCompilerOptions;
+
         this.validator = new Ajv(validatorOptions);
 
         addKeywords(this.validator, ['typeof']);
 
-        this.contributes = this.loadContributes();
+        this.contributionPaths = this.getContributionPaths();
         this.defsSchema = this.generateDefinitionsSchema();
         this.schema = this.generateSchemaFromDefinitions();
-    }
-
-    get autoloadPattern() {
-        return `'**/${this.contributeFileName}'`;
     }
 
     /**
      * Validate input data
      * @param data
      */
-    public validate(data: AnyObject): [ null | ErrorObject[] , boolean] {
+    public validate(data: AnyObject): null | ErrorObject[] {
         const { defsSchema, schema } = this;
 
         const validate = this.validator
             .addSchema(defsSchema)
             .compile(schema);
-        const valid = validate(data);
 
-        return [validate.errors, valid];
+        validate(data);
+
+        return validate.errors;
     }
 
     /**
-     * Generate definitions schema from decoupled contributes
+     * Generate definitions schema from decoupled contributionPaths
      */
-    private generateDefinitionsSchema(): DefsSchemaInterface {
-        const { contributes, TJSSettings, TJSCompilerOptions } = this;
+    private generateDefinitionsSchema(): any {
+        const { contributionPaths } = this;
 
-        const program = TJS.getProgramFromFiles(contributes, TJSCompilerOptions);
+        logger.debug('Generating JSON definitions schema from', contributionPaths);
 
-        return TJS.generateSchema(program, '*', TJSSettings, contributes);
+        let result = {};
+
+        contributionPaths.forEach((path) => {
+            const config: Config = {
+                ...DEFAULT_CONFIG,
+                path,
+                type: '*',
+            };
+
+            const schema = createGenerator(config).createSchema('*');
+
+            result = merge(result, schema);
+        });
+
+        return { $id: 'decoupled.contrib.json', ...result };
     }
+
+    /**
+     * Generate definitions schema from decoupled contributionPaths
+     */
+    /* private _generateDefinitionsSchema(): DefsSchemaInterface {
+        const { contributionPaths, TJSSettings, TJSCompilerOptions } = this;
+
+        logger.debug('Generating JSON definitions schema from', contributionPaths);
+
+        const program = TJS.getProgramFromFiles(contributionPaths, TJSCompilerOptions);
+
+        return TJS.generateSchema(program, '*', TJSSettings, contributionPaths);
+    } */
 
     /**
      * Generate actual schema from definitions schema
@@ -103,55 +137,62 @@ export class ConfigValidator {
             type: 'object',
             properties,
             required,
+            noExtraProps: true,
         };
     }
 
     /**
-     * Load contributes file locations
+     * Get contribution file paths
      */
-    private loadContributes() {
+    private getContributionPaths() {
         const modules = getFromDecoupledConfig('modules');
 
         if (modules && Array.isArray(modules) && modules.length > 0) {
-            return this.loadContributesFromModules(modules);
+            return this.findContributionPathsFromModules(modules);
         }
 
-        logger.warn('No modules config found in Decoupled Config.');
+        logger.debug('No modules defined in decoupled.config.js, looking for contributions in `node_modules`');
 
-        return this.autoLoadContributes();
+        return this.autoFindContributionPaths();
     }
 
     /**
-     * Load contributes file locations from decoupled.config
+     * Find contribution file locations from decoupled.config
      *
-     * 1. Root and `src` directories
+     * 1. Root directory
      * 2. Sites directories
      * 3. Modules directories under `node_modules`
      */
-    private loadContributesFromModules(modules: string[]) {
+    private findContributionPathsFromModules(modules: string[]) {
         const { contributeFileName } = this;
 
-        const srcDir = getFromDecoupledConfig('srcDir');
-        const projectContributes = [ './', srcDir ];
+        const projectContributes = ['./'];
 
+        /*
+         * TODO: Remove `src` dir dependence
+         * https://github.com/finaldream/decoupled/pull/40#discussion_r352124354
+         */
+        const srcDir = getFromDecoupledConfig('srcDir');
         const siteIDs = getSiteIDs(resolve(srcDir, 'sites'), true);
         const siteContributes = siteIDs.map((site) => join(srcDir, 'sites', site));
 
-        const modulesContributes = ['decoupled', ...modules].map((path) => join('node_modules', path));
+        // TODO: Handle `require.resolve` exception
+        const modulesContributes = ['decoupled', ...modules]
+            .map((path) => dirname(require.resolve(join(path, 'package.json'))));
 
-        return [...projectContributes, ...siteContributes, ...modulesContributes]
+        return [...modulesContributes, ...projectContributes, ...siteContributes]
             .map((contrib) => resolve(contrib, contributeFileName))
             .filter((path) => existsSync(path));
     }
 
     /**
-     * Autoload contributes file locations using glob
+     * Find contribution file locations using glob
      */
-    private autoLoadContributes() {
-        const { autoloadPattern } = this;
+    private autoFindContributionPaths() {
+        const pattern = `**/${this.contributeFileName}`;
 
-        logger.info(`Autoloading from all directories using ${autoloadPattern} pattern.`);
+        logger.info(`Collect from all directories using ${pattern} pattern.`);
 
-        return glob.sync(autoloadPattern);
+        return glob.sync(pattern);
     }
 }

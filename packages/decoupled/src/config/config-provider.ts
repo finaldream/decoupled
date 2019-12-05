@@ -1,4 +1,5 @@
 import { merge } from 'lodash';
+import Chalk from 'chalk';
 import { Config } from './config';
 import { ConfigValidator } from './config-validator';
 import { Bundle, defaultBundleManager } from '../bundles';
@@ -8,10 +9,6 @@ const configCache = new Map();
 const filePatterns = {};
 
 export class ConfigProvider {
-
-    public get cacheKey(): string {
-        return `${this.siteId}/${this.env}`;
-    }
 
     private static getFilePattern(env: string = 'default'): RegExp {
         if (!filePatterns[env]) {
@@ -23,13 +20,8 @@ export class ConfigProvider {
         return filePatterns[env];
     }
 
-    constructor(
-        private readonly siteId: string,
-        private readonly env: string = process.env.NODE_ENV,
-    ) {}
-
-    public load(): Config {
-        const { siteId, cacheKey } = this;
+    public loadFromBundle(siteId: string, env: string = process.env.NODE_ENV): Config {
+        const cacheKey = `${siteId}/${env}`;
 
         if (configCache.has(cacheKey)) {
             return configCache[cacheKey];
@@ -39,8 +31,7 @@ export class ConfigProvider {
 
         const defaultBundle = defaultBundleManager.getBundle('default');
         if (!defaultBundle) {
-            logger.error(`Config: Bundle for "default" not found`);
-            return null;
+            logger.warn(`Config: Bundle for "default" not found`);
         } else {
             bundles.push(defaultBundle);
         }
@@ -53,34 +44,48 @@ export class ConfigProvider {
             bundles.push(siteBundle);
         }
 
-        const configs = bundles.map((bundle) => this.loadConfig(bundle));
+        const raw = bundles.map((bundle) => this.loadConfig(bundle, env));
+        const configs = merge({}, ...raw);
 
-        const config = new Config(merge({}, ...configs));
+        // start configs validation process
+        const start = process.hrtime();
+        logger.debug(Chalk.yellow('Start config validation.'));
+
+        const errors = this.validate(configs);
+        const end = process.hrtime(start);
+
+        logger.debug(Chalk.yellow(`Config validation finished, took ${end[0]}.${end[1]}s`));
+
+        if (errors) {
+            logger.error(errors);
+            throw new Error('Config validation failed.');
+        }
+
+        const config = new Config(configs);
         configCache[cacheKey] = config;
 
         return config;
     }
 
-    public validate(data, options = {}) {
-        const validator = new ConfigValidator(options);
+    public validate(configuration: {}, AjvOptions: {} = {}) {
+        const validator = new ConfigValidator(AjvOptions);
 
-        return validator.validate(data);
+        return validator.validate(configuration);
     }
 
-    public loadConfig(bundle: Bundle) {
-        const { env } = this;
-        const defaultConfig = this.readConfigFromFiles(bundle, 'default');
+    private loadConfig(bundle: Bundle, env: string) {
+        const defaultConfig = this.loadConfigFromBundle(bundle, 'default');
 
         if (!env) {
             return defaultConfig;
         }
 
-        const envConfig = this.readConfigFromFiles(bundle, env);
+        const envConfig = this.loadConfigFromBundle(bundle, env);
 
         return merge(defaultConfig, envConfig);
     }
 
-    private readConfigFromFiles(bundle: Bundle, env: string): AnyObject {
+    private loadConfigFromBundle(bundle: Bundle, env: string): AnyObject {
         let result = {};
 
         const { config } = bundle || {};

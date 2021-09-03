@@ -20,7 +20,7 @@ module.exports = async (site, store = {}) => {
     let result;
     try {
         const Component = require(templatePath).default; // eslint-disable-line
-        result = ReactDOMServer.renderToStaticMarkup(React.createElement(Component, store));
+        result = `<!DOCTYPE html>${ReactDOMServer.renderToStaticMarkup(React.createElement(Component, store))}`;
     } catch (e) {
         site.logger.error(packageJson.name, e);
 

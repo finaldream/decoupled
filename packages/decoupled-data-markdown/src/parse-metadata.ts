@@ -1,5 +1,7 @@
-import YAML, { ParseOptions } from 'yaml';
+import YAML from 'yaml';
 import { MarkdownCustomTag } from './markdown-custom-tag';
+
+type ParseOptions = any;
 
 export const parseMetadata = (input: string): any => {
 

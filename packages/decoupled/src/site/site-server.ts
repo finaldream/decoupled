@@ -93,7 +93,7 @@ export default class SiteServer extends SiteDependent {
         }
 
         res.statusCode = errorCode;
-        res.write(body);
+        res.write(`<!DOCTYPE html>${body}`);
         res.end();
     }
 

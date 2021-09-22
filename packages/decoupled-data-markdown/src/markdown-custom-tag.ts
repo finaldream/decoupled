@@ -1,5 +1,5 @@
-import { Tag } from 'yaml';
 import { parseMarkdown, stringfyMarkdown } from './parse-markdown';
+type Tag = any
 
 /**
  * Removes surrounding whitepace and quotes, introduced by YAML string literals

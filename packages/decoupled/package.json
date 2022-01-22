@@ -44,7 +44,7 @@
     "lodash": "4.17.*",
     "metalsmith": "^2.3.*",
     "node-cache": "^4.2.*",
-    "node-fetch": "^2.6.*",
+    "node-fetch": "^3.1.*",
     "promise.map": "^0.0.*",
     "qs": "^6.8.*",
     "url-pattern": "^1.0.*",
